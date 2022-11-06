@@ -11,7 +11,11 @@ const user = useUserStore();
     <div class="container mx-auto">
       <div class="flex-1">
         <router-link to="/" class="btn btn-ghost normal-case text-xl">
-          <img src="./assets/lichess-white.svg" class="logo w-6" alt="Lichess logo" />
+          <img
+            src="./assets/lichess-white.svg"
+            class="logo w-6"
+            alt="Lichess logo"
+          />
         </router-link>
       </div>
       <div class="flex-none">

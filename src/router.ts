@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 import SettingsPage from "./components/SettingsPage.vue";
 import HomePage from "./components/HomePage.vue";
@@ -10,9 +10,9 @@ const routes = [
   { path: "/engines", component: EnginesPage },
   { path: "/engines/new", component: AddEnginePage },
   { path: "/settings", component: SettingsPage },
-]
+];
 
 export default createRouter({
-    history: createWebHistory(),
-    routes,
-})
+  history: createWebHistory(),
+  routes,
+});

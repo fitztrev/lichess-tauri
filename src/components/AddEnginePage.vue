@@ -6,63 +6,61 @@ import { Engine, useEnginesStore } from "../stores/engines";
 import { useSettingsStore } from "../stores/settings";
 import { useUserStore } from "../stores/user";
 
-
 const engines = useEnginesStore();
 const settings = useSettingsStore();
 const user = useUserStore();
 
 const name = ref("");
-const maxThreads = ref(8)
-const maxHash = ref(1024)
-const defaultDepth = ref(24)
+const maxThreads = ref(8);
+const maxHash = ref(1024);
+const defaultDepth = ref(24);
 const binaryLocation: Ref<any> = ref("");
 
 function selectEngineFile() {
   open({}).then((data) => {
-    binaryLocation.value = data
+    binaryLocation.value = data;
   });
 }
 
 function save() {
-   let engine: Engine = {
+  let engine: Engine = {
     name: name.value,
     maxThreads: maxThreads.value,
     maxHash: maxHash.value,
     defaultDepth: defaultDepth.value,
-    variants: ['chess'],
+    variants: ["chess"],
     binaryLocation: binaryLocation.value,
-    providerSecret: 'my-provider-secret', // self.crypto.randomUUID(),
+    providerSecret: "my-provider-secret", // self.crypto.randomUUID(),
   };
 
-  console.log(engine)
+  console.log(engine);
 
-  saveToLichess(engine)
-    .then(data => {
-      engine.id = data.id
+  saveToLichess(engine).then((data) => {
+    engine.id = data.id;
 
-      engines.addEngine(engine)
-      router.push('/engines')
-    })
+    engines.addEngine(engine);
+    router.push("/engines");
+  });
 }
 
 type LichessEngine = {
-  id: string
-  name: string
-  userId: string
-  maxThreads: number
-  maxHash: number
-  defaultDepth: number
-  variants: string[]
-  providerData: string
-  clientSecret: string
-}
+  id: string;
+  name: string;
+  userId: string;
+  maxThreads: number;
+  maxHash: number;
+  defaultDepth: number;
+  variants: string[];
+  providerData: string;
+  clientSecret: string;
+};
 
 function saveToLichess(engine: Engine): Promise<LichessEngine> {
   return fetch(`${settings.lichessHost}/api/external-engine`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Authorization': `Bearer ${user.token}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`,
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       name: engine.name,
@@ -71,8 +69,8 @@ function saveToLichess(engine: Engine): Promise<LichessEngine> {
       defaultDepth: engine.defaultDepth,
       variants: engine.variants,
       providerSecret: engine.providerSecret,
-    })
-  }).then(response => response.json())
+    }),
+  }).then((response) => response.json());
 }
 </script>
 
@@ -112,7 +110,9 @@ function saveToLichess(engine: Engine): Promise<LichessEngine> {
       <label class="label">
         <span class="label-text">Binary</span>
       </label>
-      <button type="button" class="btn btn-wide" @click="selectEngineFile">Select local file</button>
+      <button type="button" class="btn btn-wide" @click="selectEngineFile">
+        Select local file
+      </button>
       {{ binaryLocation }}
     </div>
 

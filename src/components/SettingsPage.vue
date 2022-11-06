@@ -13,14 +13,22 @@ const settings = useSettingsStore();
       <label class="label">
         <span class="label-text">Lichess Host</span>
       </label>
-      <input type="text" class="input input-bordered" v-model="settings.lichessHost" />
+      <input
+        type="text"
+        class="input input-bordered"
+        v-model="settings.lichessHost"
+      />
     </div>
 
     <div class="form-control mb-4">
       <label class="label">
         <span class="label-text">External Engine Host</span>
       </label>
-      <input type="text" class="input input-bordered" v-model="settings.externalEngineHost" />
+      <input
+        type="text"
+        class="input input-bordered"
+        v-model="settings.externalEngineHost"
+      />
     </div>
 
     <h1 class="text-2xl my-8">Debug Info</h1>

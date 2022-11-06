@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Ref, ref } from "vue";
-import { getName, getTauriVersion, getVersion } from '@tauri-apps/api/app';
+import { getName, getTauriVersion, getVersion } from "@tauri-apps/api/app";
 import { platform, version, type, arch } from "@tauri-apps/api/os";
 import { invoke } from "@tauri-apps/api/tauri";
 
