@@ -1,45 +1,32 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Greet from "./components/Greet.vue";
+import LichessLogin from "./components/LichessLogin.vue";
 import LocalEngine from "./components/LocalEngine.vue";
+import { useUserStore } from "./stores/user";
+
+const user = useUserStore();
 </script>
 
 <template>
-  <div class="container">
-    <div class="row">
-        <img src="./assets/lichess-white.svg" class="logo" alt="LIchess logo" />
-    </div>
-
-    <h1>Lichess External Engine</h1>
-
-    <div class="checklist">
-      <p>&check; Connected to Lichess account: <strong>Bobby</strong> <span>&#x2699;</span></p>
-      <p>&check; Engine running locally: <strong>Stockfish 15</strong> <span>&#x2699;</span></p>
-      <p>&check; Engine registered on Lichess: <strong>Stockfish 15 local</strong></p>
-      <p>&check; Listening for analysis requests...</p>
+  <div class="navbar bg-base-300">
+    <div class="container mx-auto">
+      <div class="flex-1">
+        <router-link to="/" class="btn btn-ghost normal-case text-xl">
+          <img src="./assets/lichess-white.svg" class="logo w-6" alt="Lichess logo" />
+        </router-link>
+      </div>
+      <div class="flex-none">
+        <ul class="menu menu-horizontal p-0">
+          <li><router-link to="/">Dashboard</router-link></li>
+          <li><router-link to="/engines">Engines</router-link></li>
+          <li><router-link to="/settings">Settings</router-link></li>
+          <li><LichessLogin /></li>
+        </ul>
+      </div>
     </div>
   </div>
+  <LocalEngine v-if="user.username" />
 
-  system info:
-
-  cpu:
-  cores:
-  memory:
-
-  <LocalEngine />
+  <div class="container mx-auto p-4">
+    <router-view />
+  </div>
 </template>
-
-<style scoped>
-.checklist {
-  background: #444;
-  color: #59c601;
-}
-
-.checklist strong {
-  border-bottom: 1px dashed;
-}
-.checklist span {
-  color: #fff;
-}
-</style>
