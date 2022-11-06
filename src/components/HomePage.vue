@@ -5,9 +5,7 @@ const workRequests = useWorkRequestsStore()
 
 <template>
   <div class="w-3/4 mx-auto my-20">
-    <h1 class="text-2xl mb-8">Dashboard</h1>
-
-    <h3 class="text-xl">Analysis Requests</h3>
+    <h1 class="text-2xl mb-8">Analysis Requests</h1>
     <div class="bg-base-200 mt-4 p-4">
       <div v-if="workRequests.requests.length" v-for="request in workRequests.requests">
         {{ request.engine.name }}
