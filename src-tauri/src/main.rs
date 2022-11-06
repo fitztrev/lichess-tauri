@@ -8,9 +8,9 @@ use tauri::{command, Window};
 
 #[tauri::command]
 fn run_engine(host: &str, token: &str, id: &str, binary: &str, fen: &str, moves: &str) {
-    Command::new("/usr/bin/python3")
+    Command::new("python3")
         .args([
-            "/home/trevor/code/lichess-tauri/stockfish.py",
+            "../stockfish.py",
             "--host", host,
             "--token", token,
             "--work-id", id,
