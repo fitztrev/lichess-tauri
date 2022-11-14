@@ -23,7 +23,7 @@ fn run_engine(host: &str, token: &str, id: &str, binary: &str, fen: &str, moves:
 }
 
 #[command]
-async fn start_server(window: Window) {
+async fn start_oauth_server(window: Window) {
   let window_arc = Arc::new(window);
   let window_arc2 = window_arc.clone();
   let port = tauri_plugin_oauth::start(None, move |url| {
@@ -39,7 +39,7 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             run_engine,
-            start_server,
+            start_oauth_server,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

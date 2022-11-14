@@ -17,7 +17,7 @@ const tempServerUrl = ref("");
 const challenge = pkceChallenge(128);
 
 async function loginViaOauth() {
-  await invoke("start_server");
+  await invoke("start_oauth_server");
 }
 
 listen("server_started", (data: { payload: number }) => {
