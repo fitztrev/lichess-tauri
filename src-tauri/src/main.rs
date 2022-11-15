@@ -4,6 +4,9 @@
 )]
 
 use std::{process::{Command}, sync::Arc};
+use serde_json::{json, Value};
+use sysinfo::{System, SystemExt, CpuExt};
+
 use tauri::{command, Window};
 
 #[tauri::command]
@@ -22,6 +25,31 @@ fn run_engine(host: &str, token: &str, id: &str, binary: &str, fen: &str, moves:
         .expect("failed to execute process");
 }
 
+#[tauri::command]
+fn get_sysinfo() -> Value {
+    let mut sys = System::new_all();
+    sys.refresh_all();
+
+    json!({
+        "total_memory"   : sys.total_memory(),
+        "used_memory"    : sys.used_memory(),
+        "total_swap"     : sys.total_swap(),
+        "used_swap"      : sys.used_swap(),
+        "name"           : sys.name(),
+        "kernel_version" : sys.kernel_version(),
+        "os_version"     : sys.os_version(),
+        "long_os_version": sys.long_os_version(),
+        "host_name"      : sys.host_name(),
+        "distribution_id": sys.distribution_id(),
+        "cpus.len"       : sys.cpus().len(),
+        "cpu.cpu_usage"  : sys.global_cpu_info().cpu_usage(),
+        "cpu.brand"      : sys.global_cpu_info().brand(),
+        "cpu.frequency"  : sys.global_cpu_info().frequency(),
+        "cpu.vendor_id"  : sys.global_cpu_info().vendor_id(),
+        "cpu.name"       : sys.global_cpu_info().name(),
+    })
+}
+
 #[command]
 async fn start_oauth_server(window: Window) {
   let window_arc = Arc::new(window);
@@ -38,6 +66,7 @@ async fn start_oauth_server(window: Window) {
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            get_sysinfo,
             run_engine,
             start_oauth_server,
         ])

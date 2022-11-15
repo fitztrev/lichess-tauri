@@ -18,6 +18,7 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.1", features = ["api-all"] }
 tauri-plugin-oauth = { git = "https://github.com/FabianLars/tauri-plugin-oauth" }
+sysinfo = "0.26.7"
 
 [features]
 # by default Tauri runs in production mode

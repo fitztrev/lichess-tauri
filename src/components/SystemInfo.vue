@@ -38,9 +38,15 @@ const osArch = ref("");
 arch().then((data) => {
   osArch.value = data;
 });
+
+const sysinfo = ref({});
+invoke<object>('get_sysinfo').then((data) => {
+  sysinfo.value = data;
+});
 </script>
 
 <template>
+  <h3>From Tauri API:</h3>
   <pre>
     Tauri v{{ tauriVersion }}
     App name: {{ name }}
@@ -50,4 +56,6 @@ arch().then((data) => {
     OS platform: {{ osPlatform }}
     OS arch: {{ osArch }}
   </pre>
+  <h3>From sysinfo crate:</h3>
+  <pre>{{ sysinfo }}</pre>
 </template>
