@@ -40,9 +40,21 @@ arch().then((data) => {
 });
 
 const sysinfo = ref({});
-invoke<object>('get_sysinfo').then((data) => {
-  sysinfo.value = data;
-});
+const numCores = ref(0);
+const maxHashOptions = ref<number[]>([]);
+
+invoke<{ total_memory: number; "cpus.len": number }>("get_sysinfo").then(
+  (data) => {
+    sysinfo.value = data;
+
+    let memory70percent = (data.total_memory / 1024 / 1024) * 0.7; // up to 70% of total memory
+    for (let i = 16; i <= memory70percent; i *= 2) {
+      maxHashOptions.value.push(i);
+    }
+
+    numCores.value = data["cpus.len"];
+  }
+);
 </script>
 
 <template>
@@ -58,4 +70,6 @@ invoke<object>('get_sysinfo').then((data) => {
   </pre>
   <h3>From sysinfo crate:</h3>
   <pre>{{ sysinfo }}</pre>
+  <h3>Calculated:</h3>
+  <pre>{{ { numCores, maxHashOptions } }}</pre>
 </template>

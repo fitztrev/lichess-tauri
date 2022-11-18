@@ -1,0 +1,32 @@
+{
+    "engines": [
+        {
+            "name": "Stockfish 15",
+            "description": "Free and open-source chess engine",
+            "website": "https://stockfishchess.org/",
+            "license": "GPLv3",
+            "version": "15",
+            "updated_at": "2022-11-15 00:00:00",
+            "binaries": {
+                "linux": {
+                    "bmi2": "https://stockfishchess.org/files/stockfish_15_linux_x64_bmi2.zip",
+                    "avx2": "https://stockfishchess.org/files/stockfish_15_linux_x64_avx2.zip",
+                    "popcnt": "https://stockfishchess.org/files/stockfish_15_linux_x64_popcnt.zip",
+                    "ssse3": "https://stockfishchess.org/files/stockfish_15_linux_x64_ssse.zip",
+                    "default": "https://stockfishchess.org/files/stockfish_15_linux_x64.zip"
+                },
+                "macos": {
+                    "apple-silicon": "todo",
+                    "default": "todo"
+                },
+                "windows": {
+                    "bmi2": "https://stockfishchess.org/files/stockfish_15_win_x64_bmi2.zip",
+                    "avx2": "https://stockfishchess.org/files/stockfish_15_win_x64_avx2.zip",
+                    "popcnt": "https://stockfishchess.org/files/stockfish_15_win_x64_popcnt.zip",
+                    "ssse3": "https://stockfishchess.org/files/stockfish_15_win_x64_ssse.zip",
+                    "default": "https://stockfishchess.org/files/stockfish_15_win_x64.zip"
+                }
+            }
+        }
+    ]
+}

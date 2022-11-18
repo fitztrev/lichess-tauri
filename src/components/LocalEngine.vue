@@ -62,7 +62,7 @@ async function listenForWork() {
   }
 }
 
-listenForWork();
+// listenForWork();
 </script>
 
 <template>

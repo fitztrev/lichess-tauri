@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { open } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api/tauri";
 import { Ref, ref } from "vue";
-import router from "../router";
+import { router } from "../router";
 import { Engine, useEnginesStore } from "../stores/engines";
 import { useSettingsStore } from "../stores/settings";
 import { useUserStore } from "../stores/user";
@@ -11,10 +12,31 @@ const settings = useSettingsStore();
 const user = useUserStore();
 
 const name = ref("");
-const maxThreads = ref(8);
-const maxHash = ref(1024);
-const defaultDepth = ref(24);
+const maxThreads = ref(1);
+const maxHash = ref(16);
+const defaultDepth = ref(25);
 const binaryLocation: Ref<any> = ref("");
+
+const maxHashOptions = ref<number[]>([]);
+const maxThreadOptions = ref<number[]>([]);
+
+invoke<{ total_memory: number; "cpus.len": number }>("get_sysinfo").then(
+  (data) => {
+    console.log(data);
+
+    let memory70percent = (data.total_memory / 1024 / 1024) * 0.7; // up to 70% of total memory
+    for (let i = 16; i <= memory70percent; i *= 2) {
+      maxHashOptions.value.push(i);
+    }
+    maxHash.value = maxHashOptions.value.slice(-1)[0];
+
+    maxThreadOptions.value = Array.from(
+      { length: data["cpus.len"] },
+      (_, i) => i + 1
+    );
+    maxThreads.value = data["cpus.len"];
+  }
+);
 
 function selectEngineFile() {
   open({}).then((data) => {
@@ -39,7 +61,9 @@ function save() {
     engine.id = data.id;
 
     engines.addEngine(engine);
-    router.push("/engines");
+
+    // router.push("/engines");
+    // console.log(router)
   });
 }
 
@@ -76,7 +100,7 @@ function saveToLichess(engine: Engine): Promise<LichessEngine> {
 
 <template>
   <div class="w-3/4 mx-auto my-20">
-    <h1 class="text-2xl mb-8">New Engine</h1>
+    <h1 class="text-2xl mb-8">New Engines</h1>
 
     <div class="form-control mb-4">
       <label class="label">
@@ -89,14 +113,26 @@ function saveToLichess(engine: Engine): Promise<LichessEngine> {
       <label class="label">
         <span class="label-text">Max Threads</span>
       </label>
-      <input type="text" class="input input-bordered" v-model="maxThreads" />
+      <select class="select select-bordered" v-model="maxThreads">
+        <option
+          v-for="option in maxThreadOptions"
+          :key="option"
+          :value="option"
+        >
+          {{ option }}
+        </option>
+      </select>
     </div>
 
     <div class="form-control mb-4">
       <label class="label">
         <span class="label-text">Max Hash</span>
       </label>
-      <input type="text" class="input input-bordered" v-model="maxHash" />
+      <select class="select select-bordered" v-model="maxHash">
+        <option v-for="option in maxHashOptions" :key="option" :value="option">
+          {{ option }} MB
+        </option>
+      </select>
     </div>
 
     <div class="form-control mb-4">

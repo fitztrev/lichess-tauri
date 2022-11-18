@@ -12,7 +12,7 @@ const routes = [
   { path: "/settings", component: SettingsPage },
 ];
 
-export default createRouter({
+export let router = createRouter({
   history: createWebHistory(),
   routes,
 });

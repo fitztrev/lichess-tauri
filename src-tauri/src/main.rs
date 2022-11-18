@@ -6,7 +6,6 @@
 use std::{process::{Command}, sync::Arc};
 use serde_json::{json, Value};
 use sysinfo::{System, SystemExt, CpuExt};
-
 use tauri::{command, Window};
 
 #[tauri::command]
