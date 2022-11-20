@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useWorkRequestsStore } from "../stores/work-requests";
-const workRequests = useWorkRequestsStore();
+import { useWorkRequestsStore } from '../stores/work-requests'
+const workRequests = useWorkRequestsStore()
 </script>
 
 <template>
@@ -15,7 +15,7 @@ const workRequests = useWorkRequestsStore();
         -
         <code>{{ request.work.initialFen }}</code>
         -
-        <code>{{ request.work.moves.join(" ") }}</code>
+        <code>{{ request.work.moves.join(' ') }}</code>
       </div>
 
       <div v-else>No analysis requests yet</div>

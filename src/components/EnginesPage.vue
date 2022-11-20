@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useEnginesStore } from "../stores/engines";
-import { open } from "@tauri-apps/api/shell";
+import { useEnginesStore } from '../stores/engines'
+import { open } from '@tauri-apps/api/shell'
 
-const engines = useEnginesStore();
+const engines = useEnginesStore()
 
 function openContainingFolder(filepath: string) {
-  let dir = filepath.substring(0, filepath.lastIndexOf("/"));
-  open(dir);
+  let dir = filepath.substring(0, filepath.lastIndexOf('/'))
+  open(dir)
 }
 </script>
 

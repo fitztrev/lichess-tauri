@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import SystemInfo from "./SystemInfo.vue";
-import { useSettingsStore } from "../stores/settings";
+import SystemInfo from './SystemInfo.vue'
+import { useSettingsStore } from '../stores/settings'
 
-const settings = useSettingsStore();
+const settings = useSettingsStore()
 </script>
 
 <template>

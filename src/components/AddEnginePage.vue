@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { open } from "@tauri-apps/api/dialog";
-import { invoke } from "@tauri-apps/api/tauri";
-import { Ref, ref } from "vue";
-import { router } from "../router";
-import { Engine, useEnginesStore } from "../stores/engines";
-import { useSettingsStore } from "../stores/settings";
-import { useUserStore } from "../stores/user";
+import { open } from '@tauri-apps/api/dialog'
+import { invoke } from '@tauri-apps/api/tauri'
+import { Ref, ref } from 'vue'
+import { router } from '../router'
+import { Engine, useEnginesStore } from '../stores/engines'
+import { useSettingsStore } from '../stores/settings'
+import { useUserStore } from '../stores/user'
 
-const engines = useEnginesStore();
-const settings = useSettingsStore();
-const user = useUserStore();
+const engines = useEnginesStore()
+const settings = useSettingsStore()
+const user = useUserStore()
 
-const name = ref("");
-const maxThreads = ref(1);
-const maxHash = ref(16);
-const defaultDepth = ref(25);
-const binaryLocation: Ref<any> = ref("");
+const name = ref('')
+const maxThreads = ref(1)
+const maxHash = ref(16)
+const defaultDepth = ref(25)
+const binaryLocation: Ref<any> = ref('')
 
-const maxHashOptions = ref<number[]>([]);
-const maxThreadOptions = ref<number[]>([]);
+const maxHashOptions = ref<number[]>([])
+const maxThreadOptions = ref<number[]>([])
 
-invoke<{ total_memory: number; "cpus.len": number }>("get_sysinfo").then(
+invoke<{ total_memory: number; 'cpus.len': number }>('get_sysinfo').then(
   (data) => {
-    console.log(data);
+    console.log(data)
 
-    let memory70percent = (data.total_memory / 1024 / 1024) * 0.7; // up to 70% of total memory
+    let memory70percent = (data.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
     for (let i = 16; i <= memory70percent; i *= 2) {
-      maxHashOptions.value.push(i);
+      maxHashOptions.value.push(i)
     }
-    maxHash.value = maxHashOptions.value.slice(-1)[0];
+    maxHash.value = maxHashOptions.value.slice(-1)[0]
 
     maxThreadOptions.value = Array.from(
-      { length: data["cpus.len"] },
+      { length: data['cpus.len'] },
       (_, i) => i + 1
-    );
-    maxThreads.value = data["cpus.len"];
+    )
+    maxThreads.value = data['cpus.len']
   }
-);
+)
 
 function selectEngineFile() {
   open({}).then((data) => {
-    binaryLocation.value = data;
-  });
+    binaryLocation.value = data
+  })
 }
 
 function save() {
@@ -50,40 +50,40 @@ function save() {
     maxThreads: maxThreads.value,
     maxHash: maxHash.value,
     defaultDepth: defaultDepth.value,
-    variants: ["chess"],
+    variants: ['chess'],
     binaryLocation: binaryLocation.value,
-    providerSecret: "aaaabbbbccccdddd", // self.crypto.randomUUID(),
-  };
+    providerSecret: 'aaaabbbbccccdddd', // self.crypto.randomUUID(),
+  }
 
-  console.log(engine);
+  console.log(engine)
 
   saveToLichess(engine).then((data) => {
-    engine.id = data.id;
+    engine.id = data.id
 
-    engines.addEngine(engine);
+    engines.addEngine(engine)
 
-    router.push("/engines");
-  });
+    router.push('/engines')
+  })
 }
 
 type LichessEngine = {
-  id: string;
-  name: string;
-  userId: string;
-  maxThreads: number;
-  maxHash: number;
-  defaultDepth: number;
-  variants: string[];
-  providerData: string;
-  clientSecret: string;
-};
+  id: string
+  name: string
+  userId: string
+  maxThreads: number
+  maxHash: number
+  defaultDepth: number
+  variants: string[]
+  providerData: string
+  clientSecret: string
+}
 
 function saveToLichess(engine: Engine): Promise<LichessEngine> {
   return fetch(`${settings.lichessHost}/api/external-engine`, {
-    method: "POST",
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${user.token}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       name: engine.name,
@@ -93,7 +93,7 @@ function saveToLichess(engine: Engine): Promise<LichessEngine> {
       variants: engine.variants,
       providerSecret: engine.providerSecret,
     }),
-  }).then((response) => response.json());
+  }).then((response) => response.json())
 }
 </script>
 

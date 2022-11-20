@@ -6,7 +6,7 @@
 
 2. Run project
 
-    ```
-    npm install
-    npm run tauri dev
-    ```
+   ```
+   npm install
+   npm run tauri dev
+   ```

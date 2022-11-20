@@ -1,60 +1,60 @@
 <script setup lang="ts">
-import { Ref, ref } from "vue";
-import { getName, getTauriVersion, getVersion } from "@tauri-apps/api/app";
-import { platform, version, type, arch } from "@tauri-apps/api/os";
-import { invoke } from "@tauri-apps/api/tauri";
+import { Ref, ref } from 'vue'
+import { getName, getTauriVersion, getVersion } from '@tauri-apps/api/app'
+import { platform, version, type, arch } from '@tauri-apps/api/os'
+import { invoke } from '@tauri-apps/api/tauri'
 
-const name = ref("");
+const name = ref('')
 getName().then((data) => {
-  name.value = data;
-});
+  name.value = data
+})
 
-const tauriVersion = ref("");
+const tauriVersion = ref('')
 getTauriVersion().then((data) => {
-  tauriVersion.value = data;
-});
+  tauriVersion.value = data
+})
 
-const appVersion = ref("");
+const appVersion = ref('')
 getVersion().then((data) => {
-  appVersion.value = data;
-});
+  appVersion.value = data
+})
 
-const osPlatform = ref("");
+const osPlatform = ref('')
 platform().then((data) => {
-  osPlatform.value = data;
-});
+  osPlatform.value = data
+})
 
-const osVersion = ref("");
+const osVersion = ref('')
 version().then((data) => {
-  osVersion.value = data;
-});
+  osVersion.value = data
+})
 
-const os = ref("");
+const os = ref('')
 type().then((data) => {
-  os.value = data;
-});
+  os.value = data
+})
 
-const osArch = ref("");
+const osArch = ref('')
 arch().then((data) => {
-  osArch.value = data;
-});
+  osArch.value = data
+})
 
-const sysinfo = ref({});
-const numCores = ref(0);
-const maxHashOptions = ref<number[]>([]);
+const sysinfo = ref({})
+const numCores = ref(0)
+const maxHashOptions = ref<number[]>([])
 
-invoke<{ total_memory: number; "cpus.len": number }>("get_sysinfo").then(
+invoke<{ total_memory: number; 'cpus.len': number }>('get_sysinfo').then(
   (data) => {
-    sysinfo.value = data;
+    sysinfo.value = data
 
-    let memory70percent = (data.total_memory / 1024 / 1024) * 0.7; // up to 70% of total memory
+    let memory70percent = (data.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
     for (let i = 16; i <= memory70percent; i *= 2) {
-      maxHashOptions.value.push(i);
+      maxHashOptions.value.push(i)
     }
 
-    numCores.value = data["cpus.len"];
+    numCores.value = data['cpus.len']
   }
-);
+)
 </script>
 
 <template>

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { Engine, useEnginesStore } from "../stores/engines";
-import { invoke } from "@tauri-apps/api/tauri";
-import { open } from "@tauri-apps/api/shell";
-import { useSettingsStore } from "../stores/settings";
-import { useUserStore } from "../stores/user";
-import { useWorkRequestsStore, WorkRequest } from "../stores/work-requests";
+import { Engine, useEnginesStore } from '../stores/engines'
+import { invoke } from '@tauri-apps/api/tauri'
+import { open } from '@tauri-apps/api/shell'
+import { useSettingsStore } from '../stores/settings'
+import { useUserStore } from '../stores/user'
+import { useWorkRequestsStore, WorkRequest } from '../stores/work-requests'
 
-const engines = useEnginesStore();
-const settings = useSettingsStore();
-const user = useUserStore();
-const workRequests = useWorkRequestsStore();
+const engines = useEnginesStore()
+const settings = useSettingsStore()
+const user = useUserStore()
+const workRequests = useWorkRequestsStore()
 
 async function listenForWork() {
   let params = {
@@ -20,18 +20,18 @@ async function listenForWork() {
       return {
         id: engine.id,
         binary_location: engine.binaryLocation,
-      };
+      }
     }),
   }
   console.log('invoking `run_engine` from app with params', { params })
-  let response = invoke("run_engine", params);
+  let response = invoke('run_engine', params)
   // console.log('`run_engine` response: ', { response, params });
 }
 
-listenForWork();
+listenForWork()
 
 function openLichess(url: string) {
-  open(`${settings.lichessHost}/${url}`);
+  open(`${settings.lichessHost}/${url}`)
 }
 </script>
 

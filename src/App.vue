@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import LichessLogin from "./components/LichessLogin.vue";
-import LocalEngine from "./components/LocalEngine.vue";
-import { useUserStore } from "./stores/user";
+import LichessLogin from './components/LichessLogin.vue'
+import LocalEngine from './components/LocalEngine.vue'
+import { useUserStore } from './stores/user'
 
-const user = useUserStore();
+const user = useUserStore()
 </script>
 
 <template>
