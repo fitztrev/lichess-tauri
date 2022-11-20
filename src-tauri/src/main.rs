@@ -7,7 +7,7 @@ use lichess::EngineBinary;
 use serde_json::{json, Value};
 use std::sync::Arc;
 use sysinfo::{CpuExt, System, SystemExt};
-use tauri::{command, Window};
+use tauri::{Window};
 
 mod lichess;
 
@@ -17,9 +17,16 @@ fn run_engine(
     api_token: String,
     provider_secret: String,
     engine_binaries: Vec<EngineBinary>,
+    window: Window,
 ) {
     std::thread::spawn(|| {
-        match lichess::work(engine_host, api_token, provider_secret, engine_binaries) {
+        match lichess::work(
+            engine_host,
+            api_token,
+            provider_secret,
+            engine_binaries,
+            window,
+        ) {
             Ok(_) => println!("Success"),
             Err(e) => println!("Error: {}", e),
         }
@@ -51,7 +58,7 @@ fn get_sysinfo() -> Value {
     })
 }
 
-#[command]
+#[tauri::command]
 async fn start_oauth_server(window: Window) {
     let window_arc = Arc::new(window);
     let window_arc2 = window_arc.clone();
