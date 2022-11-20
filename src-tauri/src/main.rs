@@ -7,7 +7,7 @@ use lichess::EngineBinary;
 use serde_json::{json, Value};
 use std::sync::Arc;
 use sysinfo::{CpuExt, System, SystemExt};
-use tauri::{Window};
+use tauri::Window;
 
 mod lichess;
 
