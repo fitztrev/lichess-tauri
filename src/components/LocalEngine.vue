@@ -11,58 +11,28 @@ const settings = useSettingsStore();
 const user = useUserStore();
 const workRequests = useWorkRequestsStore();
 
-async function runEngine(engine: Engine, data: WorkRequest) {
-  let response = await invoke("run_engine", {
-    host: settings.externalEngineHost,
-    token: user.token,
-    id: data.id,
-    binary: engine.binaryLocation,
-    fen: data.work.initialFen,
-    moves: data.work.moves.join(" "),
-  });
-  console.log("response", response);
+async function listenForWork() {
+  let params = {
+    engineHost: settings.externalEngineHost,
+    apiToken: user.token,
+    providerSecret: 'aaaabbbbccccdddd',
+    engineBinaries: engines.engines.map((engine) => {
+      return {
+        id: engine.id,
+        binary_location: engine.binaryLocation,
+      };
+    }),
+  }
+  console.log('invoking `run_engine` from app with params', { params })
+  let response = invoke("run_engine", params);
+  // console.log('`run_engine` response: ', { response, params });
 }
+
+listenForWork();
 
 function openLichess(url: string) {
   open(`${settings.lichessHost}/${url}`);
 }
-
-async function listenForWork() {
-  while (true) {
-    console.log("requesting work");
-    await fetch(`${settings.externalEngineHost}/api/external-engine/work`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + user.token,
-      },
-      body: JSON.stringify({
-        providerSecret: "my-provider-secret",
-      }),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        workRequests.add(data);
-
-        let engine = engines.findById(data.engine.id);
-
-        if (engine) {
-          console.log("running engine", engine, data);
-          runEngine(engine, data);
-        } else {
-          console.log(`engine not found: ${data.engine.id}`);
-        }
-      })
-      .catch((error) => {
-        console.log("no new work detected");
-      });
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-}
-
-// listenForWork();
 </script>
 
 <template>

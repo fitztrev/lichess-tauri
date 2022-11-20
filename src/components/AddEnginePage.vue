@@ -52,7 +52,7 @@ function save() {
     defaultDepth: defaultDepth.value,
     variants: ["chess"],
     binaryLocation: binaryLocation.value,
-    providerSecret: "my-provider-secret", // self.crypto.randomUUID(),
+    providerSecret: "aaaabbbbccccdddd", // self.crypto.randomUUID(),
   };
 
   console.log(engine);
@@ -62,8 +62,7 @@ function save() {
 
     engines.addEngine(engine);
 
-    // router.push("/engines");
-    // console.log(router)
+    router.push("/engines");
   });
 }
 

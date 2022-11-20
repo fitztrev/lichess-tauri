@@ -3,25 +3,27 @@
     windows_subsystem = "windows"
 )]
 
-use std::{process::{Command}, sync::Arc};
+use lichess::EngineBinary;
 use serde_json::{json, Value};
-use sysinfo::{System, SystemExt, CpuExt};
+use std::sync::Arc;
+use sysinfo::{CpuExt, System, SystemExt};
 use tauri::{command, Window};
 
+mod lichess;
+
 #[tauri::command]
-fn run_engine(host: &str, token: &str, id: &str, binary: &str, fen: &str, moves: &str) {
-    Command::new("python3")
-        .args([
-            "../stockfish.py",
-            "--host", host,
-            "--token", token,
-            "--work-id", id,
-            "--binary-path", binary,
-            "--fen", fen,
-            "--moves", moves,
-        ])
-        .output()
-        .expect("failed to execute process");
+fn run_engine(
+    engine_host: String,
+    api_token: String,
+    provider_secret: String,
+    engine_binaries: Vec<EngineBinary>,
+) {
+    std::thread::spawn(|| {
+        match lichess::work(engine_host, api_token, provider_secret, engine_binaries) {
+            Ok(_) => println!("Success"),
+            Err(e) => println!("Error: {}", e),
+        }
+    });
 }
 
 #[tauri::command]
@@ -51,15 +53,16 @@ fn get_sysinfo() -> Value {
 
 #[command]
 async fn start_oauth_server(window: Window) {
-  let window_arc = Arc::new(window);
-  let window_arc2 = window_arc.clone();
-  let port = tauri_plugin_oauth::start(None, move |url| {
-    println!("Returning from oauth, url: {}", url);
-    window_arc2.emit("returning_from_lichess", url).unwrap();
-  }).unwrap();
+    let window_arc = Arc::new(window);
+    let window_arc2 = window_arc.clone();
+    let port = tauri_plugin_oauth::start(None, move |url| {
+        println!("Returning from oauth, url: {}", url);
+        window_arc2.emit("returning_from_lichess", url).unwrap();
+    })
+    .unwrap();
 
-  println!("Local server started on port: {}", port);
-  window_arc.emit("server_started", port).unwrap();
+    println!("Local server started on port: {}", port);
+    window_arc.emit("server_started", port).unwrap();
 }
 
 fn main() {

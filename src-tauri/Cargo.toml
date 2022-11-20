@@ -14,11 +14,15 @@ rust-version = "1.57"
 tauri-build = { version = "1.1", features = [] }
 
 [dependencies]
-serde_json = "1.0"
+iter-read = "0.3.1"
+rand = "0.8.5"
+reqwest = { version = "0.11", default-features = false, features = ["blocking", "json", "rustls-tls-native-roots"] }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sysinfo = "0.26.7"
 tauri = { version = "1.1", features = ["api-all"] }
 tauri-plugin-oauth = { git = "https://github.com/FabianLars/tauri-plugin-oauth" }
-sysinfo = "0.26.7"
+
 
 [features]
 # by default Tauri runs in production mode
