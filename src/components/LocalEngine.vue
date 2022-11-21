@@ -1,17 +1,26 @@
 <script setup lang="ts">
-import { Engine, useEnginesStore } from '../stores/engines'
+import { useEnginesStore } from '../stores/engines'
 import { invoke } from '@tauri-apps/api/tauri'
 import { open } from '@tauri-apps/api/shell'
 import { useSettingsStore } from '../stores/settings'
 import { useUserStore } from '../stores/user'
-import { useWorkRequestsStore, WorkRequest } from '../stores/work-requests'
+import { LichessWorkEvent, useEventLogsStore } from '../stores/event-logs'
+import { listen } from '@tauri-apps/api/event'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()
 const user = useUserStore()
-const workRequests = useWorkRequestsStore()
+const eventLogs = useEventLogsStore()
 
-async function listenForWork() {
+listen('lichess::work', (data: LichessWorkEvent) => {
+  eventLogs.add(data)
+})
+
+function openLichess(url: string) {
+  open(`${settings.lichessHost}/${url}`)
+}
+
+async function checkForAnalysisRequests() {
   let params = {
     engineHost: settings.externalEngineHost,
     apiToken: user.token,
@@ -27,11 +36,7 @@ async function listenForWork() {
   invoke('run_engine', params)
 }
 
-listenForWork()
-
-function openLichess(url: string) {
-  open(`${settings.lichessHost}/${url}`)
-}
+checkForAnalysisRequests()
 </script>
 
 <template>
