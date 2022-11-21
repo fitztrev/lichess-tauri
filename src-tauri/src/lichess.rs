@@ -153,7 +153,7 @@ pub fn work(
             );
 
             std::thread::sleep(std::time::Duration::from_secs(backoff_duration_secs));
-            backoff_duration_secs *= 2;
+            backoff_duration_secs = std::cmp::min(backoff_duration_secs * 2, 10);
             continue;
         }
 
