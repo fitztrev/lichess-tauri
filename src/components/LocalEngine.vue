@@ -24,8 +24,7 @@ async function listenForWork() {
     }),
   }
   console.log('invoking `run_engine` from app with params', { params })
-  let response = invoke('run_engine', params)
-  // console.log('`run_engine` response: ', { response, params });
+  invoke('run_engine', params)
 }
 
 listenForWork()
