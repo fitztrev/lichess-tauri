@@ -8,6 +8,7 @@ import { saveEngine } from '../utils/engine-crud'
 import { RouterLink } from 'vue-router'
 import { router } from '../router'
 import { sysinfo } from '../utils/sysyinfo'
+import PageTitle from './PageTitle.vue'
 
 const engines = useEnginesStore()
 const engineDirectory = ref<EngineListing[]>([])
@@ -46,7 +47,7 @@ async function addEngineFromDirectory(engine: EngineListing) {
       variants: ['chess'],
       binaryLocation: path_to_binary,
     }).then(() => {
-      router.push('/engines')
+      // router.push('/engines')
     })
   })
 }
@@ -55,6 +56,7 @@ interface EngineListing {
   name: string
   description: string
   website: string
+  icon: string
   license: string
   version: string
   updated_at: string
@@ -76,79 +78,117 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
 </script>
 
 <template>
-  <div class="w-3/4 mx-auto my-20">
-    <h1 class="text-2xl mb-8">Engines</h1>
+  <PageTitle>Engines</PageTitle>
 
-    <div class="alert shadow-lg my-20" v-if="!engines.engines.length">
-      <div>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="stroke-current flex-shrink-0 w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          ></path>
-        </svg>
-        <span>No engines added yet</span>
-      </div>
+  <div class="page-content">
+    <div class="overflow-hidden bg-white shadow sm:rounded-md">
+      <ul role="list" class="divide-y divide-gray-200">
+        <li v-for="engine in engines.engines">
+          <a href="#" class="block hover:bg-gray-50">
+            <div class="px-4 py-4 sm:px-6">
+              <div class="flex items-center justify-between">
+                <p class="truncate text-sm font-medium text-indigo-600">
+                  {{ engine.name }}
+                </p>
+                <div class="ml-2 flex flex-shrink-0">
+                  <p
+                    v-for="variant in engine.variants"
+                    class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800"
+                  >
+                    {{ variant }}
+                  </p>
+                </div>
+              </div>
+              <div class="mt-2 sm:flex sm:justify-between">
+                <div class="sm:flex">
+                  <p class="flex items-center text-sm text-gray-500">
+                    Max:
+                    {{ engine.maxHash }} MB &bullet;
+                    {{ engine.maxThreads }} threads
+                    <br />
+                    Default:
+                    {{ engine.defaultDepth }} depth
+                  </p>
+                </div>
+                <div
+                  class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0"
+                >
+                  <p>
+                    {{ engine.binaryLocation }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
     </div>
 
-    <div
-      class="card w-3/4 bg-base-200 shadow-xl mb-8"
-      v-for="engine in engines.engines"
-    >
-      <div class="card-body">
-        <h2 class="card-title">{{ engine.name }}</h2>
-        <div>
-          <span class="badge badge-primary"
-            >{{ engine.maxThreads }} threads</span
-          >
-          <span class="badge badge-primary">{{ engine.maxHash }} MB</span>
-          <span class="badge badge-primary"
-            >{{ engine.defaultDepth }} max depth</span
-          >
-          <span v-for="variant in engine.variants">
-            <span class="badge badge-accent badge-outline">{{ variant }}</span>
-          </span>
-        </div>
-        <a
-          href="#"
-          class="text-sm font-mono"
-          @click.prevent="openContainingFolder(engine.binaryLocation)"
-        >
-          {{ engine.binaryLocation }}
-        </a>
-      </div>
-    </div>
-
-    <h1>Add an engine</h1>
-
-    <div
-      v-for="engine in engineDirectory"
-      class="card w-96 bg-base-200 shadow-xl"
-      @click="addEngineFromDirectory(engine)"
-    >
-      <div class="card-body">
-        <h2 class="card-title">{{ engine.name }} {{ engine.version }}</h2>
-        <p>{{ engine.description }}</p>
-        <p>License: {{ engine.license }}</p>
-        <p>Website: {{ engine.website }}</p>
-      </div>
-    </div>
-
-    <router-link to="/engines/custom">
-      <div
-        class="card w-96 bg-base-200 shadow-xl border-dashed border-2 border-gray-500"
+    <div class="mx-auto max-w-lg mt-12">
+      <h2 class="text-lg font-medium text-gray-900">Add an Engine</h2>
+      <p class="mt-1 text-sm text-gray-500" v-if="engines.engines.length === 0">
+        Get started by selecting an engine from the directory or adding your
+        own.
+      </p>
+      <ul
+        role="list"
+        class="mt-6 divide-y divide-gray-200 border-t border-b border-gray-200"
       >
-        <div class="card-body">
-          <h2 class="card-title">Add a custom engine</h2>
-        </div>
+        <li
+          v-for="engine in engineDirectory"
+          @click="addEngineFromDirectory(engine)"
+        >
+          <div class="group relative flex items-start space-x-3 py-4">
+            <div class="flex-shrink-0">
+              <span
+                class="inline-flex items-center justify-center h-10 w-10 rounded-lg bg-gray-200"
+              >
+                <img :src="engine.icon" />
+              </span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-medium text-gray-900">
+                <a href="#">
+                  <span class="absolute inset-0" aria-hidden="true"></span>
+                  {{ engine.name }} {{ engine.version }}
+                </a>
+              </div>
+              <p class="text-sm text-gray-500">
+                {{ engine.description }}
+              </p>
+              <p class="text-sm text-gray-500">License: {{ engine.license }}</p>
+              <p class="text-sm text-gray-500">
+                {{ engine.website }}
+              </p>
+            </div>
+            <div class="flex-shrink-0 self-center">
+              <!-- Heroicon name: mini/chevron-right -->
+              <svg
+                class="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="mt-6 flex">
+        <router-link
+          to="/engines/custom"
+          class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+        >
+          Or add your own engine
+          <span aria-hidden="true"> &rarr;</span>
+        </router-link>
       </div>
-    </router-link>
+    </div>
   </div>
 </template>

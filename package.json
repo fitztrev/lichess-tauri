@@ -19,7 +19,6 @@
     "@types/node": "^18.7.10",
     "@vitejs/plugin-vue": "^3.0.1",
     "autoprefixer": "^10.4.13",
-    "daisyui": "^2.36.1",
     "pinia": "^2.0.23",
     "pinia-plugin-persistedstate": "^2.3.0",
     "pkce-challenge": "^3.0.0",

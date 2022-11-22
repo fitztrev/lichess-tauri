@@ -41,11 +41,9 @@ arch().then((data) => {
 
 const sysinfo = ref({})
 
-invoke<{}>('get_sysinfo').then(
-  (data) => {
-    sysinfo.value = data
-  }
-)
+invoke<{}>('get_sysinfo').then((data) => {
+  sysinfo.value = data
+})
 </script>
 
 <template>

@@ -44,7 +44,7 @@ checkForAnalysisRequests()
 </script>
 
 <template>
-  <div class="bg-emerald-700 text-emerald-100 text-center py-2">
+  <div class="bg-emerald-700 text-white text-center py-2">
     <svg
       class="animate-spin inline-block -ml-1 mr-3 h-5 w-5 text-white"
       xmlns="http://www.w3.org/2000/svg"
@@ -68,8 +68,14 @@ checkForAnalysisRequests()
     Listening for requests from the
     <a href="#" @click.prevent="openLichess('/analysis')" class="underline"
       >Analysis page</a
-    >...
+    >
 
-    <button @click="stopCheckingForWork" class="btn btn-sm btn-outline btn-error">Stop</button>
+    <button
+      @click="stopCheckingForWork"
+      type="button"
+      class="mx-4 inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+    >
+      Stop
+    </button>
   </div>
 </template>
