@@ -24,7 +24,7 @@ async function checkForAnalysisRequests() {
   let params = {
     engineHost: settings.externalEngineHost,
     apiToken: user.token,
-    providerSecret: 'aaaabbbbccccdddd',
+    providerSecret: settings.providerSecret,
     engineBinaries: engines.engines.map((engine) => {
       return {
         id: engine.id,

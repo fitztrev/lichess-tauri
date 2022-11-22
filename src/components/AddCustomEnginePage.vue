@@ -52,7 +52,7 @@ function save() {
     defaultDepth: defaultDepth.value,
     variants: ['chess'],
     binaryLocation: binaryLocation.value,
-    providerSecret: 'aaaabbbbccccdddd', // self.crypto.randomUUID(),
+    providerSecret: settings.providerSecret,
   }
 
   console.log(engine)
@@ -99,7 +99,7 @@ function saveToLichess(engine: Engine): Promise<LichessEngine> {
 
 <template>
   <div class="w-3/4 mx-auto my-20">
-    <h1 class="text-2xl mb-8">New Engines</h1>
+    <h1 class="text-2xl mb-8">Add Custom Engine</h1>
 
     <div class="form-control mb-4">
       <label class="label">

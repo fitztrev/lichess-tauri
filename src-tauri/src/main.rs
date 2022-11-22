@@ -3,12 +3,14 @@
     windows_subsystem = "windows"
 )]
 
+use engine_directory::Engine;
 use lichess::EngineBinary;
 use serde_json::{json, Value};
 use std::sync::Arc;
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri::Window;
 
+mod engine_directory;
 mod lichess;
 
 #[tauri::command]
@@ -72,9 +74,15 @@ async fn start_oauth_server(window: Window) {
     window_arc.emit("server_started", port).unwrap();
 }
 
+#[tauri::command]
+fn download_engine_to_folder(engine: Engine, folder: &str) -> String {
+    engine_directory::download_to_folder(engine, folder)
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            download_engine_to_folder,
             get_sysinfo,
             run_engine,
             start_oauth_server,
