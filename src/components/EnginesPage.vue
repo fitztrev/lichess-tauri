@@ -35,10 +35,9 @@ async function addEngineFromDirectory(engine: EngineListing) {
     let maxHash = 16
 
     let memoryLimit = (systemInfo.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
-    while (maxHash < memoryLimit) {
-      maxHash *= 2
+    for (let i = 16; i <= memoryLimit; i *= 2) {
+      maxHash = i
     }
-
     saveEngine({
       name: engine.name + ' ' + engine.version,
       maxThreads: maxThreads,
