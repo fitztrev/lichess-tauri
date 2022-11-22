@@ -4,6 +4,7 @@
       "name": "Stockfish",
       "description": "Free and open-source chess engine",
       "website": "https://stockfishchess.org/",
+      "icon": "https://i.imgur.com/rROzpIf.png",
       "license": "GPLv3",
       "version": "15",
       "updated_at": "2022-11-15 00:00:00",
