@@ -14,7 +14,7 @@ mod engine_directory;
 mod lichess;
 
 #[tauri::command]
-fn run_engine(
+fn check_for_work(
     engine_host: String,
     api_token: String,
     provider_secret: String,
@@ -33,6 +33,11 @@ fn run_engine(
             Err(e) => println!("Error: {}", e),
         }
     });
+}
+
+#[tauri::command]
+fn stop_checking_for_work() {
+    println!("called stop_checking_for_work");
 }
 
 #[tauri::command]
@@ -89,7 +94,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             download_engine_to_folder,
             get_sysinfo,
-            run_engine,
+            check_for_work,
+            stop_checking_for_work,
             start_oauth_server,
         ])
         .run(tauri::generate_context!())

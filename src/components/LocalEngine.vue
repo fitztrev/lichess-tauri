@@ -20,6 +20,10 @@ function openLichess(url: string) {
   open(`${settings.lichessHost}/${url}`)
 }
 
+function stopCheckingForWork() {
+  invoke('stop_checking_for_work')
+}
+
 async function checkForAnalysisRequests() {
   let params = {
     engineHost: settings.externalEngineHost,
@@ -32,8 +36,8 @@ async function checkForAnalysisRequests() {
       }
     }),
   }
-  console.log('invoking `run_engine` from app with params', { params })
-  invoke('run_engine', params)
+  console.log('invoking `check_for_work` from app with params', { params })
+  invoke('check_for_work', params)
 }
 
 checkForAnalysisRequests()
@@ -65,5 +69,7 @@ checkForAnalysisRequests()
     <a href="#" @click.prevent="openLichess('/analysis')" class="underline"
       >Analysis page</a
     >...
+
+    <button @click="stopCheckingForWork" class="btn btn-sm btn-outline btn-error">Stop</button>
   </div>
 </template>
