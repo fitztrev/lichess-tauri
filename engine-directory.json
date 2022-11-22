@@ -7,62 +7,80 @@
       "license": "GPLv3",
       "version": "15",
       "updated_at": "2022-11-15 00:00:00",
-      "binaries": {
-        "linux": {
-          "bmi2": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_bmi2.zip",
-            "binary_filename": "stockfish_15_x64_bmi2"
-          },
-          "avx2": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_avx2.zip",
-            "binary_filename": "stockfish_15_x64_avx2"
-          },
-          "popcnt": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_popcnt.zip",
-            "binary_filename": "stockfish_15_x64_popcnt"
-          },
-          "ssse3": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_ssse.zip",
-            "binary_filename": "stockfish_15_x64_ssse3"
-          },
-          "default": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64.zip",
-            "binary_filename": "stockfish_15_x64"
-          }
+      "binaries": [
+        {
+          "os": "linux",
+          "architecture": "bmi2",
+          "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_bmi2.zip",
+          "binary_filename": "stockfish_15_x64_bmi2"
         },
-        "macos": {
-          "apple_silicon": {
-            "zip": "todo",
-            "binary_filename": "todo"
-          },
-          "default": {
-            "zip": "todo",
-            "binary_filename": "todo"
-          }
+        {
+          "os": "linux",
+          "architecture": "avx2",
+          "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_avx2.zip",
+          "binary_filename": "stockfish_15_x64_avx2"
         },
-        "windows": {
-          "bmi2": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_bmi2.zip",
-            "binary_filename": "stockfish_15_x64_bmi2.exe"
-          },
-          "avx2": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_avx2.zip",
-            "binary_filename": "stockfish_15_x64_avx2.exe"
-          },
-          "popcnt": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_popcnt.zip",
-            "binary_filename": "stockfish_15_x64_popcnt.exe"
-          },
-          "ssse3": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_ssse.zip",
-            "binary_filename": "stockfish_15_x64_ssse3.exe"
-          },
-          "default": {
-            "zip": "https://stockfishchess.org/files/stockfish_15_win_x64.zip",
-            "binary_filename": "stockfish_15_x64.exe"
-          }
+        {
+          "os": "linux",
+          "architecture": "popcnt",
+          "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_popcnt.zip",
+          "binary_filename": "stockfish_15_x64_popcnt"
+        },
+        {
+          "os": "linux",
+          "architecture": "ssse3",
+          "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64_ssse.zip",
+          "binary_filename": "stockfish_15_x64_ssse3"
+        },
+        {
+          "os": "linux",
+          "architecture": "default",
+          "zip": "https://stockfishchess.org/files/stockfish_15_linux_x64.zip",
+          "binary_filename": "stockfish_15_x64"
+        },
+        {
+          "os": "mac",
+          "architecture": "apple-silicon",
+          "zip": "todo",
+          "binary_filename": "todo"
+        },
+        {
+          "os": "mac",
+          "architecture": "default",
+          "zip": "todo",
+          "binary_filename": "todo"
+        },
+        {
+          "os": "windows",
+          "architecture": "bmi2",
+          "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_bmi2.zip",
+          "binary_filename": "stockfish_15_x64_bmi2.exe"
+        },
+        {
+          "os": "windows",
+          "architecture": "avx2",
+          "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_avx2.zip",
+          "binary_filename": "stockfish_15_x64_avx2.exe"
+        },
+        {
+          "os": "windows",
+          "architecture": "popcnt",
+          "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_popcnt.zip",
+          "binary_filename": "stockfish_15_x64_popcnt.exe"
+        },
+        {
+          "os": "windows",
+          "architecture": "ssse3",
+          "zip": "https://stockfishchess.org/files/stockfish_15_win_x64_ssse.zip",
+          "binary_filename": "stockfish_15_x64_ssse3.exe"
+        },
+        {
+          "os": "windows",
+          "architecture": "default",
+          "zip": "https://stockfishchess.org/files/stockfish_15_win_x64.zip",
+          "binary_filename": "stockfish_15_x64.exe"
         }
-      }
+      ]
     }
   ]
 }
