@@ -78,10 +78,9 @@ pub fn download_to_folder(engine: Engine, folder: &str) -> String {
         }
     }
 
-    let filename_without_extension = Path::new(&filename)
-        .file_stem()
-        .unwrap()
-        .to_str()
-        .unwrap();
-    format!("{}/{}/{}", folder, filename_without_extension, binary.binary_filename)
+    let filename_without_extension = Path::new(&filename).file_stem().unwrap().to_str().unwrap();
+    format!(
+        "{}/{}/{}",
+        folder, filename_without_extension, binary.binary_filename
+    )
 }
