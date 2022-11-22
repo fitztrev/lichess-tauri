@@ -17,9 +17,8 @@ export type Engine = {
   maxHash: number
   defaultDepth: number
   variants: Variant[]
-  providerSecret: string
+  providerSecret?: string
   providerData?: string
-
   binaryLocation: string
 }
 

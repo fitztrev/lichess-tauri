@@ -4,6 +4,10 @@ import { open as openShell } from '@tauri-apps/api/shell'
 import { open as openDialog } from '@tauri-apps/api/dialog'
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
+import { saveEngine } from '../utils/engine-crud'
+import { RouterLink } from 'vue-router'
+import { router } from '../router'
+import { sysinfo } from '../utils/sysyinfo'
 
 const engines = useEnginesStore()
 const engineDirectory = ref<EngineListing[]>([])
@@ -14,18 +18,37 @@ function openContainingFolder(filepath: string) {
 }
 
 async function addEngineFromDirectory(engine: EngineListing) {
-  console.log(engine)
-
   const folderPath = await openDialog({
-    title: 'Select where you want to save the engine',
+    title: 'Select the folder where you want to save the engine',
     directory: true,
   })
 
-  if (!folderPath) return // user cancelled
+  if (!folderPath) return // user cancelled the dialog
 
-  let result = await invoke('download_engine_to_folder', {
+  let path_to_binary = await invoke<string>('download_engine_to_folder', {
     engine: engine,
-    directory: folderPath,
+    folder: folderPath,
+  })
+
+  sysinfo().then((systemInfo) => {
+    let maxThreads = systemInfo.cpus_len
+    let maxHash = 16
+
+    let memoryLimit = (systemInfo.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
+    while (maxHash < memoryLimit) {
+      maxHash *= 2
+    }
+
+    saveEngine({
+      name: engine.name + ' ' + engine.version,
+      maxThreads: maxThreads,
+      maxHash: maxHash,
+      defaultDepth: 25,
+      variants: ['chess'],
+      binaryLocation: path_to_binary,
+    }).then(() => {
+      router.push('/engines')
+    })
   })
 }
 

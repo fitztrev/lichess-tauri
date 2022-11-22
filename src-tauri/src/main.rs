@@ -51,12 +51,12 @@ fn get_sysinfo() -> Value {
         "long_os_version": sys.long_os_version(),
         "host_name"      : sys.host_name(),
         "distribution_id": sys.distribution_id(),
-        "cpus.len"       : sys.cpus().len(),
-        "cpu.cpu_usage"  : sys.global_cpu_info().cpu_usage(),
-        "cpu.brand"      : sys.global_cpu_info().brand(),
-        "cpu.frequency"  : sys.global_cpu_info().frequency(),
-        "cpu.vendor_id"  : sys.global_cpu_info().vendor_id(),
-        "cpu.name"       : sys.global_cpu_info().name(),
+        "cpus_len"       : sys.cpus().len(),
+        "cpu_cpu_usage"  : sys.global_cpu_info().cpu_usage(),
+        "cpu_brand"      : sys.global_cpu_info().brand(),
+        "cpu_frequency"  : sys.global_cpu_info().frequency(),
+        "cpu_vendor_id"  : sys.global_cpu_info().vendor_id(),
+        "cpu_name"       : sys.global_cpu_info().name(),
     })
 }
 

@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { open } from '@tauri-apps/api/dialog'
-import { invoke } from '@tauri-apps/api/tauri'
 import { Ref, ref } from 'vue'
 import { router } from '../router'
-import { Engine, useEnginesStore } from '../stores/engines'
-import { useSettingsStore } from '../stores/settings'
-import { useUserStore } from '../stores/user'
-
-const engines = useEnginesStore()
-const settings = useSettingsStore()
-const user = useUserStore()
+import { Engine } from '../stores/engines'
+import { saveEngine } from '../utils/engine-crud'
+import { sysinfo } from '../utils/sysyinfo'
 
 const name = ref('')
 const maxThreads = ref(1)
@@ -20,23 +15,19 @@ const binaryLocation: Ref<any> = ref('')
 const maxHashOptions = ref<number[]>([])
 const maxThreadOptions = ref<number[]>([])
 
-invoke<{ total_memory: number; 'cpus.len': number }>('get_sysinfo').then(
-  (data) => {
-    console.log(data)
-
-    let memory70percent = (data.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
-    for (let i = 16; i <= memory70percent; i *= 2) {
-      maxHashOptions.value.push(i)
-    }
-    maxHash.value = maxHashOptions.value.slice(-1)[0]
-
-    maxThreadOptions.value = Array.from(
-      { length: data['cpus.len'] },
-      (_, i) => i + 1
-    )
-    maxThreads.value = data['cpus.len']
+sysinfo().then((data) => {
+  let memoryLimit = (data.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
+  for (let i = 16; i <= memoryLimit; i *= 2) {
+    maxHashOptions.value.push(i)
   }
-)
+  maxHash.value = maxHashOptions.value.slice(-1)[0]
+
+  maxThreadOptions.value = Array.from(
+    { length: data.cpus_len },
+    (_, i) => i + 1
+  )
+  maxThreads.value = data.cpus_len
+})
 
 function selectEngineFile() {
   open({}).then((data) => {
@@ -44,7 +35,7 @@ function selectEngineFile() {
   })
 }
 
-function save() {
+function submit() {
   let engine: Engine = {
     name: name.value,
     maxThreads: maxThreads.value,
@@ -52,48 +43,11 @@ function save() {
     defaultDepth: defaultDepth.value,
     variants: ['chess'],
     binaryLocation: binaryLocation.value,
-    providerSecret: settings.providerSecret,
   }
 
-  console.log(engine)
-
-  saveToLichess(engine).then((data) => {
-    engine.id = data.id
-
-    engines.addEngine(engine)
-
+  saveEngine(engine).then(() => {
     router.push('/engines')
   })
-}
-
-type LichessEngine = {
-  id: string
-  name: string
-  userId: string
-  maxThreads: number
-  maxHash: number
-  defaultDepth: number
-  variants: string[]
-  providerData: string
-  clientSecret: string
-}
-
-function saveToLichess(engine: Engine): Promise<LichessEngine> {
-  return fetch(`${settings.lichessHost}/api/external-engine`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: engine.name,
-      maxThreads: engine.maxThreads,
-      maxHash: engine.maxHash,
-      defaultDepth: engine.defaultDepth,
-      variants: engine.variants,
-      providerSecret: engine.providerSecret,
-    }),
-  }).then((response) => response.json())
 }
 </script>
 
@@ -151,6 +105,6 @@ function saveToLichess(engine: Engine): Promise<LichessEngine> {
       {{ binaryLocation }}
     </div>
 
-    <button class="btn btn-accent" @click="save">Save</button>
+    <button class="btn btn-accent" @click="submit">Save</button>
   </div>
 </template>
