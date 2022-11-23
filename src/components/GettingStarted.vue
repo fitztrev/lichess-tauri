@@ -6,13 +6,6 @@ import { useUserStore } from '../stores/user'
 import { ref } from 'vue'
 
 const user = useUserStore()
-
-let currentStep = ref(1)
-
-// This "Getting Started" only has 2 steps:
-// 1. Login to Lichess
-// 2. Add an engine
-currentStep.value = user.isLoggedIn ? 2 : 1
 </script>
 
 <template>
@@ -28,10 +21,10 @@ currentStep.value = user.isLoggedIn ? 2 : 1
       <div class="py-12 px-4 sm:px-6 lg:px-8">
         <nav class="flex justify-center" aria-label="Progress">
           <ol role="list" class="space-y-6">
-            <ChecklistItem :status="currentStep === 1 ? 'current' : 'completed'"
+            <ChecklistItem :status="!user.isLoggedIn ? 'current' : 'completed'"
               >Log in with Lichess</ChecklistItem
             >
-            <ChecklistItem :status="currentStep === 2 ? 'current' : 'future'"
+            <ChecklistItem :status="user.isLoggedIn ? 'current' : 'future'"
               >Add a chess engine</ChecklistItem
             >
             <ChecklistItem status="future"
@@ -42,7 +35,7 @@ currentStep.value = user.isLoggedIn ? 2 : 1
       </div>
     </div>
 
-    <div class="text-center mt-12" v-if="currentStep === 1">
+    <div class="text-center mt-12" v-if="!user.isLoggedIn">
       <LichessLogin />
     </div>
     <div class="mt-6" v-else>
