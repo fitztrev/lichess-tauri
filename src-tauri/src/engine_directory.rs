@@ -1,6 +1,7 @@
 use std::fs;
 use std::fs::File;
 use std::io;
+use std::os::unix::prelude::PermissionsExt;
 use std::path::Path;
 
 use serde::Deserialize;
@@ -79,8 +80,15 @@ pub fn download_to_folder(engine: Engine, folder: &str) -> String {
     }
 
     let filename_without_extension = Path::new(&filename).file_stem().unwrap().to_str().unwrap();
-    format!(
+    let path_to_binary = format!(
         "{}/{}/{}",
         folder, filename_without_extension, binary.binary_filename
-    )
+    );
+
+    // Make the binary executable
+    let mut perms = fs::metadata(&path_to_binary).unwrap().permissions();
+    perms.set_mode(0o755);
+    fs::set_permissions(&path_to_binary, perms).unwrap();
+
+    path_to_binary
 }
