@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { router } from './router'
+import { registerOauthHandlers } from './utils/oauth'
 
 import './main.css'
 
@@ -14,3 +15,5 @@ pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 app.use(router)
 app.mount('#app')
+
+registerOauthHandlers()

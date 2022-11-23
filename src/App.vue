@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import LichessLogin from './components/LichessLogin.vue'
 import LocalEngine from './components/LocalEngine.vue'
 import { useUserStore } from './stores/user'
 
-import PageTitle from './components/PageTitle.vue'
-
 const user = useUserStore()
+
 </script>
 
 <template>
