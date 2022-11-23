@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import LocalEngine from './components/LocalEngine.vue'
-import { useEnginesStore } from './stores/engines';
+import { useEnginesStore } from './stores/engines'
 import { useUserStore } from './stores/user'
 
 const user = useUserStore()
 const engines = useEnginesStore()
-
 </script>
 
 <template>
