@@ -8,7 +8,9 @@ const eventLogs = useEventLogsStore()
   <PageTitle>Dashboard</PageTitle>
 
   <div class="page-content">
-    <div class="p-4 h-96 flex flex-col-reverse justify-end overflow-scroll">
+    <div
+      class="bg-white p-4 h-1/2 flex flex-col-reverse justify-end overflow-scroll font-mono"
+    >
       <div
         class="whitespace-nowrap"
         v-if="eventLogs.logs.length"

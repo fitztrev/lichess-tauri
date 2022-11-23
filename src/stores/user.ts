@@ -5,6 +5,11 @@ export const useUserStore = defineStore('user', {
     username: '',
     token: '',
   }),
+  getters: {
+    isLoggedIn(): boolean {
+      return !!this.token
+    },
+  },
   actions: {
     destroy() {
       this.username = ''

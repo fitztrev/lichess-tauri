@@ -15,6 +15,7 @@
     "vue": "^3.2.37"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
     "@tauri-apps/cli": "^1.1.0",
     "@types/node": "^18.7.10",
     "@vitejs/plugin-vue": "^3.0.1",

@@ -132,17 +132,6 @@ const user = useUserStore()
             >
           </nav>
         </div>
-        <div class="flex flex-shrink-0 bg-gray-700 p-4" v-if="user.username">
-          <a href="#" class="group block w-full flex-shrink-0">
-            <div class="flex items-center">
-              <div class="ml-3">
-                <p class="text-sm font-medium text-white">
-                  {{ user.username }}
-                </p>
-              </div>
-            </div>
-          </a>
-        </div>
       </div>
     </div>
     <div class="flex flex-1 flex-col md:pl-64">
@@ -173,7 +162,7 @@ const user = useUserStore()
         </button>
       </div>
       <main class="flex-1">
-        <LocalEngine v-if="user.username" />
+        <LocalEngine v-if="user.isLoggedIn" />
         <div class="py-6">
           <router-view />
         </div>
