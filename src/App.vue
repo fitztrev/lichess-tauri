@@ -55,6 +55,7 @@ const user = useUserStore()
             >
 
             <router-link
+              v-if="user.isLoggedIn"
               to="/engines"
               custom
               v-slot="{ href, isActive, navigate }"
