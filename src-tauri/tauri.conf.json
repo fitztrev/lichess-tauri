@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "lichess-tauri",
-    "version": "0.0.0"
+    "productName": "Lichess Local Engine",
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
@@ -74,7 +74,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "lichess-tauri",
+        "title": "Lichess Local Engine",
         "width": 800
       }
     ]

@@ -22,7 +22,7 @@ export function registerOauthHandlers(): void {
       `${settings.lichessHost}/oauth?` +
       new URLSearchParams({
         response_type: 'code',
-        client_id: 'lichess-tauri',
+        client_id: clientId,
         redirect_uri: tempServerUrl.value,
         code_challenge_method: 'S256',
         code_challenge: challenge.code_challenge,
