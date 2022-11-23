@@ -21,13 +21,7 @@
         "execute": true,
         "open": "^",
         "sidecar": true,
-        "scope": [
-          {
-            "name": "get-cpu-info",
-            "cmd": "lscpu",
-            "args": ["--json"]
-          }
-        ]
+        "scope": []
       }
     },
     "bundle": {
