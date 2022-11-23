@@ -13,16 +13,16 @@
 
 ## Icon generation
 
-   ```
-   npm install svgexport -g
-   svgexport src/assets/lichess-white.svg lichess.png 64x
-   npm run tauri icon lichess.png
-   rm lichess.png
-   ```
+```
+npm install svgexport -g
+svgexport src/assets/lichess-white.svg lichess.png 64x
+npm run tauri icon lichess.png
+rm lichess.png
+```
 
 Delete the target directory and run `npm run tauri dev` again for it to take effect.
 
-   ```
-   rm -rf src-tauri/target
-   npm run tauri dev
-   ```
+```
+rm -rf src-tauri/target
+npm run tauri dev
+```
