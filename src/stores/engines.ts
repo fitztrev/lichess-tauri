@@ -36,5 +36,4 @@ export const useEnginesStore = defineStore('engines', {
       return this.engines.find((e) => e.id === id)
     },
   },
-  persist: true,
 })

@@ -1,6 +1,5 @@
 import { Engine, useEnginesStore } from '../stores/engines'
 import { useSettingsStore } from '../stores/settings'
-import { useUserStore } from '../stores/user'
 
 type LichessEngine = {
   id: string
@@ -16,7 +15,6 @@ type LichessEngine = {
 
 export async function saveEngine(engine: Engine): Promise<Engine> {
   const settings = useSettingsStore()
-  const user = useUserStore()
   const engines = useEnginesStore()
 
   engine.providerSecret = settings.providerSecret
@@ -24,7 +22,7 @@ export async function saveEngine(engine: Engine): Promise<Engine> {
   let result = await fetch(`${settings.lichessHost}/api/external-engine`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${user.token}`,
+      Authorization: `Bearer ${settings.token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

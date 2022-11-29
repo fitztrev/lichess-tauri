@@ -16,6 +16,10 @@
       "dialog": {
         "open": true
       },
+      "fs": {
+        "all": true,
+        "scope": ["$APPDATA/*", "$DATA/*", "$LOCAL/*", "$APP/*"]
+      },
       "shell": {
         "all": true,
         "execute": true,

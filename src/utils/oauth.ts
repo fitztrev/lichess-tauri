@@ -4,8 +4,8 @@ import pkceChallenge from 'pkce-challenge'
 import { listen } from '@tauri-apps/api/event'
 import { open } from '@tauri-apps/api/shell'
 
-import { useUserStore } from '../stores/user'
 import { useSettingsStore } from '../stores/settings'
+import { invoke } from '@tauri-apps/api'
 
 const clientId = 'lichess-tauri'
 const tempServerUrl = ref('')
@@ -33,7 +33,6 @@ export function registerOauthHandlers(): void {
   })
 
   listen('returning_from_lichess', (data: { payload: string }) => {
-    const user = useUserStore()
     let url = new URL(data.payload)
     let code = url.searchParams.get('code') || ''
 
@@ -48,16 +47,20 @@ export function registerOauthHandlers(): void {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        user.token = data.access_token
+        settings.token = data.access_token
+
+        await invoke('update_setting', { key: 'token', value: data.access_token })
 
         fetch(`${settings.lichessHost}/api/account`, {
           headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${settings.token}`,
           },
         })
           .then((response) => response.json())
-          .then((data) => {
-            user.username = data.username
+          .then(async (data) => {
+            settings.username = data.username
+
+            await invoke('update_setting', { key: 'username', value: data.username })
           })
       })
   })

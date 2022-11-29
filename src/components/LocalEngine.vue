@@ -3,13 +3,11 @@ import { useEnginesStore } from '../stores/engines'
 import { invoke } from '@tauri-apps/api/tauri'
 import { open } from '@tauri-apps/api/shell'
 import { useSettingsStore } from '../stores/settings'
-import { useUserStore } from '../stores/user'
 import { LichessWorkEvent, useEventLogsStore } from '../stores/event-logs'
 import { listen } from '@tauri-apps/api/event'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()
-const user = useUserStore()
 const eventLogs = useEventLogsStore()
 
 listen('lichess::work', (data: LichessWorkEvent) => {
@@ -26,8 +24,8 @@ function stopCheckingForWork() {
 
 async function checkForAnalysisRequests() {
   let params = {
-    engineHost: settings.externalEngineHost,
-    apiToken: user.token,
+    engineHost: settings.engineHost,
+    apiToken: settings.token,
     providerSecret: settings.providerSecret,
     engineBinaries: engines.engines.map((engine) => {
       return {

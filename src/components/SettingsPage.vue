@@ -2,14 +2,33 @@
 import SystemInfo from './SystemInfo.vue'
 import { useSettingsStore } from '../stores/settings'
 import PageTitle from './PageTitle.vue'
-import { useUserStore } from '../stores/user'
 import LichessLogin from './LichessLogin.vue'
+import { ref } from 'vue';
+import { invoke } from '@tauri-apps/api';
+import { loadSettingsFromDatabase } from '../utils/settings';
 
 const settings = useSettingsStore()
-const user = useUserStore()
 
-function logout() {
-  user.destroy()
+const inputLichessHost = ref(settings.lichessHost)
+const inputEngineHost = ref(settings.engineHost)
+
+function cancel() {
+  inputLichessHost.value = settings.lichessHost
+  inputEngineHost.value = settings.engineHost
+}
+
+async function save() {
+  await invoke('update_setting', { key: 'lichess_host', value: trimTrailingSlash(inputLichessHost.value) })
+  await invoke('update_setting', { key: 'engine_host', value: trimTrailingSlash(inputEngineHost.value) })
+
+  await loadSettingsFromDatabase()
+
+  inputLichessHost.value = settings.lichessHost
+  inputEngineHost.value = settings.engineHost
+}
+
+function trimTrailingSlash(url: string) {
+  return url.replace(/\/$/, '')
 }
 </script>
 
@@ -17,17 +36,18 @@ function logout() {
   <PageTitle>Settings</PageTitle>
 
   <div class="page-content">
+    <pre>{{ settings }}</pre>
     <!-- <h1 class="text-2xl my-8">Debug Info</h1>
     <SystemInfo /> -->
 
     <div class="bg-white shadow sm:rounded-lg my-8">
-      <div class="px-4 py-5 sm:p-6" v-if="user.isLoggedIn">
+      <div class="px-4 py-5 sm:p-6" v-if="settings.isLoggedIn">
         <h3 class="text-lg font-medium leading-6 text-gray-900">
-          Logged in as <strong>{{ user.username }}</strong>
+          Logged in as <strong>{{ settings.username }}</strong>
         </h3>
         <div class="mt-5">
           <button
-            @click="logout"
+            @click="settings.logout"
             type="button"
             class="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 font-medium text-blue-700 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:text-sm"
           >
@@ -69,7 +89,7 @@ function logout() {
               >
               <div class="mt-1 sm:col-span-2 sm:mt-0">
                 <input
-                  v-model="settings.lichessHost"
+                  v-model="inputLichessHost"
                   id="lichessHost"
                   type="text"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -80,20 +100,38 @@ function logout() {
               class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5"
             >
               <label
-                for="externalEngineHost"
+                for="engineHost"
                 class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                >Lichess Host</label
+                >External Engine Host</label
               >
               <div class="mt-1 sm:col-span-2 sm:mt-0">
                 <input
-                  v-model="settings.externalEngineHost"
-                  id="externalEngineHost"
+                  v-model="inputEngineHost"
+                  id="engineHost"
                   type="text"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="pt-5">
+        <div class="flex justify-end">
+          <button
+            @click="cancel"
+            type="button"
+            class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Cancel
+          </button>
+          <button
+            @click="save"
+            type="button"
+            class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Save
+          </button>
         </div>
       </div>
     </form>
