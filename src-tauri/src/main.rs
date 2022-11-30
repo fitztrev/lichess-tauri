@@ -18,8 +18,6 @@ mod lichess;
 pub mod db;
 pub mod schema;
 
-
-
 #[tauri::command]
 fn check_for_work(window: Window) {
     std::thread::spawn(move || match lichess::work(window) {
