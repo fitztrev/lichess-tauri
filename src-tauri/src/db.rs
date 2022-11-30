@@ -12,7 +12,7 @@ pub struct SqlSetting {
 
 #[derive(Queryable)]
 pub struct SqlEngine {
-    lichess_id: String,
+    engine_id: String,
     binary_location: String,
 }
 
@@ -26,7 +26,7 @@ struct NewSetting<'a> {
 #[derive(Insertable)]
 #[diesel(table_name = schema::engines)]
 struct NewEngine<'a> {
-    lichess_id: &'a str,
+    engine_id: &'a str,
     binary_location: &'a str,
 }
 
@@ -52,22 +52,7 @@ pub fn establish_connection() -> SqliteConnection {
         .expect(&format!("Error connecting to {}", &database_url))
 }
 
-pub fn add_default_setting(key: &str, value: &str) {
-    let mut connection = establish_connection();
-
-    let new_setting = NewSetting {
-        key: key,
-        value: value,
-    };
-
-    diesel::insert_into(schema::settings::table)
-        .values(&new_setting)
-        .on_conflict_do_nothing()
-        .execute(&mut connection)
-        .expect("Error saving new setting");
-}
-
-pub fn update_setting(key: String, value: String) {
+pub fn update_setting(key: &str, value: &str) {
     let mut connection = establish_connection();
 
     // update or insert
@@ -81,13 +66,14 @@ pub fn update_setting(key: String, value: String) {
         .set(schema::settings::value.eq(&value))
         .execute(&mut connection)
         .expect("Error saving new setting");
+}
 
+pub fn delete_setting(key: &str) {
+    let mut connection = establish_connection();
 
-    // diesel::update(schema::settings::table)
-    //     .set(schema::settings::value.eq(value))
-    //     .filter(schema::settings::key.eq(key))
-    //     .execute(&mut connection)
-    //     .expect("Error updating setting");
+    diesel::delete(schema::settings::table.filter(schema::settings::key.eq(key)))
+        .execute(&mut connection)
+        .expect("Error deleting setting");
 }
 
 pub fn get_setting(key: &str) -> Option<String> {
@@ -111,11 +97,11 @@ pub fn get_all_settings() -> Vec<SqlSetting> {
         .expect("Error loading settings")
 }
 
-pub fn add_engine(lichess_id: &str, binary_location: &str) {
+pub fn add_engine(engine_id: &str, binary_location: &str) {
     let mut connection = establish_connection();
 
     let new_engine = NewEngine {
-        lichess_id: lichess_id,
+        engine_id: engine_id,
         binary_location: binary_location,
     };
 
@@ -126,11 +112,11 @@ pub fn add_engine(lichess_id: &str, binary_location: &str) {
         .expect("Error saving new engine");
 }
 
-pub fn get_engine_binary_path(lichess_id: &str) -> Option<String> {
+pub fn get_engine_binary_path(engine_id: &str) -> Option<String> {
     let mut connection = establish_connection();
 
     let result = schema::engines::table
-        .filter(schema::engines::lichess_id.eq(lichess_id))
+        .filter(schema::engines::engine_id.eq(engine_id))
         .first::<SqlEngine>(&mut connection);
 
     match result {

@@ -1,22 +1,41 @@
 <script setup lang="ts">
-import { useEnginesStore } from '../stores/engines'
 import { open as openShell } from '@tauri-apps/api/shell'
 import { open as openDialog } from '@tauri-apps/api/dialog'
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
-import { saveEngine } from '../utils/engine-crud'
+import { saveEngineToLichess } from '../utils/engine-crud'
 import { RouterLink } from 'vue-router'
 import { router } from '../router'
 import { sysinfo } from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
+import { LichessEngine, useEnginesStore } from '../stores/engines'
+import { useSettingsStore } from '../stores/settings'
 
 const engines = useEnginesStore()
+const settings = useSettingsStore()
 const engineDirectory = ref<EngineListing[]>([])
 
 function openContainingFolder(filepath: string) {
   let dir = filepath.substring(0, filepath.lastIndexOf('/'))
   openShell(dir)
 }
+
+async function getUserEnginesFromLichess(): Promise<LichessEngine[]> {
+  let url = `${settings.lichessHost}/api/external-engine`
+  return await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${settings.token}`,
+    },
+  }).then<LichessEngine[]>((response) => response.json())
+}
+
+function refreshEngineList(): void {
+  getUserEnginesFromLichess().then((data) => {
+    engines.engines = data
+  })
+}
+
+refreshEngineList()
 
 async function addEngineFromDirectory(engine: EngineListing) {
   const folderPath = await openDialog({
@@ -39,15 +58,19 @@ async function addEngineFromDirectory(engine: EngineListing) {
     for (let i = 16; i <= memoryLimit; i *= 2) {
       maxHash = i
     }
-    saveEngine({
+
+    saveEngineToLichess({
       name: engine.name + ' ' + engine.version,
       maxThreads: maxThreads,
       maxHash: maxHash,
       defaultDepth: 25,
       variants: ['chess'],
-      binaryLocation: path_to_binary,
-    }).then(() => {
-      // router.push('/engines')
+    }).then(async (data) => {
+      await invoke('add_engine', {
+        engineId: data.id,
+        binaryLocation: path_to_binary,
+      })
+      refreshEngineList()
     })
   })
 }
@@ -114,7 +137,7 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
                   class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0"
                 >
                   <p>
-                    {{ engine.binaryLocation }}
+                    <!-- {{ engine.binaryLocation }} -->
                   </p>
                 </div>
               </div>

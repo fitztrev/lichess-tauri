@@ -6,13 +6,12 @@
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
 use lichess::EngineBinary;
-use rand::Rng;
 use serde_json::{json, Value};
 use std::sync::Arc;
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri::Window;
 
-use crate::db::{add_default_setting, add_engine, establish_connection};
+use crate::db::establish_connection;
 
 mod engine_directory;
 mod lichess;
@@ -62,8 +61,18 @@ fn get_all_settings() -> Value {
 }
 
 #[tauri::command]
-fn update_setting(key: String, value: String) {
+fn update_setting(key: &str, value: &str) {
     db::update_setting(key, value);
+}
+
+#[tauri::command]
+fn delete_setting(key: &str) {
+    db::delete_setting(key);
+}
+
+#[tauri::command]
+fn add_engine(engine_id: &str, binary_location: &str) {
+    db::add_engine(engine_id, binary_location);
 }
 
 #[tauri::command]
@@ -120,26 +129,13 @@ fn main() {
     let mut connection = establish_connection();
     connection.run_pending_migrations(MIGRATIONS).unwrap();
 
-    let provider_secret = rand::thread_rng()
-        .sample_iter(&rand::distributions::Alphanumeric)
-        .take(128)
-        .map(char::from)
-        .collect::<String>();
-
-    add_default_setting("lichess_host", "https://lichess.org");
-    add_default_setting("engine_host", "https://engine.lichess.ovh");
-    add_default_setting("provider_secret", provider_secret.as_str());
-
     let lichess_host = db::get_setting("lichess_host").unwrap();
     println!("lichess_host: {}", lichess_host);
 
-    add_engine("eei_1234", "/path/to/stockfish");
-
-    let binary_path = db::get_engine_binary_path("eei_1234").unwrap();
-    println!("binary_path: {}", binary_path);
-
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            add_engine,
+            delete_setting,
             download_engine_to_folder,
             get_all_settings,
             get_sysinfo,

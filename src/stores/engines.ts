@@ -1,4 +1,6 @@
+import { invoke } from '@tauri-apps/api'
 import { defineStore } from 'pinia'
+import { useSettingsStore } from './settings'
 
 type Variant =
   | 'chess'
@@ -10,30 +12,32 @@ type Variant =
   | 'racingkings'
   | '3check'
 
-export type Engine = {
-  id?: string
+export type NewEngine = {
   name: string
   maxThreads: number
   maxHash: number
   defaultDepth: number
   variants: Variant[]
-  providerSecret?: string
-  providerData?: string
-  binaryLocation: string
+}
+
+export type LichessEngine = {
+  id: string
+  name: string
+  userId: string
+  maxThreads: number
+  maxHash: number
+  defaultDepth: number
+  variants: string[]
+  providerData: string
+  clientSecret: string
 }
 
 export const useEnginesStore = defineStore('engines', {
-  state: () => ({
-    engines: [] as Engine[],
-  }),
-  actions: {
-    addEngine(engine: Engine) {
-      this.engines.push(engine)
-
-      return engine
-    },
-    findById(id: string) {
-      return this.engines.find((e) => e.id === id)
-    },
+  state: () => {
+    return {
+      engines: [] as LichessEngine[],
+    }
   },
+  getters: {},
+  actions: {},
 })

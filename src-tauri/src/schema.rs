@@ -1,8 +1,8 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    engines (lichess_id) {
-        lichess_id -> Text,
+    engines (engine_id) {
+        engine_id -> Text,
         binary_location -> Text,
     }
 }

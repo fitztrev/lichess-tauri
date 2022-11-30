@@ -49,7 +49,10 @@ export function registerOauthHandlers(): void {
       .then(async (data) => {
         settings.token = data.access_token
 
-        await invoke('update_setting', { key: 'token', value: data.access_token })
+        await invoke('update_setting', {
+          key: 'token',
+          value: data.access_token,
+        })
 
         fetch(`${settings.lichessHost}/api/account`, {
           headers: {
@@ -60,7 +63,10 @@ export function registerOauthHandlers(): void {
           .then(async (data) => {
             settings.username = data.username
 
-            await invoke('update_setting', { key: 'username', value: data.username })
+            await invoke('update_setting', {
+              key: 'username',
+              value: data.username,
+            })
           })
       })
   })

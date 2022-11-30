@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import LocalEngine from './components/LocalEngine.vue'
-import { useEnginesStore } from './stores/engines'
 import { useSettingsStore } from './stores/settings'
 
 const settings = useSettingsStore()
-const engines = useEnginesStore()
 </script>
 
 <template>
@@ -162,7 +160,7 @@ const engines = useEnginesStore()
         </button>
       </div>
       <main class="flex-1">
-        <LocalEngine v-if="settings.isLoggedIn && engines.engines.length > 0" />
+        <LocalEngine />
         <div class="py-6">
           <router-view />
         </div>

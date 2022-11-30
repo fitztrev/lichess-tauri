@@ -3,9 +3,9 @@ import SystemInfo from './SystemInfo.vue'
 import { useSettingsStore } from '../stores/settings'
 import PageTitle from './PageTitle.vue'
 import LichessLogin from './LichessLogin.vue'
-import { ref } from 'vue';
-import { invoke } from '@tauri-apps/api';
-import { loadSettingsFromDatabase } from '../utils/settings';
+import { ref } from 'vue'
+import { invoke } from '@tauri-apps/api'
+import { loadSettingsFromDatabase } from '../utils/settings'
 
 const settings = useSettingsStore()
 
@@ -18,8 +18,14 @@ function cancel() {
 }
 
 async function save() {
-  await invoke('update_setting', { key: 'lichess_host', value: trimTrailingSlash(inputLichessHost.value) })
-  await invoke('update_setting', { key: 'engine_host', value: trimTrailingSlash(inputEngineHost.value) })
+  await invoke('update_setting', {
+    key: 'lichess_host',
+    value: trimTrailingSlash(inputLichessHost.value),
+  })
+  await invoke('update_setting', {
+    key: 'engine_host',
+    value: trimTrailingSlash(inputEngineHost.value),
+  })
 
   await loadSettingsFromDatabase()
 
@@ -36,7 +42,6 @@ function trimTrailingSlash(url: string) {
   <PageTitle>Settings</PageTitle>
 
   <div class="page-content">
-    <pre>{{ settings }}</pre>
     <!-- <h1 class="text-2xl my-8">Debug Info</h1>
     <SystemInfo /> -->
 

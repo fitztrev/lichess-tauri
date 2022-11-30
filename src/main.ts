@@ -17,4 +17,4 @@ app.mount('#app')
 
 registerOauthHandlers()
 
-await loadSettingsFromDatabase()
+loadSettingsFromDatabase()

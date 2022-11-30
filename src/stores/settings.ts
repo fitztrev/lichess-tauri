@@ -18,7 +18,10 @@ export const useSettingsStore = defineStore('settings', {
     },
   },
   actions: {
-    logout() {
+    async logout() {
+      await invoke('delete_setting', { key: 'username' })
+      await invoke('delete_setting', { key: 'token' })
+
       this.username = ''
       this.token = ''
     },
