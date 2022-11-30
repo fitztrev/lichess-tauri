@@ -5,7 +5,6 @@
 
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
-use lichess::EngineBinary;
 use serde_json::{json, Value};
 use std::sync::Arc;
 use sysinfo::{CpuExt, System, SystemExt};
@@ -19,33 +18,15 @@ mod lichess;
 pub mod db;
 pub mod schema;
 
+
+
 #[tauri::command]
-fn check_for_work(
-    engine_host: String,
-    api_token: String,
-    provider_secret: String,
-    engine_binaries: Vec<EngineBinary>,
-    window: Window,
-) {
-    std::thread::spawn(|| {
-        match lichess::work(
-            engine_host,
-            api_token,
-            provider_secret,
-            engine_binaries,
-            window,
-        ) {
-            Ok(_) => println!("Success"),
-            Err(e) => println!("Error: {}", e),
-        }
+fn check_for_work(window: Window) {
+    std::thread::spawn(move || match lichess::work(window) {
+        Ok(_) => println!("Success"),
+        Err(e) => println!("Error: {}", e),
     });
 }
-
-#[tauri::command]
-fn stop_checking_for_work() {
-    println!("called stop_checking_for_work");
-}
-
 #[tauri::command]
 fn get_all_settings() -> Value {
     println!("called get_all_settings");
@@ -135,12 +116,11 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             add_engine,
+            check_for_work,
             delete_setting,
             download_engine_to_folder,
             get_all_settings,
             get_sysinfo,
-            check_for_work,
-            stop_checking_for_work,
             start_oauth_server,
             update_setting,
         ])

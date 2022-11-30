@@ -11,6 +11,8 @@ use reqwest::{
 use serde::{Deserialize, Serialize};
 use tauri::Window;
 
+use crate::db;
+
 #[allow(dead_code)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -66,12 +68,6 @@ struct WorkRequest {
     provider_secret: String,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct EngineBinary {
-    id: String,
-    binary_location: String,
-}
-
 #[derive(Clone, Debug, Serialize)]
 struct EventPayload {
     event: String,
@@ -84,13 +80,7 @@ fn send_event_to_frontend(window: &Window, event: &str, payload: EventPayload) {
     window.emit(event, payload).unwrap();
 }
 
-pub fn work(
-    engine_host: String,
-    api_token: String,
-    provider_secret: String,
-    engine_binaries: Vec<EngineBinary>,
-    window: Window,
-) -> Result<(), Box<dyn Error>> {
+pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
     send_event_to_frontend(
         &window,
         "lichess::work",
@@ -101,22 +91,25 @@ pub fn work(
         },
     );
 
+    let api_token = db::get_setting("token").unwrap();
+    let provider_secret = db::get_setting("provider_secret").unwrap();
+    let engine_host = db::get_setting("engine_host").unwrap();
+
     let mut default_headers = HeaderMap::new();
     default_headers.insert(header::AUTHORIZATION, api_token.try_into()?);
     let client = ClientBuilder::new()
         .default_headers(default_headers)
         .build()?;
 
-    let provider_secret_borrowed = &provider_secret;
-    let window_borrowed = &window;
-
     let mut backoff_duration_secs = 1;
 
     loop {
+        let engine_host = engine_host.clone();
+
         // Step 1) Long poll for analysis requests
         // When a move is made on the Analysis board, it will be returned from this endpoint
         send_event_to_frontend(
-            &window_borrowed,
+            &window,
             "lichess::work",
             EventPayload {
                 event: "starting long poll".to_string(),
@@ -127,12 +120,12 @@ pub fn work(
         let response = client
             .post(format!("{}/api/external-engine/work", engine_host))
             .json(&WorkRequest {
-                provider_secret: provider_secret_borrowed.try_into()?,
+                provider_secret: String::from(&provider_secret),
             })
             .send()?;
 
         send_event_to_frontend(
-            &window_borrowed,
+            &window,
             "lichess::work",
             EventPayload {
                 event: "ending long poll".to_string(),
@@ -143,7 +136,7 @@ pub fn work(
 
         if response.status() != 200 {
             send_event_to_frontend(
-                &window_borrowed,
+                &window,
                 "lichess::work",
                 EventPayload {
                     event: "backing off".to_string(),
@@ -162,7 +155,7 @@ pub fn work(
         let analysis_request = response.json::<AnalysisRequest>()?;
 
         send_event_to_frontend(
-            &window_borrowed,
+            &window,
             "lichess::work",
             EventPayload {
                 event: "received analysis request".to_string(),
@@ -171,13 +164,7 @@ pub fn work(
             },
         );
 
-        let engine_id = analysis_request.engine.id;
-        let binary_filepath = engine_binaries
-            .iter()
-            .find(|engine_binary| engine_binary.id == engine_id)
-            .ok_or("Engine not found")?
-            .binary_location
-            .clone();
+        let binary_filepath = db::get_engine_binary_path(&analysis_request.engine.id).unwrap();
 
         // Step 2) Send the FEN to the engine
         send_event_to_frontend(
@@ -198,7 +185,7 @@ pub fn work(
         let engine_stdin = engine.stdin.as_mut().ok_or("Failed to get stdin")?;
 
         send_event_to_frontend(
-            &window_borrowed,
+            &window,
             "lichess::work",
             EventPayload {
                 event: "setting uci options".to_string(),
@@ -237,7 +224,7 @@ pub fn work(
         )?;
 
         send_event_to_frontend(
-            &window_borrowed,
+            &window,
             "lichess::work",
             EventPayload {
                 event: "starting analysis".to_string(),
@@ -262,23 +249,21 @@ pub fn work(
         let (tx, rx) = std::sync::mpsc::channel();
         let client = client.clone();
 
-        let engine_host_for_thread = engine_host.to_string();
-        let window_for_thread = window_borrowed.clone();
+        send_event_to_frontend(
+            &window,
+            "lichess::work",
+            EventPayload {
+                event: "Starting thread to send analysis results".to_string(),
+                message: None,
+                analysis_request: None,
+            },
+        );
 
         std::thread::spawn(move || {
             // Step 3) Start a POST request stream to /api/external-engine/work/{id}
             let url = format!(
                 "{}/api/external-engine/work/{}",
-                engine_host_for_thread, analysis_request.id
-            );
-            send_event_to_frontend(
-                &window_for_thread,
-                "lichess::work",
-                EventPayload {
-                    event: "Starting thread to send analysis results".to_string(),
-                    message: Some(String::from(&url)),
-                    analysis_request: None,
-                },
+                engine_host, analysis_request.id
             );
             client
                 .post(url)
@@ -289,7 +274,7 @@ pub fn work(
         for line in BufReader::new(engine_stdout).lines() {
             let mut line = line?;
             send_event_to_frontend(
-                &window_borrowed,
+                &window,
                 "lichess::work",
                 EventPayload {
                     event: "engine result".to_string(),
@@ -305,7 +290,7 @@ pub fn work(
                 }
             } else if line.starts_with("bestmove") {
                 send_event_to_frontend(
-                    &window_borrowed,
+                    &window,
                     "lichess::work",
                     EventPayload {
                         event: "best move".to_string(),

@@ -11,4 +11,4 @@ create table settings (
 -- Add default settings
 insert into settings (key, value) values ("lichess_host", "https://lichess.org");
 insert into settings (key, value) values ("engine_host", "https://engine.lichess.ovh");
-insert into settings (key, value) values ("provider_secret", "lichess-tauri-" || lower(hex(randomblob(500))));
+insert into settings (key, value) values ("provider_secret", lower(hex(randomblob(32))));
