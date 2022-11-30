@@ -2,10 +2,9 @@
 import LichessLogin from './LichessLogin.vue'
 import EnginesPage from './EnginesPage.vue'
 import ChecklistItem from './ChecklistItem.vue'
-import { useUserStore } from '../stores/user'
-import { ref } from 'vue'
+import { useSettingsStore } from '../stores/settings'
 
-const user = useUserStore()
+const settings = useSettingsStore()
 </script>
 
 <template>
@@ -21,10 +20,11 @@ const user = useUserStore()
       <div class="py-12 px-4 sm:px-6 lg:px-8">
         <nav class="flex justify-center" aria-label="Progress">
           <ol role="list" class="space-y-6">
-            <ChecklistItem :status="!user.isLoggedIn ? 'current' : 'completed'"
+            <ChecklistItem
+              :status="!settings.isLoggedIn ? 'current' : 'completed'"
               >Log in with Lichess</ChecklistItem
             >
-            <ChecklistItem :status="user.isLoggedIn ? 'current' : 'future'"
+            <ChecklistItem :status="settings.isLoggedIn ? 'current' : 'future'"
               >Add a chess engine</ChecklistItem
             >
             <ChecklistItem status="future"
@@ -35,7 +35,7 @@ const user = useUserStore()
       </div>
     </div>
 
-    <div class="text-center mt-12" v-if="!user.isLoggedIn">
+    <div class="text-center mt-12" v-if="!settings.isLoggedIn">
       <LichessLogin />
     </div>
     <div class="mt-6" v-else>

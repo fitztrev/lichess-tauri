@@ -11,7 +11,15 @@
    npm run tauri dev
    ```
 
-## Icon generation
+## Architecture + How It Works
+
+This is a Tauri-based app -- Tauri is like Electron except it uses Rust instead of Node.js. This app is written in Rust and Typescript.
+
+Tauri uses the OS's native webview. It can be compiled to a native binary for Windows, Mac, and Linux.
+
+## Development Notes
+
+### Icon generation
 
 ```
 npm install svgexport -g
@@ -25,4 +33,24 @@ Delete the target directory and run `npm run tauri dev` again for it to take eff
 ```
 rm -rf src-tauri/target
 npm run tauri dev
+```
+
+### SQLite dev
+
+Uses diesel to manage migrations.
+
+```
+cargo install diesel_cli --no-default-features --features sqlite
+```
+
+To add a new migration:
+
+```
+diesel migration generate <migration_name>
+```
+
+For testing migrations:
+
+```
+diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migration redo
 ```

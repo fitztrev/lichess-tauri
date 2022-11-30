@@ -1,30 +1,15 @@
-import { Engine, useEnginesStore } from '../stores/engines'
+import { NewEngine, LichessEngine } from '../stores/engines'
 import { useSettingsStore } from '../stores/settings'
-import { useUserStore } from '../stores/user'
 
-type LichessEngine = {
-  id: string
-  name: string
-  userId: string
-  maxThreads: number
-  maxHash: number
-  defaultDepth: number
-  variants: string[]
-  providerData: string
-  clientSecret: string
-}
-
-export async function saveEngine(engine: Engine): Promise<Engine> {
+export async function saveEngineToLichess(
+  engine: NewEngine
+): Promise<LichessEngine> {
   const settings = useSettingsStore()
-  const user = useUserStore()
-  const engines = useEnginesStore()
 
-  engine.providerSecret = settings.providerSecret
-
-  let result = await fetch(`${settings.lichessHost}/api/external-engine`, {
+  return await fetch(`${settings.lichessHost}/api/external-engine`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${user.token}`,
+      Authorization: `Bearer ${settings.token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -33,12 +18,7 @@ export async function saveEngine(engine: Engine): Promise<Engine> {
       maxHash: engine.maxHash,
       defaultDepth: engine.defaultDepth,
       variants: engine.variants,
-      providerSecret: engine.providerSecret,
+      providerSecret: settings.providerSecret,
     }),
   }).then<LichessEngine>((response) => response.json())
-
-  engine.id = result.id
-  engines.addEngine(engine)
-
-  return Promise.resolve(engine)
 }

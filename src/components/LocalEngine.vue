@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { useEnginesStore } from '../stores/engines'
 import { invoke } from '@tauri-apps/api/tauri'
 import { open } from '@tauri-apps/api/shell'
 import { useSettingsStore } from '../stores/settings'
-import { useUserStore } from '../stores/user'
 import { LichessWorkEvent, useEventLogsStore } from '../stores/event-logs'
 import { listen } from '@tauri-apps/api/event'
 
-const engines = useEnginesStore()
 const settings = useSettingsStore()
-const user = useUserStore()
 const eventLogs = useEventLogsStore()
 
 listen('lichess::work', (data: LichessWorkEvent) => {
@@ -20,27 +16,7 @@ function openLichess(url: string) {
   open(`${settings.lichessHost}/${url}`)
 }
 
-function stopCheckingForWork() {
-  invoke('stop_checking_for_work')
-}
-
-async function checkForAnalysisRequests() {
-  let params = {
-    engineHost: settings.externalEngineHost,
-    apiToken: user.token,
-    providerSecret: settings.providerSecret,
-    engineBinaries: engines.engines.map((engine) => {
-      return {
-        id: engine.id,
-        binary_location: engine.binaryLocation,
-      }
-    }),
-  }
-  console.log('invoking `check_for_work` from app with params', { params })
-  invoke('check_for_work', params)
-}
-
-checkForAnalysisRequests()
+invoke('check_for_work')
 </script>
 
 <template>
@@ -69,13 +45,5 @@ checkForAnalysisRequests()
     <a href="#" @click.prevent="openLichess('/analysis')" class="underline"
       >Analysis page</a
     >
-
-    <!-- <button
-      @click="stopCheckingForWork"
-      type="button"
-      class="mx-4 inline-flex items-center rounded border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-    >
-      Stop
-    </button> -->
   </div>
 </template>

@@ -2,8 +2,8 @@
 import { open } from '@tauri-apps/api/dialog'
 import { Ref, ref } from 'vue'
 import { router } from '../router'
-import { Engine } from '../stores/engines'
-import { saveEngine } from '../utils/engine-crud'
+import { NewEngine } from '../stores/engines'
+import { saveEngineToLichess } from '../utils/engine-crud'
 import { sysinfo } from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
 
@@ -37,17 +37,17 @@ function selectEngineFile() {
 }
 
 function submit() {
-  let engine: Engine = {
+  let engine: NewEngine = {
     name: name.value,
     maxThreads: maxThreads.value,
     maxHash: maxHash.value,
     defaultDepth: defaultDepth.value,
     variants: ['chess'],
-    binaryLocation: binaryLocation.value,
   }
 
-  saveEngine(engine).then(() => {
+  saveEngineToLichess(engine).then(() => {
     // router.push('/engines')
+    // binaryLocation: binaryLocation.value,
   })
 }
 </script>

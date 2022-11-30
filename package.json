@@ -20,7 +20,6 @@
     "@vitejs/plugin-vue": "^3.0.1",
     "autoprefixer": "^10.4.13",
     "pinia": "^2.0.23",
-    "pinia-plugin-persistedstate": "^2.3.0",
     "pkce-challenge": "^3.0.0",
     "postcss": "^8.4.18",
     "prettier": "^2.7.1",
