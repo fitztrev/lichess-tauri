@@ -10,6 +10,7 @@ pub struct SqlSetting {
     pub value: String,
 }
 
+#[allow(dead_code)]
 #[derive(Queryable)]
 pub struct SqlEngine {
     engine_id: String,
