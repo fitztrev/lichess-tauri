@@ -25,6 +25,7 @@ fn check_for_work(window: Window) {
         Err(e) => println!("Error: {}", e),
     });
 }
+
 #[tauri::command]
 fn get_all_settings() -> Value {
     println!("called get_all_settings");
