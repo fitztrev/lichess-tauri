@@ -213,11 +213,6 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
         )?;
         writeln!(
             engine_stdin,
-            "setoption name Variant value {}",
-            analysis_request.work.variant
-        )?;
-        writeln!(
-            engine_stdin,
             "position fen {} moves {}",
             analysis_request.work.initial_fen,
             analysis_request.work.moves.join(" ")
