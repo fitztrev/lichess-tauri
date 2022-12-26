@@ -6,7 +6,7 @@
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
 use serde_json::{json, Value};
-use std::sync::Arc;
+use std::{sync::Arc, thread};
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri::Window;
 
@@ -20,7 +20,7 @@ pub mod schema;
 
 #[tauri::command]
 fn check_for_work(window: Window) {
-    std::thread::spawn(move || match lichess::work(window) {
+    thread::spawn(move || match lichess::work(window) {
         Ok(_) => println!("Success"),
         Err(e) => println!("Error: {}", e),
     });
