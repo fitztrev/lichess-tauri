@@ -46,11 +46,13 @@ cargo install diesel_cli --no-default-features --features sqlite
 To add a new migration:
 
 ```
+cd src-tauri
 diesel migration generate <migration_name>
 ```
 
 For testing migrations:
 
 ```
+cd src-tauri
 diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migration redo
 ```
