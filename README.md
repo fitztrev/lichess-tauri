@@ -1,4 +1,6 @@
-# lichess tauri
+# Lichess Local Engine
+
+Run a more powerful version of Stockfish on your computer and connect it to the Analysis board. Lichess calls this an "External Engine". This is a desktop app that intends to make it easy to use.
 
 ## Development Setup
 
