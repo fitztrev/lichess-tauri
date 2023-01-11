@@ -2,6 +2,9 @@
 
 Run a more powerful version of Stockfish on your computer and connect it to the Analysis board. Lichess calls this an "External Engine". This is a desktop app that intends to make it easy to use.
 
+![image](https://user-images.githubusercontent.com/271432/211694424-b8d955be-3275-4637-a4d4-5b1397f42c53.png)
+
+
 ## Development Setup
 
 1. Follow prerequisities for installing Rust + Tauri here: https://tauri.app/v1/guides/getting-started/prerequisites
