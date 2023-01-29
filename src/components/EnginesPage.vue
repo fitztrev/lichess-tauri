@@ -24,7 +24,7 @@ async function getUserEnginesFromLichess(): Promise<LichessEngine[]> {
   let url = `${settings.lichessHost}/api/external-engine`
   return await fetch(url, {
     headers: {
-      Authorization: `Bearer ${settings.token}`,
+      Authorization: `Bearer ${settings.lichess_token}`,
     },
   }).then<LichessEngine[]>((response) => response.json())
 }

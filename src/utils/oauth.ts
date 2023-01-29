@@ -47,25 +47,25 @@ export function registerOauthHandlers(): void {
     })
       .then((response) => response.json())
       .then(async (data) => {
-        settings.token = data.access_token
+        settings.lichess_token = data.access_token
 
         await invoke('update_setting', {
-          key: 'token',
+          key: 'lichess_token',
           value: data.access_token,
         })
 
         fetch(`${settings.lichessHost}/api/account`, {
           headers: {
-            Authorization: `Bearer ${settings.token}`,
+            Authorization: `Bearer ${settings.lichess_token}`,
           },
         })
           .then((response) => response.json())
           .then(async (data) => {
-            settings.username = data.username
+            settings.lichess_username = data.username
 
             await invoke('update_setting', {
-              key: 'username',
-              value: data.username,
+              key: 'lichess_username',
+              value: data.lichess_username,
             })
           })
       })

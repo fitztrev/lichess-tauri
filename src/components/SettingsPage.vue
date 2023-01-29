@@ -48,7 +48,7 @@ function trimTrailingSlash(url: string) {
     <div class="bg-white shadow sm:rounded-lg my-8">
       <div class="px-4 py-5 sm:p-6" v-if="settings.isLoggedIn">
         <h3 class="text-lg font-medium leading-6 text-gray-900">
-          Logged in as <strong>{{ settings.username }}</strong>
+          Logged in as <strong>{{ settings.lichess_username }}</strong>
         </h3>
         <div class="mt-5">
           <button

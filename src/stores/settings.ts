@@ -8,22 +8,22 @@ export const useSettingsStore = defineStore('settings', {
       engineHost: '',
       providerSecret: '',
 
-      username: '',
-      token: '',
+      lichess_username: '',
+      lichess_token: '',
     }
   },
   getters: {
     isLoggedIn(): boolean {
-      return !!this.token
+      return !!this.lichess_token
     },
   },
   actions: {
     async logout() {
-      await invoke('delete_setting', { key: 'username' })
-      await invoke('delete_setting', { key: 'token' })
+      await invoke('delete_setting', { key: 'lichess_username' })
+      await invoke('delete_setting', { key: 'lichess_token' })
 
-      this.username = ''
-      this.token = ''
+      this.lichess_username = ''
+      this.lichess_token = ''
     },
   },
 })

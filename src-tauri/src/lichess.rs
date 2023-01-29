@@ -91,7 +91,7 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
         },
     );
 
-    let api_token = db::get_setting("token").unwrap();
+    let api_token = db::get_setting("lichess_token").unwrap();
     let provider_secret = db::get_setting("provider_secret").unwrap();
     let engine_host = db::get_setting("engine_host").unwrap();
 

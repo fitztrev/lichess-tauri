@@ -6,14 +6,14 @@ export async function loadSettingsFromDatabase() {
     lichess_host: string
     engine_host: string
     provider_secret: string
-    username: string
-    token: string
+    lichess_username: string
+    lichess_token: string
   }>('get_all_settings')
 
   let settings = useSettingsStore()
   settings.lichessHost = settings_from_database.lichess_host
   settings.engineHost = settings_from_database.engine_host
   settings.providerSecret = settings_from_database.provider_secret
-  settings.username = settings_from_database.username
-  settings.token = settings_from_database.token
+  settings.lichess_username = settings_from_database.lichess_username
+  settings.lichess_token = settings_from_database.lichess_token
 }
