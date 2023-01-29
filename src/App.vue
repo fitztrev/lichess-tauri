@@ -160,7 +160,7 @@ const settings = useSettingsStore()
         </button>
       </div>
       <main class="flex-1">
-        <LocalEngine />
+        <LocalEngine v-if="settings.lichess_token" />
         <div class="py-6">
           <router-view />
         </div>
