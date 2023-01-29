@@ -6,9 +6,10 @@
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
 use serde_json::{json, Value};
-use std::{sync::Arc, thread};
+use std::{borrow::Cow, sync::Arc, thread};
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri::Window;
+use tauri_plugin_oauth::OauthConfig;
 
 use crate::db::establish_connection;
 
@@ -84,10 +85,12 @@ fn get_sysinfo() -> Value {
 async fn start_oauth_server(window: Window) {
     let window_arc = Arc::new(window);
     let window_arc2 = window_arc.clone();
-    let port = tauri_plugin_oauth::start(
-        Some(
-            "<html><head></head><body>You can close this tab and return to the app.</body></html>",
-        ),
+
+    let port = tauri_plugin_oauth::start_with_config(
+        OauthConfig {
+            ports: Some(vec![]),
+            response: Some(Cow::Borrowed("<html><head></head><body>You can close this tab and return to the app.</body></html>")),
+        },
         move |url| {
             println!("Returning from oauth, url: {}", url);
             window_arc2.emit("returning_from_lichess", url).unwrap();
