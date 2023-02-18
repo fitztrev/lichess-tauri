@@ -6,7 +6,7 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { saveEngineToLichess } from '../utils/engine-crud'
 import { RouterLink } from 'vue-router'
 import { router } from '../router'
-import { sysinfo } from '../utils/sysyinfo'
+import { generateMaxHashOptions, sysinfo } from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
 import { LichessEngine, useEnginesStore } from '../stores/engines'
 import { useSettingsStore } from '../stores/settings'
@@ -52,18 +52,16 @@ async function addEngineFromDirectory(engine: EngineListing) {
 
   sysinfo().then((systemInfo) => {
     let maxThreads = systemInfo.cpus_len
-    let maxHash = 16
 
-    let memoryLimit = (systemInfo.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
-    for (let i = 16; i <= memoryLimit; i *= 2) {
-      maxHash = i
-    }
+    let maxHashOptions = generateMaxHashOptions(
+      systemInfo.total_memory / 1024 / 1024
+    )
 
     saveEngineToLichess({
       name: engine.name + ' ' + engine.version,
       maxThreads: maxThreads,
-      maxHash: maxHash,
-      defaultDepth: 25,
+      maxHash: maxHashOptions.at(-1)?.megabytes || 16,
+      defaultDepth: 30,
       variants: ['chess'],
     }).then(async (data) => {
       await invoke('add_engine', {

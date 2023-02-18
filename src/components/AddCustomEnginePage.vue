@@ -4,30 +4,36 @@ import { Ref, ref } from 'vue'
 import { router } from '../router'
 import { NewEngine } from '../stores/engines'
 import { saveEngineToLichess } from '../utils/engine-crud'
-import { sysinfo } from '../utils/sysyinfo'
+import {
+  generateMaxHashOptions,
+  MaxHashOption,
+  sysinfo,
+} from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
+
+const defaultHash = 16
 
 const name = ref('')
 const maxThreads = ref(1)
-const maxHash = ref(16)
-const defaultDepth = ref(25)
+const maxHash = ref(defaultHash)
+const defaultDepth = ref(30)
 const binaryLocation: Ref<any> = ref('')
 
-const maxHashOptions = ref<number[]>([])
+const maxHashOptions = ref<MaxHashOption[]>([])
 const maxThreadOptions = ref<number[]>([])
 
-sysinfo().then((data) => {
-  let memoryLimit = (data.total_memory / 1024 / 1024) * 0.7 // up to 70% of total memory
-  for (let i = 16; i <= memoryLimit; i *= 2) {
-    maxHashOptions.value.push(i)
-  }
-  maxHash.value = maxHashOptions.value.slice(-1)[0]
+sysinfo().then((systemInfo) => {
+  maxHashOptions.value = generateMaxHashOptions(
+    systemInfo.total_memory / 1024 / 1024
+  )
+
+  maxHash.value = maxHashOptions.value.at(-1)?.megabytes || defaultHash
 
   maxThreadOptions.value = Array.from(
-    { length: data.cpus_len },
+    { length: systemInfo.cpus_len },
     (_, i) => i + 1
   )
-  maxThreads.value = data.cpus_len
+  maxThreads.value = systemInfo.cpus_len
 })
 
 function selectEngineFile() {
@@ -124,10 +130,9 @@ function submit() {
                 >
                   <option
                     v-for="option in maxHashOptions"
-                    :key="option"
-                    :value="option"
+                    :value="option.megabytes"
                   >
-                    {{ option }} MB
+                    {{ option.label }}
                   </option>
                 </select>
               </div>
@@ -145,8 +150,8 @@ function submit() {
                   v-model="defaultDepth"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                 >
-                  <option v-for="n in 50" :value="n">
-                    {{ n }}
+                  <option v-for="n in 50 - 24" :value="n + 24">
+                    {{ n + 24 }}
                   </option>
                 </select>
               </div>
