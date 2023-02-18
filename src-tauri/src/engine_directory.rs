@@ -59,7 +59,7 @@ pub fn download_to_folder(engine: Engine, folder: &str) -> String {
             }
         }
 
-        if (&*file.name()).ends_with('/') {
+        if (*file.name()).ends_with('/') {
             println!("File {} extracted to \"{}\"", i, outpath);
             fs::create_dir_all(&outpath).unwrap();
         } else {
@@ -71,7 +71,7 @@ pub fn download_to_folder(engine: Engine, folder: &str) -> String {
             );
             if let Some(p) = Path::new(&outpath).parent() {
                 if !p.exists() {
-                    fs::create_dir_all(&p).unwrap();
+                    fs::create_dir_all(p).unwrap();
                 }
             }
             let mut outfile = File::create(&outpath).unwrap();

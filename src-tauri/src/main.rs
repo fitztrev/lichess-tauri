@@ -83,12 +83,10 @@ async fn start_oauth_server(window: Window) {
     let window_arc = Arc::new(window);
     let window_arc2 = window_arc.clone();
 
-    let port = tauri_plugin_oauth::start(
-        move |url| {
-            println!("Returning from oauth, url: {}", url);
-            window_arc2.emit("returning_from_lichess", url).unwrap();
-        },
-    )
+    let port = tauri_plugin_oauth::start(move |url| {
+        println!("Returning from oauth, url: {}", url);
+        window_arc2.emit("returning_from_lichess", url).unwrap();
+    })
     .unwrap();
 
     println!("Local server started on port: {}", port);

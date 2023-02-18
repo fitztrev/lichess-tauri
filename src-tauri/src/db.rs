@@ -39,18 +39,17 @@ pub fn establish_connection() -> SqliteConnection {
     let app_data_dir = path_to_db_file.parent().unwrap();
 
     assert!(
-        app_data_dir.exists() || std::fs::create_dir(&app_data_dir).is_ok(),
+        app_data_dir.exists() || std::fs::create_dir(app_data_dir).is_ok(),
         "unable to create path {:?}",
         app_data_dir.to_str().unwrap()
     );
 
     let database_url = path_to_db_file
         .to_str()
-        .clone()
-        .expect(&format!("Error convert path {:?} to url", path_to_db_file));
+        .unwrap_or_else(|| panic!("Error convert path {:?} to url", path_to_db_file));
 
-    SqliteConnection::establish(&database_url)
-        .expect(&format!("Error connecting to {}", &database_url))
+    SqliteConnection::establish(database_url)
+        .unwrap_or_else(|_| panic!("Error connecting to {}", &database_url))
 }
 
 pub fn update_setting(key: &str, value: &str) {
@@ -58,10 +57,7 @@ pub fn update_setting(key: &str, value: &str) {
 
     // update or insert
     diesel::insert_into(schema::settings::table)
-        .values(&NewSetting {
-            key: &key,
-            value: &value,
-        })
+        .values(&NewSetting { key, value })
         .on_conflict(schema::settings::key)
         .do_update()
         .set(schema::settings::value.eq(&value))
@@ -102,8 +98,8 @@ pub fn add_engine(engine_id: &str, binary_location: &str) {
     let mut connection = establish_connection();
 
     let new_engine = NewEngine {
-        engine_id: engine_id,
-        binary_location: binary_location,
+        engine_id,
+        binary_location,
     };
 
     diesel::insert_into(schema::engines::table)
