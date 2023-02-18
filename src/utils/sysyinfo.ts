@@ -30,32 +30,36 @@ export type MaxHashOption = {
   label: string
 }
 
-export function generateMaxHashOptions(systemMemory: number): MaxHashOption[] {
-  const memoryLabels = new Map([
-    [16, '16 MB'],
-    [32, '32 MB'],
-    [64, '64 MB'],
-    [128, '128 MB'],
-    [256, '256 MB'],
-    [512, '512 MB'],
-    [1024, '1 GB'],
-    [2048, '2 GB'],
-    [4096, '4 GB'],
-    [8192, '8 GB'],
-    [16384, '16 GB'],
-    [32768, '32 GB'],
-    [65536, '64 GB'],
-    [131072, '128 GB'],
-    [262144, '256 GB'],
-    [524288, '512 GB'],
-  ])
+export function memoryToHumanReadable(memory: number) {
+  return (
+    new Map([
+      [16, '16 MB'],
+      [32, '32 MB'],
+      [64, '64 MB'],
+      [128, '128 MB'],
+      [256, '256 MB'],
+      [512, '512 MB'],
+      [1024, '1 GB'],
+      [2048, '2 GB'],
+      [4096, '4 GB'],
+      [8192, '8 GB'],
+      [16384, '16 GB'],
+      [32768, '32 GB'],
+      [65536, '64 GB'],
+      [131072, '128 GB'],
+      [262144, '256 GB'],
+      [524288, '512 GB'],
+    ]).get(memory) || `${memory} MB`
+  )
+}
 
+export function generateMaxHashOptions(systemMemory: number): MaxHashOption[] {
   let maxHashOptions: MaxHashOption[] = []
 
   for (let i = 16; i <= systemMemory * 0.7; i *= 2) {
     maxHashOptions.push({
       megabytes: i,
-      label: memoryLabels.get(i) || `${i} MB`,
+      label: memoryToHumanReadable(i),
     })
   }
 

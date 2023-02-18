@@ -6,7 +6,11 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { saveEngineToLichess } from '../utils/engine-crud'
 import { RouterLink } from 'vue-router'
 import { router } from '../router'
-import { generateMaxHashOptions, sysinfo } from '../utils/sysyinfo'
+import {
+  generateMaxHashOptions,
+  sysinfo,
+  memoryToHumanReadable,
+} from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
 import { LichessEngine, useEnginesStore } from '../stores/engines'
 import { useSettingsStore } from '../stores/settings'
@@ -124,7 +128,7 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
                 <div class="sm:flex">
                   <p class="flex items-center text-sm text-gray-500">
                     Max:
-                    {{ engine.maxHash }} MB &bullet;
+                    {{ memoryToHumanReadable(engine.maxHash) }} &bullet;
                     {{ engine.maxThreads }} threads
                     <br />
                     Default:
