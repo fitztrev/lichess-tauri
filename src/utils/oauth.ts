@@ -65,7 +65,7 @@ export function registerOauthHandlers(): void {
 
             await invoke('update_setting', {
               key: 'lichess_username',
-              value: data.lichess_username,
+              value: data.username,
             })
           })
       })
