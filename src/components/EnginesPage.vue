@@ -93,7 +93,7 @@ interface EngineListing {
   }
 }
 
-fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
+fetch('https://fitztrev.github.io/lichess-tauri/pages/engine-directory.json')
   .then<{
     engines: EngineListing[]
   }>((res) => res.json())
