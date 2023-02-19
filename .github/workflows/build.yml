@@ -13,7 +13,8 @@ jobs:
         platform: [macos-latest, ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-20.04'
@@ -30,11 +31,18 @@ jobs:
         with:
           workspaces: './src-tauri -> target'
 
-      - uses: actions/setup-node@v3
+      - name: Sync node version and setup cache
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+          cache: 'npm' # Set this to npm, yarn or pnpm.
 
-      - run: npm install
+      - name: Install app dependencies and build web
+        # Remove `&& yarn build` if you build your frontend in `beforeBuildCommand`
+        run: npm install # Change this to npm, yarn or pnpm.
 
-      - uses: tauri-apps/tauri-action@v0
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
