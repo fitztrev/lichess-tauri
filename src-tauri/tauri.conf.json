@@ -66,9 +66,7 @@
     },
     "updater": {
       "active": true,
-      "endpoints": [
-        "https://fitztrev.github.io/lichess-tauri/version.json"
-      ],
+      "endpoints": ["https://fitztrev.github.io/lichess-tauri/version.json"],
       "dialog": true,
       "pubkey": "YOUR_UPDATER_SIGNATURE_PUBKEY_HERE"
     },
