@@ -1,0 +1,23 @@
+name: docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pages/**'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: pages
