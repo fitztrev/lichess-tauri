@@ -6,9 +6,10 @@
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
 use serde_json::{json, Value};
-use std::{sync::Arc, thread};
+use std::{borrow::Cow, sync::Arc, thread};
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri::Window;
+use tauri_plugin_oauth::OauthConfig;
 
 use crate::db::establish_connection;
 
@@ -83,10 +84,15 @@ async fn start_oauth_server(window: Window) {
     let window_arc = Arc::new(window);
     let window_arc2 = window_arc.clone();
 
-    let port = tauri_plugin_oauth::start(move |url| {
-        println!("Returning from oauth, url: {}", url);
-        window_arc2.emit("returning_from_lichess", url).unwrap();
-    })
+    let port = tauri_plugin_oauth::start_with_config(
+        OauthConfig {
+            ports: None,
+            response: Some(Cow::Borrowed(include_str!("../public/oauth_response.html"))),
+        },
+        move |url| {
+            window_arc2.emit("returning_from_lichess", url).unwrap();
+        },
+    )
     .unwrap();
 
     println!("Local server started on port: {}", port);
