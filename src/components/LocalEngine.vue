@@ -13,7 +13,7 @@ listen('lichess::work', (data: LichessWorkEvent) => {
 })
 
 function openLichess(url: string) {
-  open(`${settings.lichessHost}/${url}`)
+  open(`${settings.lichessHost}${url}`)
 }
 
 invoke('check_for_work')

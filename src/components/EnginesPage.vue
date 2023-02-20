@@ -127,8 +127,8 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
               <div class="mt-2 sm:flex sm:justify-between">
                 <div class="sm:flex">
                   <p class="flex items-center text-sm text-gray-500">
-                    {{ memoryToHumanReadable(engine.maxHash) }} memory &bullet;
                     {{ engine.maxThreads }} threads &bullet;
+                    {{ memoryToHumanReadable(engine.maxHash) }} &bullet;
                     {{ engine.defaultDepth }} depth
                   </p>
                 </div>
