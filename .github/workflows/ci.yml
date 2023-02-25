@@ -22,7 +22,7 @@ jobs:
   test-suite:
     strategy:
       matrix:
-        node: [19]
+        node: [18, 19]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 1
