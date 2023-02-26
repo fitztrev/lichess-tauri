@@ -5,17 +5,12 @@ import PageTitle from './PageTitle.vue'
 import LichessLogin from './LichessLogin.vue'
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api'
-import { loadSettingsFromDatabase } from '../utils/settings'
+import { loadSettingsFromDatabase, trimTrailingSlash } from '../utils/settings'
 
 const settings = useSettingsStore()
 
 const inputLichessHost = ref(settings.lichessHost)
 const inputEngineHost = ref(settings.engineHost)
-
-function cancel() {
-  inputLichessHost.value = settings.lichessHost
-  inputEngineHost.value = settings.engineHost
-}
 
 async function save() {
   await invoke('update_setting', {
@@ -31,10 +26,6 @@ async function save() {
 
   inputLichessHost.value = settings.lichessHost
   inputEngineHost.value = settings.engineHost
-}
-
-function trimTrailingSlash(url: string) {
-  return url.replace(/\/$/, '')
 }
 </script>
 
@@ -123,13 +114,11 @@ function trimTrailingSlash(url: string) {
       </div>
       <div class="pt-5">
         <div class="flex justify-end">
-          <button
-            @click="cancel"
-            type="button"
+          <router-link
+            to="/"
             class="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >Cancel</router-link
           >
-            Cancel
-          </button>
           <button
             @click="save"
             type="button"

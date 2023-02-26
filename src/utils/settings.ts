@@ -17,3 +17,17 @@ export async function loadSettingsFromDatabase() {
   settings.lichess_username = settings_from_database.lichess_username
   settings.lichess_token = settings_from_database.lichess_token
 }
+
+export function trimTrailingSlash(url: string) {
+  return url.replace(/\/$/, '')
+}
+
+if (import.meta.vitest) {
+  const { it, expect, vi } = import.meta.vitest
+
+  it('trims trailing slashes', () => {
+    expect(trimTrailingSlash('https://lichess.org/')).toStrictEqual(
+      'https://lichess.org'
+    )
+  })
+}
