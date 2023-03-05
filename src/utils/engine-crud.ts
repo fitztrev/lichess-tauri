@@ -20,5 +20,11 @@ export async function saveEngineToLichess(
       variants: engine.variants,
       providerSecret: settings.providerSecret,
     }),
-  }).then<LichessEngine>((response) => response.json())
+  }).then<LichessEngine>(async (response) => {
+    if (!response.ok) {
+      throw await response.json()
+    }
+
+    return response.json()
+  })
 }

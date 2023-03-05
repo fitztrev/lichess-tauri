@@ -22,6 +22,8 @@ const binaryLocation: Ref<any> = ref('')
 const maxHashOptions = ref<MaxHashOption[]>([])
 const maxThreadOptions = ref<number[]>([])
 
+const errors = ref<Record<string, string[]>>({})
+
 sysinfo().then((systemInfo) => {
   maxHashOptions.value = generateMaxHashOptions(
     systemInfo.total_memory / 1024 / 1024
@@ -39,6 +41,8 @@ sysinfo().then((systemInfo) => {
 function selectEngineFile() {
   open({}).then((data) => {
     binaryLocation.value = data
+
+    errors.value = {}
   })
 }
 
@@ -51,10 +55,20 @@ function submit() {
     variants: ['chess'],
   }
 
-  saveEngineToLichess(engine).then(() => {
-    // router.push('/engines')
-    // binaryLocation: binaryLocation.value,
-  })
+  if (!binaryLocation.value) {
+    errors.value = {
+      binaryLocation: ['Please select a binary file'],
+    }
+    return
+  }
+
+  saveEngineToLichess(engine)
+    .then((data) => {
+      // router.push('/engines')
+    })
+    .catch((e) => {
+      errors.value = e
+    })
 }
 </script>
 
@@ -90,6 +104,11 @@ function submit() {
                   autocomplete="given-name"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                 />
+                <ul class="text-sm text-red-600">
+                  <li v-for="error in errors.name" :key="error">
+                    {{ error }}
+                  </li>
+                </ul>
               </div>
             </div>
 
@@ -177,6 +196,11 @@ function submit() {
                 <p class="mt-2 text-sm text-gray-500">
                   {{ binaryLocation }}
                 </p>
+                <ul class="text-sm text-red-600">
+                  <li v-for="error in errors.binaryLocation" :key="error">
+                    {{ error }}
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
