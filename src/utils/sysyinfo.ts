@@ -66,6 +66,12 @@ export function generateMaxHashOptions(systemMemory: number): MaxHashOption[] {
   return maxHashOptions
 }
 
+export function getDefaultMaxThreadsValue(cpus_len: number) {
+  // defaulting to 1 less than the number of cpus
+  // to leave a core free for other processes
+  return Math.max(cpus_len - 1, 1)
+}
+
 if (import.meta.vitest) {
   const { it, expect, vi } = import.meta.vitest
 
@@ -88,5 +94,12 @@ if (import.meta.vitest) {
       megabytes: 32768,
       label: '32 GB',
     })
+  })
+
+  it('gets default max threads value', () => {
+    expect(getDefaultMaxThreadsValue(8)).toBe(7)
+    expect(getDefaultMaxThreadsValue(16)).toBe(15)
+
+    expect(getDefaultMaxThreadsValue(1)).toBe(1)
   })
 }

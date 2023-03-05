@@ -6,6 +6,7 @@ import { NewEngine } from '../stores/engines'
 import { saveEngineToLichess } from '../utils/engine-crud'
 import {
   generateMaxHashOptions,
+  getDefaultMaxThreadsValue,
   MaxHashOption,
   sysinfo,
 } from '../utils/sysyinfo'
@@ -35,7 +36,7 @@ sysinfo().then((systemInfo) => {
     { length: systemInfo.cpus_len },
     (_, i) => i + 1
   )
-  maxThreads.value = systemInfo.cpus_len
+  maxThreads.value = getDefaultMaxThreadsValue(systemInfo.cpus_len)
 })
 
 function selectEngineFile() {

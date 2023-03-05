@@ -10,6 +10,7 @@ import {
   generateMaxHashOptions,
   sysinfo,
   memoryToHumanReadable,
+  getDefaultMaxThreadsValue,
 } from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
 import { LichessEngine, useEnginesStore } from '../stores/engines'
@@ -55,7 +56,7 @@ async function addEngineFromDirectory(engine: EngineListing) {
   })
 
   sysinfo().then((systemInfo) => {
-    let maxThreads = systemInfo.cpus_len
+    let maxThreads = getDefaultMaxThreadsValue(systemInfo.cpus_len)
 
     let maxHashOptions = generateMaxHashOptions(
       systemInfo.total_memory / 1024 / 1024
