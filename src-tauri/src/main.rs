@@ -18,6 +18,7 @@ mod lichess;
 
 pub mod db;
 pub mod schema;
+pub mod utils;
 
 #[tauri::command]
 fn check_for_work(window: Window) {

@@ -1,8 +1,5 @@
-use std::path;
-
+use crate::{schema, utils::get_app_data_dir};
 use diesel::prelude::*;
-
-use crate::schema;
 
 #[derive(Queryable)]
 pub struct SqlSetting {
@@ -32,17 +29,7 @@ struct NewEngine<'a> {
 }
 
 pub fn establish_connection() -> SqliteConnection {
-    let path_to_db_file = path::Path::new(&tauri::api::path::local_data_dir().unwrap())
-        .join("lichess-tauri")
-        .join("lichess-tauri.sqlite");
-
-    let app_data_dir = path_to_db_file.parent().unwrap();
-
-    assert!(
-        app_data_dir.exists() || std::fs::create_dir(app_data_dir).is_ok(),
-        "unable to create path {:?}",
-        app_data_dir.to_str().unwrap()
-    );
+    let path_to_db_file = get_app_data_dir().join("db.sqlite");
 
     let database_url = path_to_db_file
         .to_str()
