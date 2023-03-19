@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { open as openShell } from '@tauri-apps/api/shell'
-import { open as openDialog } from '@tauri-apps/api/dialog'
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { saveEngineToLichess } from '../utils/engine-crud'
@@ -43,16 +42,8 @@ function refreshEngineList(): void {
 refreshEngineList()
 
 async function addEngineFromDirectory(engine: EngineListing) {
-  const folderPath = await openDialog({
-    title: 'Select the folder where you want to save the engine',
-    directory: true,
-  })
-
-  if (!folderPath) return // user cancelled the dialog
-
   let path_to_binary = await invoke<string>('download_engine_to_folder', {
     engine: engine,
-    folder: folderPath,
   })
 
   sysinfo().then((systemInfo) => {
@@ -150,10 +141,7 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
         role="list"
         class="mt-6 divide-y divide-gray-200 border-t border-b border-gray-200"
       >
-        <li
-          v-for="engine in engineDirectory"
-          @click="addEngineFromDirectory(engine)"
-        >
+        <li v-for="engine in engineDirectory">
           <div class="group relative flex items-start space-x-3 py-4">
             <div class="flex-shrink-0">
               <span
@@ -164,10 +152,8 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
             </div>
             <div class="min-w-0 flex-1">
               <div class="text-sm font-medium text-gray-900">
-                <a href="#">
-                  <span class="absolute inset-0" aria-hidden="true"></span>
-                  {{ engine.name }} {{ engine.version }}
-                </a>
+                <span class="absolute inset-0" aria-hidden="true"></span>
+                {{ engine.name }} {{ engine.version }}
               </div>
               <p class="text-sm text-gray-500">
                 {{ engine.description }}
@@ -177,23 +163,15 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
                 {{ engine.website }}
               </p>
             </div>
-            <div class="flex-shrink-0 self-center">
-              <!-- Heroicon name: mini/chevron-right -->
-              <svg
-                class="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
           </div>
+          <p>
+            <a
+              href="#"
+              @click.prevent="addEngineFromDirectory(engine)"
+              class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+              >Click here to install</a
+            >
+          </p>
         </li>
       </ul>
       <div class="mt-6 flex">

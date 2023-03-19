@@ -3,9 +3,12 @@ use std::fs::File;
 use std::io;
 use std::os::unix::prelude::PermissionsExt;
 use std::path::Path;
+use std::path::PathBuf;
 
 use serde::Deserialize;
 use serde::Serialize;
+
+use crate::utils::get_app_data_dir;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Engine {
@@ -26,8 +29,20 @@ pub struct Binary {
     binary_filename: String,
 }
 
-pub fn download_to_folder(engine: Engine, folder: &str) -> String {
-    println!("Downloading engine {:?} to {}", engine, folder);
+pub fn download_to_folder(engine: Engine) -> PathBuf {
+    let engines_path = get_app_data_dir().join("engines");
+
+    assert!(
+        engines_path.exists() || std::fs::create_dir(&engines_path).is_ok(),
+        "Error creating engine directory at {:?}",
+        engines_path.to_str().unwrap()
+    );
+
+    println!(
+        "Downloading engine {} to {}",
+        engine.name,
+        engines_path.to_str().unwrap()
+    );
 
     let binary = engine
         .binaries
@@ -42,15 +57,17 @@ pub fn download_to_folder(engine: Engine, folder: &str) -> String {
         .to_str()
         .unwrap();
 
+    let zip_path = engines_path.join(filename);
+
     let mut resp = reqwest::blocking::get(&binary.zip).unwrap();
-    let mut file = File::create(format!("{}/{}", folder, filename)).unwrap();
+    let mut file = File::create(&zip_path).unwrap();
     io::copy(&mut resp, &mut file).unwrap();
 
     let mut archive =
-        zip::ZipArchive::new(File::open(format!("{}/{}", folder, filename)).unwrap()).unwrap();
+        zip::ZipArchive::new(File::open(&zip_path).unwrap()).expect("Error opening zip file");
     for i in 0..archive.len() {
         let mut file = archive.by_index(i).unwrap();
-        let outpath = format!("{}/{}", folder, file.name());
+        let outpath = engines_path.join(file.name());
 
         {
             let comment = file.comment();
@@ -60,15 +77,8 @@ pub fn download_to_folder(engine: Engine, folder: &str) -> String {
         }
 
         if (*file.name()).ends_with('/') {
-            println!("File {} extracted to \"{}\"", i, outpath);
             fs::create_dir_all(&outpath).unwrap();
         } else {
-            println!(
-                "File {} extracted to \"{}\" ({} bytes)",
-                i,
-                outpath,
-                file.size()
-            );
             if let Some(p) = Path::new(&outpath).parent() {
                 if !p.exists() {
                     fs::create_dir_all(p).unwrap();
@@ -80,10 +90,11 @@ pub fn download_to_folder(engine: Engine, folder: &str) -> String {
     }
 
     let filename_without_extension = Path::new(&filename).file_stem().unwrap().to_str().unwrap();
-    let path_to_binary = format!(
-        "{}/{}/{}",
-        folder, filename_without_extension, binary.binary_filename
-    );
+    let path_to_binary = engines_path
+        .join(filename_without_extension)
+        .join(&binary.binary_filename);
+
+    println!("path_to_binary: {}", path_to_binary.to_str().unwrap());
 
     // Make the binary executable
     let mut perms = fs::metadata(&path_to_binary).unwrap().permissions();
