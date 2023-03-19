@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - run: npm ci
-      - run: npx vue-tsc --noEmit
+      - run: npm run tsc
 
   check-formatting:
     runs-on: ubuntu-latest
@@ -32,4 +32,4 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm ci
-      - run: npm test
+      - run: npm run tsc
