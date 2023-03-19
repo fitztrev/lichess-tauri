@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "test": "vitest run",
+    "tsc": "vue-tsc --noEmit",
     "watch": "vitest"
   },
   "dependencies": {
