@@ -3,13 +3,15 @@ import { useEventLogsStore } from '../stores/event-logs'
 import PageTitle from './PageTitle.vue'
 import GettingStarted from './GettingStarted.vue'
 import { useSettingsStore } from '../stores/settings'
+import { useEnginesStore } from '../stores/engines';
 
+const engines = useEnginesStore()
 const settings = useSettingsStore()
 const eventLogs = useEventLogsStore()
 </script>
 
 <template>
-  <GettingStarted v-if="!settings.isLoggedIn" />
+  <GettingStarted v-if="!settings.isLoggedIn || !engines.hasEngines" />
 
   <template v-else>
     <PageTitle>Dashboard</PageTitle>
