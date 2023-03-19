@@ -3,7 +3,7 @@ import { useEventLogsStore } from '../stores/event-logs'
 import PageTitle from './PageTitle.vue'
 import GettingStarted from './GettingStarted.vue'
 import { useSettingsStore } from '../stores/settings'
-import { useEnginesStore } from '../stores/engines';
+import { useEnginesStore } from '../stores/engines'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()

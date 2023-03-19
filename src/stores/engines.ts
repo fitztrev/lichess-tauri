@@ -41,7 +41,7 @@ export const useEnginesStore = defineStore('engines', {
   getters: {
     hasEngines(): boolean {
       return this.engines.length > 0
-    }
+    },
   },
   actions: {},
 })
