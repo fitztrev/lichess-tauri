@@ -13,61 +13,49 @@
           "os": "linux",
           "architecture": "bmi2",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_linux_x64_bmi2.zip",
-          "binary_filename": "stockfish_15.1_x64_bmi2"
+          "binary_filename": "stockfish_15.1_linux_x64_bmi2/stockfish_15.1_x64_bmi2"
         },
         {
           "os": "linux",
           "architecture": "avx2",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_linux_x64_avx2.zip",
-          "binary_filename": "stockfish-ubuntu-20.04-x86-64-avx2"
+          "binary_filename": "stockfish_15.1_linux_x64_avx2/stockfish-ubuntu-20.04-x86-64-avx2"
         },
         {
           "os": "linux",
           "architecture": "popcnt",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_linux_x64_popcnt.zip",
-          "binary_filename": "stockfish-ubuntu-20.04-x86-64-modern"
+          "binary_filename": "stockfish_15.1_linux_x64_popcnt/stockfish-ubuntu-20.04-x86-64-modern"
         },
         {
           "os": "linux",
           "architecture": "default",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_linux_x64.zip",
-          "binary_filename": "stockfish-ubuntu-20.04-x86-64"
-        },
-        {
-          "os": "mac",
-          "architecture": "apple-silicon",
-          "zip": "todo",
-          "binary_filename": "todo"
-        },
-        {
-          "os": "mac",
-          "architecture": "default",
-          "zip": "todo",
-          "binary_filename": "todo"
+          "binary_filename": "stockfish_15.1_linux_x64/stockfish-ubuntu-20.04-x86-64"
         },
         {
           "os": "windows",
           "architecture": "bmi2",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_win_x64_bmi2.zip",
-          "binary_filename": "stockfish_15.1_x64_bmi2.exe"
+          "binary_filename": "stockfish_15.1_win_x64_bmi2/stockfish_15.1_x64_bmi2.exe"
         },
         {
           "os": "windows",
           "architecture": "avx2",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_win_x64_avx2.zip",
-          "binary_filename": "stockfish-windows-2022-x86-64-avx2.exe"
+          "binary_filename": "stockfish_15.1_win_x64_avx2/stockfish-windows-2022-x86-64-avx2.exe"
         },
         {
           "os": "windows",
           "architecture": "popcnt",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_win_x64_popcnt.zip",
-          "binary_filename": "stockfish-windows-2022-x86-64-modern.exe"
+          "binary_filename": "stockfish_15.1_win_x64_popcnt/stockfish-windows-2022-x86-64-modern.exe"
         },
         {
           "os": "windows",
           "architecture": "default",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_win_x64.zip",
-          "binary_filename": "stockfish-windows-2022-x86-64.exe"
+          "binary_filename": "stockfish_15.1_win_x64/stockfish-windows-2022-x86-64.exe"
         }
       ]
     }
