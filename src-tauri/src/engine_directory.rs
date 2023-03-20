@@ -89,9 +89,7 @@ pub fn download_to_folder(engine: Engine) -> PathBuf {
         }
     }
 
-    let filename_without_extension = Path::new(&filename).file_stem().unwrap().to_str().unwrap();
     let path_to_binary = engines_path
-        .join(filename_without_extension)
         .join(&binary.binary_filename);
 
     println!("path_to_binary: {}", path_to_binary.to_str().unwrap());
