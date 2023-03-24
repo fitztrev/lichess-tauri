@@ -8,11 +8,15 @@ import { router } from '../router'
 import {
   generateMaxHashOptions,
   sysinfo,
-  memoryToHumanReadable,
   getDefaultMaxThreadsValue,
 } from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
-import { LichessEngine, useEnginesStore } from '../stores/engines'
+import Engine from './Engine.vue'
+import {
+  LichessEngine,
+  refreshEngineList,
+  useEnginesStore,
+} from '../stores/engines'
 import { useSettingsStore } from '../stores/settings'
 
 const engines = useEnginesStore()
@@ -22,21 +26,6 @@ const engineDirectory = ref<EngineListing[]>([])
 function openContainingFolder(filepath: string) {
   let dir = filepath.substring(0, filepath.lastIndexOf('/'))
   openShell(dir)
-}
-
-async function getUserEnginesFromLichess(): Promise<LichessEngine[]> {
-  let url = `${settings.lichessHost}/api/external-engine`
-  return await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${settings.lichess_token}`,
-    },
-  }).then<LichessEngine[]>((response) => response.json())
-}
-
-function refreshEngineList(): void {
-  getUserEnginesFromLichess().then((data) => {
-    engines.engines = data
-  })
 }
 
 refreshEngineList()
@@ -101,32 +90,7 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
     <div class="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" class="divide-y divide-gray-200">
         <li v-for="engine in engines.engines">
-          <a href="#" class="block hover:bg-gray-50">
-            <div class="px-4 py-4 sm:px-6">
-              <div class="flex items-center justify-between">
-                <p class="truncate text-sm font-medium text-indigo-600">
-                  {{ engine.name }}
-                </p>
-                <div class="ml-2 flex flex-shrink-0">
-                  <p
-                    v-for="variant in engine.variants"
-                    class="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800"
-                  >
-                    {{ variant }}
-                  </p>
-                </div>
-              </div>
-              <div class="mt-2 sm:flex sm:justify-between">
-                <div class="sm:flex">
-                  <p class="flex items-center text-sm text-gray-500">
-                    {{ engine.maxThreads }} threads &bullet;
-                    {{ memoryToHumanReadable(engine.maxHash) }} &bullet;
-                    {{ engine.defaultDepth }} depth
-                  </p>
-                </div>
-              </div>
-            </div>
-          </a>
+          <Engine :engine="engine" />
         </li>
       </ul>
     </div>

@@ -28,3 +28,23 @@ export async function saveEngineToLichess(
     return response.json()
   })
 }
+
+export async function deleteEngineFromLichess(
+  engine: LichessEngine
+): Promise<void> {
+  const settings = useSettingsStore()
+
+  return await fetch(
+    `${settings.lichessHost}/api/external-engine/${engine.id}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${settings.lichess_token}`,
+      },
+    }
+  ).then(async (response) => {
+    if (!response.ok) {
+      throw await response.json()
+    }
+  })
+}
