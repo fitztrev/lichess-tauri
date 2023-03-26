@@ -17,6 +17,6 @@ for engine in data['engines']:
         zip = ZipFile(BytesIO(resp.read()))
 
         assert binary['binary_filename'] in zip.namelist(
-        ), f"Binary {binary['binary_filename']} not found in {binary['zip']}"
+        ), f"\033[91m Binary {binary['binary_filename']} not found in {binary['zip']} \033[0m"
 
         print(f"\033[92m ✓ Found {binary['binary_filename']} \033[0m")
