@@ -19,4 +19,4 @@ for engine in data['engines']:
         assert binary['binary_filename'] in zip.namelist(
         ), f"Binary {binary['binary_filename']} not found in {binary['zip']}"
 
-        print(f"✓ Found {binary['binary_filename']}")
+        print(f"\033[92m ✓ Found {binary['binary_filename']} \033[0m")
