@@ -17,10 +17,8 @@ import {
   refreshEngineList,
   useEnginesStore,
 } from '../stores/engines'
-import { useSettingsStore } from '../stores/settings'
 
 const engines = useEnginesStore()
-const settings = useSettingsStore()
 const engineDirectory = ref<EngineListing[]>([])
 
 function openContainingFolder(filepath: string) {
@@ -140,7 +138,7 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
       </ul>
       <div class="mt-6 flex">
         <router-link
-          to="/engines/custom"
+          to="/engines/new"
           class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
         >
           Or add your own engine

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { open } from '@tauri-apps/api/dialog'
 import { Ref, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { router } from '../router'
-import { NewEngine } from '../stores/engines'
+import { LichessEngine, NewEngine, useEnginesStore } from '../stores/engines'
 import { saveEngineToLichess } from '../utils/engine-crud'
 import {
   generateMaxHashOptions,
@@ -10,12 +11,13 @@ import {
   MaxHashOption,
   sysinfo,
 } from '../utils/sysyinfo'
-import PageTitle from './PageTitle.vue'
 
-const defaultHash = 16
+const route = useRoute()
+const editEngineId = route.params.id as string | undefined
 
 const name = ref('')
 const maxThreads = ref(1)
+const defaultHash = 16
 const maxHash = ref(defaultHash)
 const defaultDepth = ref(30)
 const binaryLocation: Ref<any> = ref('')
@@ -39,6 +41,14 @@ sysinfo().then((systemInfo) => {
   maxThreads.value = getDefaultMaxThreadsValue(systemInfo.cpus_len)
 })
 
+if (editEngineId) {
+  const engine = useEnginesStore().engines.find((e) => e.id === editEngineId) as LichessEngine
+  name.value = engine.name
+  maxThreads.value = engine.maxThreads
+  maxHash.value = engine.maxHash
+  defaultDepth.value = engine.defaultDepth
+}
+
 function selectEngineFile() {
   open({}).then((data) => {
     binaryLocation.value = data
@@ -56,16 +66,17 @@ function submit() {
     variants: ['chess'],
   }
 
-  if (!binaryLocation.value) {
+  if (!editEngineId && !binaryLocation.value) {
     errors.value = {
       binaryLocation: ['Please select a binary file'],
     }
     return
   }
 
-  saveEngineToLichess(engine)
+  saveEngineToLichess(engine, editEngineId)
     .then((data) => {
       // router.push('/engines')
+      // this.$router.push('/engines')
     })
     .catch((e) => {
       errors.value = e
@@ -74,8 +85,6 @@ function submit() {
 </script>
 
 <template>
-  <PageTitle>Add Custom Engine</PageTitle>
-
   <div class="page-content">
     <form class="space-y-8 divide-y divide-gray-200">
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
@@ -179,6 +188,7 @@ function submit() {
             </div>
 
             <div
+              v-if="!editEngineId"
               class="sm:grid sm:grid-cols-3 sm:items-center sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5"
             >
               <label for="photo" class="block text-sm font-medium text-gray-700"

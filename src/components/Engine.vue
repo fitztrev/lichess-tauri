@@ -43,4 +43,7 @@ function deleteEngine(): void {
     </div>
   </a>
   <a href="#" @click.prevent="deleteEngine">Delete</a>
+  <router-link :to="{ name: 'editEngine', params: { id: engine.id } }">
+    Edit
+  </router-link>
 </template>
