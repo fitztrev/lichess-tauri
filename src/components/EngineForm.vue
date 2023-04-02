@@ -42,7 +42,9 @@ sysinfo().then((systemInfo) => {
 })
 
 if (editEngineId) {
-  const engine = useEnginesStore().engines.find((e) => e.id === editEngineId) as LichessEngine
+  const engine = useEnginesStore().engines.find(
+    (e) => e.id === editEngineId
+  ) as LichessEngine
   name.value = engine.name
   maxThreads.value = engine.maxThreads
   maxHash.value = engine.maxHash
