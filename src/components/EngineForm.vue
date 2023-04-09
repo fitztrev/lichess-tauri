@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { open } from '@tauri-apps/api/dialog'
 import { Ref, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { router } from '../router'
+import { useRoute, useRouter } from 'vue-router'
 import { LichessEngine, NewEngine, useEnginesStore } from '../stores/engines'
 import { saveEngineToLichess } from '../utils/engine-crud'
 import {
@@ -13,6 +12,8 @@ import {
 } from '../utils/sysyinfo'
 
 const route = useRoute()
+const router = useRouter()
+
 const editEngineId = route.params.id as string | undefined
 
 const name = ref('')
@@ -32,13 +33,15 @@ sysinfo().then((systemInfo) => {
     systemInfo.total_memory / 1024 / 1024
   )
 
-  maxHash.value = maxHashOptions.value.at(-1)?.megabytes || defaultHash
-
   maxThreadOptions.value = Array.from(
     { length: systemInfo.cpus_len },
     (_, i) => i + 1
   )
-  maxThreads.value = getDefaultMaxThreadsValue(systemInfo.cpus_len)
+
+  if (!editEngineId) {
+    maxHash.value = maxHashOptions.value.at(-1)?.megabytes || defaultHash
+    maxThreads.value = getDefaultMaxThreadsValue(systemInfo.cpus_len)
+  }
 })
 
 if (editEngineId) {
@@ -77,8 +80,7 @@ function submit() {
 
   saveEngineToLichess(engine, editEngineId)
     .then((data) => {
-      // router.push('/engines')
-      // this.$router.push('/engines')
+      router.push('/engines')
     })
     .catch((e) => {
       errors.value = e

@@ -4,7 +4,6 @@ import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { saveEngineToLichess } from '../utils/engine-crud'
 import { RouterLink } from 'vue-router'
-import { router } from '../router'
 import {
   generateMaxHashOptions,
   sysinfo,
