@@ -1,4 +1,4 @@
-name: gh-pages
+name: github-pages
 
 on:
   workflow_dispatch:
