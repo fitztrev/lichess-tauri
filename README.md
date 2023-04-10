@@ -26,13 +26,11 @@ Tauri uses the OS's native webview. It can be compiled to a native binary for Wi
 ### Icon generation
 
 ```
-npm install svgexport -g
-svgexport src/assets/lichess-white.svg lichess.png 64x
-npm run tauri icon lichess.png
-rm lichess.png
+npx svgexport src/assets/lichess-pad4-white.svg icon.png 64x
+npm run tauri icon icon.png
 ```
 
-Delete the target directory and run `npm run tauri dev` again for it to take effect.
+Clear the cached build for it to take effect:
 
 ```
 rm -rf src-tauri/target
