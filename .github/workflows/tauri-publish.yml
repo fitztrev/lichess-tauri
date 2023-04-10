@@ -1,4 +1,4 @@
-name: 'tauri - publish'
+name: 'tauri-publish'
 on:
   push:
     tags:

@@ -1,4 +1,4 @@
-name: 'tauri - check'
+name: 'tauri-check'
 on: [push]
 
 jobs:
