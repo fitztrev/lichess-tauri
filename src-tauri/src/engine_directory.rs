@@ -1,7 +1,6 @@
 use std::fs;
 use std::fs::File;
 use std::io;
-use std::os::unix::prelude::PermissionsExt;
 use std::path::Path;
 use std::path::PathBuf;
 
@@ -89,15 +88,21 @@ pub fn download_to_folder(engine: Engine) -> PathBuf {
         }
     }
 
-    let path_to_binary = engines_path
-        .join(&binary.binary_filename);
+    let path_to_binary = engines_path.join(&binary.binary_filename);
 
     println!("path_to_binary: {}", path_to_binary.to_str().unwrap());
 
-    // Make the binary executable
-    let mut perms = fs::metadata(&path_to_binary).unwrap().permissions();
-    perms.set_mode(0o755);
-    fs::set_permissions(&path_to_binary, perms).unwrap();
+    make_engine_executable(&path_to_binary);
 
     path_to_binary
 }
+
+#[cfg(target_family = "unix")]
+fn make_engine_executable(path_to_binary: &PathBuf) {
+    let mut perms = fs::metadata(&path_to_binary).unwrap().permissions();
+    std::os::unix::prelude::PermissionsExt::set_mode(&mut perms, 0o755);
+    fs::set_permissions(&path_to_binary, perms).unwrap();
+}
+
+#[cfg(target_family = "windows")]
+fn make_engine_executable(_path_to_binary: &PathBuf) {}
