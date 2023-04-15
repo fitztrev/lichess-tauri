@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Chessground } from 'chessground'
-import { onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue'
 
-const boardElement = ref<HTMLElement | null>(null);
+const boardElement = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-    if (boardElement.value) {
-        const ground = Chessground(boardElement.value, {
-          viewOnly: true,
-        })
-    }
+  if (boardElement.value) {
+    const ground = Chessground(boardElement.value, {
+      viewOnly: true,
+    })
+  }
 })
 </script>
 
@@ -26,5 +26,5 @@ onMounted(() => {
 </style>
 
 <template>
-    <div ref="boardElement" class="chessboard"></div>
+  <div ref="boardElement" class="chessboard"></div>
 </template>
