@@ -20,6 +20,7 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",
     "chessground": "^8.3.7",
+    "chessops": "^0.12.7",
     "jsdom": "^21.1.0",
     "pinia": "^2.0.23",
     "pkce-challenge": "^3.0.0",

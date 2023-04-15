@@ -69,9 +69,15 @@ struct WorkRequest {
 }
 
 #[derive(Clone, Debug, Serialize)]
+enum EventPayloadType {
+    Status,
+    Uci,
+}
+
+#[derive(Clone, Debug, Serialize)]
 struct EventPayload {
-    event: String,
-    message: Option<String>,
+    event: EventPayloadType,
+    message: String,
     analysis_request: Option<AnalysisRequest>,
 }
 
@@ -81,16 +87,6 @@ fn send_event_to_frontend(window: &Window, event: &str, payload: EventPayload) {
 }
 
 pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
-    send_event_to_frontend(
-        &window,
-        "lichess::work",
-        EventPayload {
-            event: "start".to_string(),
-            message: None,
-            analysis_request: None,
-        },
-    );
-
     let api_token = db::get_setting("lichess_token").unwrap();
     let provider_secret = db::get_setting("provider_secret").unwrap();
     let engine_host = db::get_setting("engine_host").unwrap();
@@ -112,8 +108,8 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
             &window,
             "lichess::work",
             EventPayload {
-                event: "starting long poll".to_string(),
-                message: None,
+                event: EventPayloadType::Status,
+                message: "Waiting for moves".to_string(),
                 analysis_request: None,
             },
         );
@@ -128,8 +124,8 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
             &window,
             "lichess::work",
             EventPayload {
-                event: "ending long poll".to_string(),
-                message: Some(response.status().to_string()),
+                event: EventPayloadType::Status,
+                message: "No moves received".to_string(),
                 analysis_request: None,
             },
         );
@@ -139,8 +135,8 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
                 &window,
                 "lichess::work",
                 EventPayload {
-                    event: "backing off".to_string(),
-                    message: Some(format!("Backing off for {} seconds", backoff_duration_secs)),
+                    event: EventPayloadType::Status,
+                    message: format!("Waiting for {} seconds", backoff_duration_secs),
                     analysis_request: None,
                 },
             );
@@ -158,8 +154,8 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
             &window,
             "lichess::work",
             EventPayload {
-                event: "received analysis request".to_string(),
-                message: None,
+                event: EventPayloadType::Status,
+                message: "Analyzing".to_string(),
                 analysis_request: Some(analysis_request.clone()),
             },
         );
@@ -167,15 +163,7 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
         let binary_filepath = db::get_engine_binary_path(&analysis_request.engine.id).unwrap();
 
         // Step 2) Send the FEN to the engine
-        send_event_to_frontend(
-            &window,
-            "lichess::work",
-            EventPayload {
-                event: "starting engine".to_string(),
-                message: Some(String::from(&binary_filepath)),
-                analysis_request: None,
-            },
-        );
+        println!("Starting engine: {}", binary_filepath);
 
         let mut engine = Command::new(binary_filepath)
             .stdin(Stdio::piped())
@@ -184,15 +172,6 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
 
         let engine_stdin = engine.stdin.as_mut().ok_or("Failed to get stdin")?;
 
-        send_event_to_frontend(
-            &window,
-            "lichess::work",
-            EventPayload {
-                event: "setting uci options".to_string(),
-                message: None,
-                analysis_request: None,
-            },
-        );
         // Set UCI options
         writeln!(engine_stdin, "setoption name UCI_AnalyseMode value true")?;
         writeln!(engine_stdin, "setoption name UCI_Chess960 value true")?;
@@ -218,15 +197,6 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
             analysis_request.work.moves.join(" ")
         )?;
 
-        send_event_to_frontend(
-            &window,
-            "lichess::work",
-            EventPayload {
-                event: "starting analysis".to_string(),
-                message: None,
-                analysis_request: None,
-            },
-        );
         if analysis_request.work.infinite {
             writeln!(engine_stdin, "go infinite")?;
         } else {
@@ -243,16 +213,6 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
 
         let (tx, rx) = std::sync::mpsc::channel();
         let client = client.clone();
-
-        send_event_to_frontend(
-            &window,
-            "lichess::work",
-            EventPayload {
-                event: "Starting thread to send analysis results".to_string(),
-                message: None,
-                analysis_request: None,
-            },
-        );
 
         std::thread::spawn(move || {
             // Step 3) Start a POST request stream to /api/external-engine/work/{id}
@@ -272,8 +232,8 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
                 &window,
                 "lichess::work",
                 EventPayload {
-                    event: "engine result".to_string(),
-                    message: Some(String::from(&line)),
+                    event: EventPayloadType::Uci,
+                    message: String::from(&line),
                     analysis_request: None,
                 },
             );
@@ -284,15 +244,6 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
                     break;
                 }
             } else if line.starts_with("bestmove") {
-                send_event_to_frontend(
-                    &window,
-                    "lichess::work",
-                    EventPayload {
-                        event: "best move".to_string(),
-                        message: Some(String::from(&line)),
-                        analysis_request: None,
-                    },
-                );
                 break;
             }
         }

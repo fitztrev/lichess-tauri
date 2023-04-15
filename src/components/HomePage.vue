@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useEventLogsStore } from '../stores/event-logs'
 import PageTitle from './PageTitle.vue'
 import GettingStarted from './GettingStarted.vue'
 import Chessboard from './Chessboard.vue'
 import { useSettingsStore } from '../stores/settings'
 import { useEnginesStore } from '../stores/engines'
+import { useAnalysisStore } from '../stores/analysis'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()
-const eventLogs = useEventLogsStore()
+const analysis = useAnalysisStore()
 </script>
 
 <template>
@@ -19,39 +19,53 @@ const eventLogs = useEventLogsStore()
 
     <div class="page-content">
       <Chessboard></Chessboard>
+      initial fen: {{ analysis.request.work?.initialFen }}
+      <br />
+      moves: {{ analysis.request.work?.moves }}
+      <br />
+      computed fen: {{ analysis.fen }}
 
-      <ul>
-        <li>evaluation</li>
-        <li>lowerbound|upperbound</li>
-        <li>depth</li>
-        <li>seldepth</li>
-        <li>nodes</li>
-        <li>nodes per second</li>
-        <li>hashfull</li>
-        <li>tbhits</li>
-        <li>time</li>
-      </ul>
+      <h3 class="font-bold m-3">Status</h3>
+      <p>{{ analysis.status }}</p>
 
-      <h3>Status</h3>
-      <p>waiting for move...</p>
-      <p>analyzing...</p>
-      <p>sleeping for n seconds...</p>
+      <table>
+        <tr>
+          <td>Evaluation</td>
+          <td>
+            {{ analysis.uci.score?.type }} {{ analysis.uci.score?.value }}
+          </td>
+        </tr>
+        <tr>
+          <td>Depth</td>
+          <td>{{ analysis.uci.depth }}</td>
+        </tr>
+        <tr>
+          <td>Sel Depth</td>
+          <td>{{ analysis.uci.seldepth }}</td>
+        </tr>
+        <tr>
+          <td>Nodes</td>
+          <td>{{ analysis.nodes }}</td>
+        </tr>
+        <tr>
+          <td>Nodes/sec</td>
+          <td>{{ analysis.nps }}</td>
+        </tr>
+        <tr>
+          <td>Hashfull</td>
+          <td>{{ analysis.uci.hashfull }}</td>
+        </tr>
+        <tr>
+          <td>Tablebase Hits</td>
+          <td>{{ analysis.uci.tbhits }}</td>
+        </tr>
+        <tr>
+          <td>Best Move</td>
+          <td>{{ analysis.uci.bestmove }}</td>
+        </tr>
+      </table>
 
-      <div
-        class="bg-white p-4 h-1/2 flex flex-col-reverse justify-end overflow-scroll font-mono"
-      >
-        <div
-          class="whitespace-nowrap"
-          v-if="eventLogs.logs.length"
-          v-for="log in eventLogs.logs"
-        >
-          {{ log.event }} {{ log.payload.event }}:
-          {{ log.payload.message }}
-          {{ log.payload.analysis_request }}
-        </div>
-
-        <div v-else>No analysis requests yet</div>
-      </div>
+      <pre>{{ analysis.uci }}</pre>
     </div>
   </template>
 </template>
