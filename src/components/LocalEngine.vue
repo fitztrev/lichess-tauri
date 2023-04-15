@@ -5,7 +5,6 @@ import { useSettingsStore } from '../stores/settings'
 import { LichessWorkEvent, useAnalysisStore } from '../stores/analysis'
 import { listen } from '@tauri-apps/api/event'
 import { useEnginesStore } from '../stores/engines'
-import { ref } from 'vue'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()

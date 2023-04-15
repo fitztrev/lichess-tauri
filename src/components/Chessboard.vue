@@ -6,7 +6,7 @@ const boardElement = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   if (boardElement.value) {
-    const ground = Chessground(boardElement.value, {
+    Chessground(boardElement.value, {
       viewOnly: true,
     })
   }

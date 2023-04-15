@@ -135,7 +135,7 @@ function parseUciString(uci: string): UciDetails {
 }
 
 if (import.meta.vitest) {
-  const { it, expect, test } = import.meta.vitest
+  const { expect, test } = import.meta.vitest
   test.each([
     [100, '100'],
     [1_090, '1.1k'],
