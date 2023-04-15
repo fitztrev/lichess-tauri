@@ -73,7 +73,7 @@ export function getDefaultMaxThreadsValue(cpus_len: number) {
 }
 
 if (import.meta.vitest) {
-  const { it, expect, vi } = import.meta.vitest
+  const { it, expect } = import.meta.vitest
 
   it('generates hash options for a 4GB system', () => {
     expect(generateMaxHashOptions(4096)).toStrictEqual([

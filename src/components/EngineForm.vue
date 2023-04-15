@@ -79,7 +79,7 @@ function submit() {
   }
 
   saveEngineToLichess(engine, editEngineId)
-    .then((data) => {
+    .then(() => {
       router.push('/engines')
     })
     .catch((e) => {

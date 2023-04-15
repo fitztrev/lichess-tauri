@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SystemInfo from './SystemInfo.vue'
 import { useSettingsStore } from '../stores/settings'
 import PageTitle from './PageTitle.vue'
 import LichessLogin from './LichessLogin.vue'
