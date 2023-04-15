@@ -4,7 +4,9 @@ import { open } from '@tauri-apps/api/shell'
 import { useSettingsStore } from '../stores/settings'
 import { LichessWorkEvent, useEventLogsStore } from '../stores/event-logs'
 import { listen } from '@tauri-apps/api/event'
+import { useEnginesStore } from '../stores/engines'
 
+const engines = useEnginesStore()
 const settings = useSettingsStore()
 const eventLogs = useEventLogsStore()
 
@@ -12,8 +14,14 @@ listen('lichess::work', (data: LichessWorkEvent) => {
   eventLogs.add(data)
 })
 
-function openLichess(url: string) {
-  open(`${settings.lichessHost}${url}`)
+function openAnalysisPageOnLichess() {
+  let url = settings.lichessHost + '/analysis'
+
+  if (engines.engines.length > 0) {
+    url += '?engine=' + engines.engines[0].id
+  }
+
+  open(url)
 }
 
 invoke('check_for_work')
@@ -42,7 +50,7 @@ invoke('check_for_work')
       ></path>
     </svg>
     Listening for requests from the
-    <a href="#" @click.prevent="openLichess('/analysis')" class="underline"
+    <a href="#" @click.prevent="openAnalysisPageOnLichess()" class="underline"
       >Analysis page</a
     >
   </div>
