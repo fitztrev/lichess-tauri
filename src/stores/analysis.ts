@@ -116,7 +116,7 @@ function parseUciString(uci: string): UciDetails {
     multipv: uci.match(/multipv (\d+)/)?.[1],
     score: {
       type: uci.match(/score (\w+)/)?.[1],
-      value: uci.match(/score \w+ (\d+)/)?.[1],
+      value: uci.match(/score \w+ (-?\d+)/)?.[1],
     },
     nodes: uci.match(/nodes (\d+)/)?.[1],
     nps: uci.match(/nps (\d+)/)?.[1],
@@ -196,6 +196,26 @@ if (import.meta.vitest) {
         pv: ['d1b3', 'd8e7'],
       },
     ],
+    [
+      'info depth 30 seldepth 39 multipv 1 score cp -20 nodes 12336105 nps 4630670 hashfull 981 tbhits 0 time 2664 pv b8c6 f1b5 g8f6',
+      {
+        depth: '30',
+        seldepth: '39',
+        multipv: '1',
+        score: {
+          type: 'cp',
+          value: '-20',
+        },
+        nodes: '12336105',
+        nps: '4630670',
+        hashfull: '981',
+        tbhits: '0',
+        time: '2664',
+        pv: ['b8c6', 'f1b5', 'g8f6'],
+      },
+    ],
+
+    
   ])('parses uci strings', (uci, expected) => {
     expect(parseUciString(uci)).toStrictEqual(expected)
   })
