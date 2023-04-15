@@ -24,8 +24,9 @@ const analysis = useAnalysisStore()
       <Chessboard :fen="analysis.fen"></Chessboard>
 
       <ul>
+        <li>Evaluation: {{ analysis.evaluation }}</li>
         <li>
-          Evaluation:
+          Score:
           {{ analysis.uci.score?.type }}
           {{ analysis.uci.score?.value }}
           {{ analysis.uci.score?.bound }}

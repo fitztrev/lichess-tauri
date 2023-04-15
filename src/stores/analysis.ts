@@ -14,15 +14,19 @@ export interface LichessWorkEvent {
   }
 }
 
+type UciScoreType = 'cp' | 'mate' | null
+
+interface UciScore {
+  type?: UciScoreType
+  value?: string
+  bound?: string | null
+}
+
 interface UciDetails {
   depth?: string
   seldepth?: string
   multipv?: string
-  score?: {
-    type?: string
-    value?: string
-    bound?: string
-  }
+  score?: UciScore
   nodes?: string
   nps?: string
   hashfull?: string
@@ -65,6 +69,8 @@ export const useAnalysisStore = defineStore('analysis', {
     uci: {} as UciDetails,
   }),
   getters: {
+    evaluation: (state) =>
+      state.uci.score ? convertScoreToEvaluation(state.uci.score) : '',
     nodes: (state) =>
       convertNumberToUnitString(parseInt(state.uci.nodes || '')),
     nps: (state) => convertNumberToUnitString(parseInt(state.uci.nps || '')),
@@ -116,9 +122,9 @@ function parseUciString(uci: string): UciDetails {
     seldepth: uci.match(/seldepth (\d+)/)?.[1],
     multipv: uci.match(/multipv (\d+)/)?.[1],
     score: {
-      type: uci.match(/score (\w+)/)?.[1],
+      type: uci.match(/score (\w+)/)?.[1] as UciScoreType,
       value: uci.match(/score \w+ (-?\d+)/)?.[1],
-      bound: uci.match(/(upperbound|lowerbound)/)?.[1] || '',
+      bound: uci.match(/(upperbound|lowerbound)/)?.[1] || null,
     },
     nodes: uci.match(/nodes (\d+)/)?.[1],
     nps: uci.match(/nps (\d+)/)?.[1],
@@ -149,8 +155,49 @@ function generateFenFromMoves(initialFen: string, moves: string[]): string {
   return fen
 }
 
+function convertScoreToEvaluation(score: UciScore): string {
+  if (score.type === 'mate') {
+    return `#${score.value}`
+  }
+
+  return (parseInt(score.value || '0') / 100).toFixed(2)
+}
+
 if (import.meta.vitest) {
   const { expect, test } = import.meta.vitest
+
+  test.each([
+    [
+      {
+        type: 'cp' as UciScoreType,
+        value: '123',
+      },
+      '1.23',
+    ],
+    [
+      {
+        type: 'cp' as UciScoreType,
+        value: '-123',
+      },
+      '-1.23',
+    ],
+    [
+      {
+        type: 'mate' as UciScoreType,
+        value: '1',
+      },
+      '#1',
+    ],
+    [
+      {
+        type: 'mate' as UciScoreType,
+        value: '-1',
+      },
+      '#-1',
+    ],
+  ])('converts score to evaluation', (score, evaluation) => {
+    expect(convertScoreToEvaluation(score)).toStrictEqual(evaluation)
+  })
 
   test.each([
     [
@@ -189,7 +236,7 @@ if (import.meta.vitest) {
         score: {
           type: 'cp',
           value: '209',
-          bound: '',
+          bound: null,
         },
         nodes: '21219470',
         nps: '4641178',
@@ -208,7 +255,7 @@ if (import.meta.vitest) {
         score: {
           type: 'cp',
           value: '-20',
-          bound: '',
+          bound: null,
         },
         nodes: '12336105',
         nps: '4630670',
