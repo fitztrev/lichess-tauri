@@ -17,30 +17,43 @@ const analysis = useAnalysisStore()
   <template v-else>
     <PageTitle>Dashboard</PageTitle>
 
-    <div class="page-content">
-      <h3 class="font-bold m-3">Status</h3>
-      <p>{{ analysis.status }}</p>
+    <div class="page-content flex">
+      <div class="flex-initial w-2/3">
+        <Chessboard :fen="analysis.fen"></Chessboard>
+      </div>
+      <div class="flex-initial w-1/3 text-center">
+        <h3 class="text-4xl">{{ analysis.evaluation }}</h3>
+        <p>
+          {{ analysis.uci.scoreType }}
+          {{ analysis.uci.scoreValue }}
+          {{ analysis.uci.scoreBound }}
+        </p>
+        <p>Evaluation</p>
 
-      <Chessboard :fen="analysis.fen"></Chessboard>
+        <h3 class="mt-2 text-xl">{{ analysis.uci.depth }}</h3>
+        <p>Depth</p>
 
-      <ul>
-        <li>Evaluation: {{ analysis.evaluation }}</li>
-        <li>
-          Score:
-          {{ analysis.uci.score?.type }}
-          {{ analysis.uci.score?.value }}
-          {{ analysis.uci.score?.bound }}
-        </li>
-        <li>Depth: {{ analysis.uci.depth }}</li>
-        <li>Sel Depth: {{ analysis.uci.seldepth }}</li>
-        <li>Nodes: {{ analysis.nodes }}</li>
-        <li>Nodes/sec: {{ analysis.nps }}</li>
-        <li>Hashfull: {{ analysis.uci.hashfull }}</li>
-        <li>Tablebase Hits: {{ analysis.uci.tbhits }}</li>
-        <li>Best Move: {{ analysis.uci.bestmove }}</li>
-      </ul>
+        <h3 class="mt-2 text-xl">{{ analysis.uci.seldepth }}</h3>
+        <p>Sel Depth</p>
 
-      <pre class="mt-12">{{ analysis.uci }}</pre>
+        <h3 class="mt-2 text-xl">{{ analysis.nodes }}</h3>
+        <p>Nodes</p>
+
+        <h3 class="mt-2 text-xl">{{ analysis.nps }}</h3>
+        <p>Nodes/sec</p>
+
+        <h3 class="mt-2 text-xl">{{ analysis.time }}</h3>
+        <p>Time</p>
+
+        <h3 class="mt-2 text-xl">{{ analysis.hashUsage }}</h3>
+        <p>Hash Usage %</p>
+
+        <h3 class="mt-2 text-xl">{{ analysis.uci.tbhits }}</h3>
+        <p>Tablebase Hits</p>
+
+        <h3 class="mt-8 text-lg">{{ analysis.status }}</h3>
+        <p>Status</p>
+      </div>
     </div>
   </template>
 </template>
