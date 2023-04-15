@@ -1,4 +1,3 @@
-import { invoke } from '@tauri-apps/api'
 import { defineStore } from 'pinia'
 import { useSettingsStore } from './settings'
 

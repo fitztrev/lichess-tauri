@@ -23,7 +23,7 @@ export function trimTrailingSlash(url: string) {
 }
 
 if (import.meta.vitest) {
-  const { it, expect, vi } = import.meta.vitest
+  const { it, expect } = import.meta.vitest
 
   it('trims trailing slashes', () => {
     expect(trimTrailingSlash('https://lichess.org/')).toStrictEqual(

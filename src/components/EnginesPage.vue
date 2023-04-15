@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { open as openShell } from '@tauri-apps/api/shell'
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api/tauri'
 import { saveEngineToLichess } from '../utils/engine-crud'
@@ -11,19 +10,10 @@ import {
 } from '../utils/sysyinfo'
 import PageTitle from './PageTitle.vue'
 import Engine from './Engine.vue'
-import {
-  LichessEngine,
-  refreshEngineList,
-  useEnginesStore,
-} from '../stores/engines'
+import { refreshEngineList, useEnginesStore } from '../stores/engines'
 
 const engines = useEnginesStore()
 const engineDirectory = ref<EngineListing[]>([])
-
-function openContainingFolder(filepath: string) {
-  let dir = filepath.substring(0, filepath.lastIndexOf('/'))
-  openShell(dir)
-}
 
 refreshEngineList()
 
