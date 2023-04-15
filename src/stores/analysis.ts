@@ -21,6 +21,7 @@ interface UciDetails {
   score?: {
     type?: string
     value?: string
+    bound?: string
   }
   nodes?: string
   nps?: string
@@ -57,7 +58,7 @@ interface LichessAnalysisRequest {
   }
 }
 
-export const useAnalysisStore = defineStore('event-logs', {
+export const useAnalysisStore = defineStore('analysis', {
   state: () => ({
     status: '',
     request: {} as LichessAnalysisRequest,
@@ -117,6 +118,7 @@ function parseUciString(uci: string): UciDetails {
     score: {
       type: uci.match(/score (\w+)/)?.[1],
       value: uci.match(/score \w+ (-?\d+)/)?.[1],
+      bound: uci.match(/(upperbound|lowerbound)/)?.[1] || '',
     },
     nodes: uci.match(/nodes (\d+)/)?.[1],
     nps: uci.match(/nps (\d+)/)?.[1],
@@ -187,6 +189,7 @@ if (import.meta.vitest) {
         score: {
           type: 'cp',
           value: '209',
+          bound: '',
         },
         nodes: '21219470',
         nps: '4641178',
@@ -205,6 +208,7 @@ if (import.meta.vitest) {
         score: {
           type: 'cp',
           value: '-20',
+          bound: '',
         },
         nodes: '12336105',
         nps: '4630670',
@@ -214,8 +218,25 @@ if (import.meta.vitest) {
         pv: ['b8c6', 'f1b5', 'g8f6'],
       },
     ],
-
-    
+    [
+      'info depth 28 seldepth 36 multipv 1 score cp -119 lowerbound nodes 27756518 nps 4392549 hashfull 1000 tbhits 0 time 6319 pv b1c3',
+      {
+        depth: '28',
+        hashfull: '1000',
+        multipv: '1',
+        nodes: '27756518',
+        nps: '4392549',
+        pv: ['b1c3'],
+        score: {
+          type: 'cp',
+          value: '-119',
+          bound: 'lowerbound',
+        },
+        seldepth: '36',
+        tbhits: '0',
+        time: '6319',
+      },
+    ],
   ])('parses uci strings', (uci, expected) => {
     expect(parseUciString(uci)).toStrictEqual(expected)
   })

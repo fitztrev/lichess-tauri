@@ -18,54 +18,28 @@ const analysis = useAnalysisStore()
     <PageTitle>Dashboard</PageTitle>
 
     <div class="page-content">
-      <Chessboard :fen="analysis.fen"></Chessboard>
-      initial fen: {{ analysis.request.work?.initialFen }}
-      <br />
-      moves: {{ analysis.request.work?.moves }}
-      <br />
-      computed fen: {{ analysis.fen }}
-
       <h3 class="font-bold m-3">Status</h3>
       <p>{{ analysis.status }}</p>
 
-      <table>
-        <tr>
-          <td>Evaluation</td>
-          <td>
-            {{ analysis.uci.score?.type }} {{ analysis.uci.score?.value }}
-          </td>
-        </tr>
-        <tr>
-          <td>Depth</td>
-          <td>{{ analysis.uci.depth }}</td>
-        </tr>
-        <tr>
-          <td>Sel Depth</td>
-          <td>{{ analysis.uci.seldepth }}</td>
-        </tr>
-        <tr>
-          <td>Nodes</td>
-          <td>{{ analysis.nodes }}</td>
-        </tr>
-        <tr>
-          <td>Nodes/sec</td>
-          <td>{{ analysis.nps }}</td>
-        </tr>
-        <tr>
-          <td>Hashfull</td>
-          <td>{{ analysis.uci.hashfull }}</td>
-        </tr>
-        <tr>
-          <td>Tablebase Hits</td>
-          <td>{{ analysis.uci.tbhits }}</td>
-        </tr>
-        <tr>
-          <td>Best Move</td>
-          <td>{{ analysis.uci.bestmove }}</td>
-        </tr>
-      </table>
+      <Chessboard :fen="analysis.fen"></Chessboard>
 
-      <pre>{{ analysis.uci }}</pre>
+      <ul>
+        <li>
+          Evaluation:
+          {{ analysis.uci.score?.type }}
+          {{ analysis.uci.score?.value }}
+          {{ analysis.uci.score?.bound }}
+        </li>
+        <li>Depth: {{ analysis.uci.depth }}</li>
+        <li>Sel Depth: {{ analysis.uci.seldepth }}</li>
+        <li>Nodes: {{ analysis.nodes }}</li>
+        <li>Nodes/sec: {{ analysis.nps }}</li>
+        <li>Hashfull: {{ analysis.uci.hashfull }}</li>
+        <li>Tablebase Hits: {{ analysis.uci.tbhits }}</li>
+        <li>Best Move: {{ analysis.uci.bestmove }}</li>
+      </ul>
+
+      <pre class="mt-12">{{ analysis.uci }}</pre>
     </div>
   </template>
 </template>
