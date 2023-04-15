@@ -21,14 +21,6 @@ pub mod schema;
 pub mod utils;
 
 #[tauri::command]
-fn check_for_work(window: Window) {
-    thread::spawn(move || match lichess::work(window) {
-        Ok(_) => println!("Success"),
-        Err(e) => println!("Error: {}", e),
-    });
-}
-
-#[tauri::command]
 fn get_all_settings() -> Value {
     let settings = db::get_all_settings();
 
@@ -116,7 +108,6 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             add_engine,
-            check_for_work,
             delete_setting,
             download_engine_to_folder,
             get_all_settings,
@@ -124,6 +115,15 @@ fn main() {
             start_oauth_server,
             update_setting,
         ])
+        .setup(|app| {
+            let app_handle = app.handle();
+
+            thread::spawn(move || match lichess::work(&app_handle) {
+                Ok(_) => println!("Success"),
+                Err(e) => println!("Error: {}", e),
+            });
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

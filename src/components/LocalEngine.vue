@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { invoke } from '@tauri-apps/api/tauri'
 import { open } from '@tauri-apps/api/shell'
 import { useSettingsStore } from '../stores/settings'
 import { LichessWorkEvent, useAnalysisStore } from '../stores/analysis'
@@ -23,8 +22,6 @@ function openAnalysisPageOnLichess() {
 
   open(url)
 }
-
-invoke('check_for_work')
 </script>
 
 <template>

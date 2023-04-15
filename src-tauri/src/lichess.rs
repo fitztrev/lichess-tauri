@@ -9,7 +9,7 @@ use reqwest::{
     header::{self, HeaderMap},
 };
 use serde::{Deserialize, Serialize};
-use tauri::Window;
+use tauri::{AppHandle, Manager};
 
 use crate::db;
 
@@ -81,12 +81,12 @@ struct EventPayload {
     analysis_request: Option<AnalysisRequest>,
 }
 
-fn send_event_to_frontend(window: &Window, event: &str, payload: EventPayload) {
+fn send_event_to_frontend(app_handle: &AppHandle, event: &str, payload: EventPayload) {
     println!("event: {} | {:?}", event, payload);
-    window.emit(event, payload).unwrap();
+    app_handle.emit_all(event, payload).unwrap();
 }
 
-pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
+pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
     let api_token = db::get_setting("lichess_token").unwrap();
     let provider_secret = db::get_setting("provider_secret").unwrap();
     let engine_host = db::get_setting("engine_host").unwrap();
@@ -105,7 +105,7 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
         // Step 1) Long poll for analysis requests
         // When a move is made on the Analysis board, it will be returned from this endpoint
         send_event_to_frontend(
-            &window,
+            app_handle,
             "lichess::work",
             EventPayload {
                 event: EventPayloadType::Status,
@@ -121,7 +121,7 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
             .send()?;
 
         send_event_to_frontend(
-            &window,
+            app_handle,
             "lichess::work",
             EventPayload {
                 event: EventPayloadType::Status,
@@ -132,7 +132,7 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
 
         if response.status() != 200 {
             send_event_to_frontend(
-                &window,
+                app_handle,
                 "lichess::work",
                 EventPayload {
                     event: EventPayloadType::Status,
@@ -151,7 +151,7 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
         let analysis_request = response.json::<AnalysisRequest>()?;
 
         send_event_to_frontend(
-            &window,
+            app_handle,
             "lichess::work",
             EventPayload {
                 event: EventPayloadType::Status,
@@ -229,7 +229,7 @@ pub fn work(window: Window) -> Result<(), Box<dyn Error>> {
         for line in BufReader::new(engine_stdout).lines() {
             let mut line = line?;
             send_event_to_frontend(
-                &window,
+                app_handle,
                 "lichess::work",
                 EventPayload {
                     event: EventPayloadType::Uci,
