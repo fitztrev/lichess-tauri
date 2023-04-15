@@ -2,16 +2,16 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { open } from '@tauri-apps/api/shell'
 import { useSettingsStore } from '../stores/settings'
-import { LichessWorkEvent, useEventLogsStore } from '../stores/event-logs'
+import { LichessWorkEvent, useAnalysisStore } from '../stores/analysis'
 import { listen } from '@tauri-apps/api/event'
 import { useEnginesStore } from '../stores/engines'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()
-const eventLogs = useEventLogsStore()
+const analysis = useAnalysisStore()
 
 listen('lichess::work', (data: LichessWorkEvent) => {
-  eventLogs.add(data)
+  analysis.add(data)
 })
 
 function openAnalysisPageOnLichess() {
