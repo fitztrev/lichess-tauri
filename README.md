@@ -1,8 +1,8 @@
 # Lichess Local Engine
 
-Run a more powerful version of Stockfish on your computer and connect it to the Analysis board. Lichess calls this an "External Engine". This is a desktop app that intends to make it easy to use.
+![image](https://user-images.githubusercontent.com/271432/232246956-27ac56e2-24c1-4543-8da9-7cdbd71075d6.png)
 
-![image](https://user-images.githubusercontent.com/271432/211694424-b8d955be-3275-4637-a4d4-5b1397f42c53.png)
+Recent versions of [Stockfish](https://stockfishchess.org/) have gotten too big to run in the browser. Lichess has [created an API](https://lichess.org/api#tag/External-engine) that allows you to run an engine on your own computer and send the results back to their Analysis page. This is a desktop app that intends to make it easy to use.
 
 ## Development Setup
 
