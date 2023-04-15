@@ -1,5 +1,5 @@
 import { Chess, Move, parseUci } from 'chessops'
-import { parseFen } from 'chessops/fen'
+import { makeFen, parseFen } from 'chessops/fen'
 import { makeSanAndPlay } from 'chessops/san'
 import { defineStore } from 'pinia'
 
@@ -67,18 +67,11 @@ export const useAnalysisStore = defineStore('event-logs', {
     nodes: (state) =>
       convertNumberToUnitString(parseInt(state.uci.nodes || '')),
     nps: (state) => convertNumberToUnitString(parseInt(state.uci.nps || '')),
-    fen: (state) => {
-      if (state.request.work.moves.length === 0) {
-        return state.request.work.initialFen
-      }
-
-      // const setup = parseFen(state.request.work.initialFen).unwrap()
-      // const pos = Chess.fromSetup(setup).unwrap()
-
-      // const move = state.request.work.moves[0]
-
-      // const san = makeSanAndPlay(pos, parseUci(move) as Move)
-    },
+    fen: (state) =>
+      generateFenFromMoves(
+        state.request.work?.initialFen,
+        state.request.work?.moves
+      ),
   },
   actions: {
     add(event: LichessWorkEvent) {
@@ -134,8 +127,39 @@ function parseUciString(uci: string): UciDetails {
   }
 }
 
+function generateFenFromMoves(initialFen: string, moves: string[]): string {
+  if (!initialFen)
+    return 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+
+  if (moves.length === 0) {
+    return initialFen
+  }
+
+  const setup = parseFen(initialFen).unwrap()
+  const pos = Chess.fromSetup(setup).unwrap()
+
+  let fen = initialFen
+  for (const move of moves) {
+    makeSanAndPlay(pos, parseUci(move) as Move)
+    fen = makeFen(pos.toSetup())
+  }
+
+  return fen
+}
+
 if (import.meta.vitest) {
   const { expect, test } = import.meta.vitest
+
+  test.each([
+    [
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      ['e2e4', 'e7e5'],
+      'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+    ],
+  ])('generates FEN from moves', (initialFen, moves, fen) => {
+    expect(generateFenFromMoves(initialFen, moves)).toStrictEqual(fen)
+  })
+
   test.each([
     [100, '100'],
     [1_090, '1.1k'],

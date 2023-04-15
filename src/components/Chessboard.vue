@@ -1,16 +1,32 @@
 <script setup lang="ts">
 import { Chessground } from 'chessground'
-import { onMounted, ref } from 'vue'
+import { Api } from 'chessground/api'
+import { onMounted, ref, watch } from 'vue'
 
+let board: Api | undefined
 const boardElement = ref<HTMLElement | null>(null)
+
+const props = defineProps<{
+  fen: string
+}>()
 
 onMounted(() => {
   if (boardElement.value) {
-    Chessground(boardElement.value, {
+    board = Chessground(boardElement.value, {
+      fen: props.fen,
       viewOnly: true,
     })
   }
 })
+
+watch(
+  () => props.fen,
+  (fen) => {
+    if (board) {
+      board.set({ fen })
+    }
+  }
+)
 </script>
 
 <style>

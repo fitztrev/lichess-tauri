@@ -18,7 +18,7 @@ const analysis = useAnalysisStore()
     <PageTitle>Dashboard</PageTitle>
 
     <div class="page-content">
-      <Chessboard></Chessboard>
+      <Chessboard :fen="analysis.fen"></Chessboard>
       initial fen: {{ analysis.request.work?.initialFen }}
       <br />
       moves: {{ analysis.request.work?.moves }}
