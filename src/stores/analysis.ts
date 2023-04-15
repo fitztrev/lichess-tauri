@@ -78,8 +78,9 @@ export const useAnalysisStore = defineStore('analysis', {
         : ''
     },
     nodes: (state) =>
-      convertNumberToUnitString(parseInt(state.uci.nodes || '')),
-    nps: (state) => convertNumberToUnitString(parseInt(state.uci.nps || '')),
+      state.uci.nodes ? convertNumberToUnitString(state.uci.nodes) : '',
+    nps: (state) =>
+      state.uci.nps ? convertNumberToUnitString(state.uci.nps) : '',
     fen: (state) =>
       generateFenFromMoves(
         state.request.work?.initialFen,
@@ -88,9 +89,10 @@ export const useAnalysisStore = defineStore('analysis', {
     whoseTurn(): ChessColor {
       return this.fen.split(' ')[1] as ChessColor
     },
-    time: (state) => convertTimeToUnitString(parseInt(state.uci.time || '')),
+    time: (state) =>
+      state.uci.time ? convertTimeToUnitString(state.uci.time) : '',
     hashUsage: (state) =>
-      convertHashfullToPercentage(parseInt(state.uci.hashfull || '')),
+      state.uci.hashfull ? convertHashfullToPercentage(state.uci.hashfull) : '',
   },
   actions: {
     add(event: LichessWorkEvent) {
@@ -107,7 +109,9 @@ export const useAnalysisStore = defineStore('analysis', {
   },
 })
 
-function convertNumberToUnitString(number: number): string {
+function convertNumberToUnitString(value: string): string {
+  const number = parseInt(value)
+
   if (number < 1000) {
     return number.toString()
   } else if (number < 1_000_000) {
@@ -180,30 +184,30 @@ function convertScoreToEvaluation(
   return (value > 0 ? '+' : '') + (value / 100).toFixed(2)
 }
 
-function convertTimeToUnitString(time: number): string {
-  return time / 1000 + 's'
+function convertTimeToUnitString(time: string): string {
+  return parseInt(time) / 1000 + 's'
 }
 
-function convertHashfullToPercentage(hashfull: number): string {
-  return `${hashfull / 10}%`
+function convertHashfullToPercentage(hashfull: string): string {
+  return `${parseInt(hashfull) / 10}%`
 }
 
 if (import.meta.vitest) {
   const { expect, test } = import.meta.vitest
 
   test.each([
-    [0, '0%'],
-    [100, '10%'],
-    [1000, '100%'],
-    [456, '45.6%'],
+    ['0', '0%'],
+    ['100', '10%'],
+    ['1000', '100%'],
+    ['456', '45.6%'],
   ])(`converts hashfull to percentage`, (hashfull, percent) => {
     expect(convertHashfullToPercentage(hashfull)).toBe(percent)
   })
 
   test.each([
-    [123, '0.123s'],
-    [1234, '1.234s'],
-    [12345, '12.345s'],
+    ['123', '0.123s'],
+    ['1234', '1.234s'],
+    ['12345', '12.345s'],
   ])(`converts time to unit string`, (time, unitString) => {
     expect(convertTimeToUnitString(time)).toBe(unitString)
   })
@@ -237,11 +241,11 @@ if (import.meta.vitest) {
   })
 
   test.each([
-    [100, '100'],
-    [1_090, '1.1k'],
-    [800_403, '800.4k'],
-    [3_123_456, '3.1M'],
-    [1_789_123_456, '1.8B'],
+    ['100', '100'],
+    ['1090', '1.1k'],
+    ['800403', '800.4k'],
+    ['3123456', '3.1M'],
+    ['1789123456', '1.8B'],
   ])('converts numbers to string representation', (number, withUnits) => {
     expect(convertNumberToUnitString(number)).toStrictEqual(withUnits)
   })
