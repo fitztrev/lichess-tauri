@@ -8,7 +8,7 @@ export interface LichessWorkEvent {
   event: string
   windowLabel: string
   payload: {
-    event: 'Status' | 'Uci'
+    event: 'Sleep' | 'Status' | 'Uci'
     message: string
     analysis_request: false
   }
@@ -66,6 +66,7 @@ export const useAnalysisStore = defineStore('analysis', {
     status: '',
     request: {} as LichessAnalysisRequest,
     uci: {} as UciDetails,
+    sleepDuration: 0,
   }),
   getters: {
     evaluation(state): string {
@@ -95,9 +96,14 @@ export const useAnalysisStore = defineStore('analysis', {
       state.uci.hashfull ? convertHashfullToPercentage(state.uci.hashfull) : '',
   },
   actions: {
-    add(event: LichessWorkEvent) {
+    handle(event: LichessWorkEvent) {
+      this.sleepDuration = 0
+
       if (event.payload.event === 'Status') {
         this.status = event.payload.message
+      } else if (event.payload.event === 'Sleep') {
+        this.status = 'Sleeping'
+        this.sleepDuration = parseInt(event.payload.message)
       } else if (event.payload.event === 'Uci') {
         this.uci = { ...this.uci, ...parseUciString(event.payload.message) }
       }

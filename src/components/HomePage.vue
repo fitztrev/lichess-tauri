@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import PageTitle from './PageTitle.vue'
-import GettingStarted from './GettingStarted.vue'
 import Chessboard from './Chessboard.vue'
-import { useSettingsStore } from '../stores/settings'
-import { useEnginesStore } from '../stores/engines'
+import GettingStarted from './GettingStarted.vue'
+import PageTitle from './PageTitle.vue'
+import SleepCountdown from './SleepCountdown.vue'
+
 import { useAnalysisStore } from '../stores/analysis'
+import { useEnginesStore } from '../stores/engines'
+import { useSettingsStore } from '../stores/settings'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()
@@ -52,6 +54,10 @@ const analysis = useAnalysisStore()
         <p>Tablebase Hits</p>
 
         <h3 class="mt-8 text-lg">{{ analysis.status }}</h3>
+        <SleepCountdown
+          v-if="analysis.sleepDuration > 0"
+          :duration="analysis.sleepDuration"
+        />
         <p>Status</p>
       </div>
     </div>

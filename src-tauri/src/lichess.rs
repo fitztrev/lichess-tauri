@@ -72,6 +72,7 @@ struct WorkRequest {
 enum EventPayloadType {
     Status,
     Uci,
+    Sleep,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -118,23 +119,13 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             })
             .send()?;
 
-        send_event_to_frontend(
-            app_handle,
-            "lichess::work",
-            EventPayload {
-                event: EventPayloadType::Status,
-                message: "No moves received".to_string(),
-                analysis_request: None,
-            },
-        );
-
         if response.status() != 200 {
             send_event_to_frontend(
                 app_handle,
                 "lichess::work",
                 EventPayload {
-                    event: EventPayloadType::Status,
-                    message: format!("Waiting for {} seconds", backoff_duration_secs),
+                    event: EventPayloadType::Sleep,
+                    message: backoff_duration_secs.to_string(),
                     analysis_request: None,
                 },
             );

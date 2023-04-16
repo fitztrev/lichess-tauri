@@ -10,7 +10,7 @@ const settings = useSettingsStore()
 const analysis = useAnalysisStore()
 
 listen('lichess::work', (data: LichessWorkEvent) => {
-  analysis.add(data)
+  analysis.handle(data)
 })
 
 function openAnalysisPageOnLichess() {
