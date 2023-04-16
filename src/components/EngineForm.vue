@@ -185,6 +185,7 @@ function submit() {
                 <input
                   v-model="defaultDepth"
                   type="number"
+                  min="1"
                   id="default_depth"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                 />
