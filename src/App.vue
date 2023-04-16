@@ -7,7 +7,7 @@ const settings = useSettingsStore()
 
 <template>
   <div>
-    <div class="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
+    <div class="hidden md:fixed md:inset-y-0 md:flex md:w-18 md:flex-col">
       <div class="flex min-h-0 flex-1 flex-col bg-gray-800">
         <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
           <div class="flex flex-shrink-0 items-center px-4">
@@ -29,7 +29,7 @@ const settings = useSettingsStore()
                 }"
               >
                 <svg
-                  class="mr-3 flex-shrink-0 h-6 w-6"
+                  class="flex-shrink-0 h-6 w-6"
                   :class="{
                     'text-gray-300': isActive,
                     'text-gray-400 group-hover:text-gray-300': !isActive,
@@ -46,10 +46,8 @@ const settings = useSettingsStore()
                     stroke-linejoin="round"
                     d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                   />
-                </svg>
-                Dashboard</a
-              ></router-link
-            >
+                </svg> </a
+            ></router-link>
 
             <router-link
               v-if="settings.isLoggedIn"
@@ -66,7 +64,7 @@ const settings = useSettingsStore()
                 }"
               >
                 <svg
-                  class="mr-3 flex-shrink-0 h-6 w-6"
+                  class="flex-shrink-0 h-6 w-6"
                   :class="{
                     'text-gray-300': isActive,
                     'text-gray-400 group-hover:text-gray-300': !isActive,
@@ -83,10 +81,8 @@ const settings = useSettingsStore()
                     stroke-linejoin="round"
                     d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
                   />
-                </svg>
-                Engines</a
-              ></router-link
-            >
+                </svg> </a
+            ></router-link>
 
             <router-link
               to="/settings"
@@ -102,7 +98,7 @@ const settings = useSettingsStore()
                 }"
               >
                 <svg
-                  class="mr-3 flex-shrink-0 h-6 w-6"
+                  class="flex-shrink-0 h-6 w-6"
                   :class="{
                     'text-gray-300': isActive,
                     'text-gray-400 group-hover:text-gray-300': !isActive,
@@ -124,15 +120,13 @@ const settings = useSettingsStore()
                     stroke-linejoin="round"
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
-                </svg>
-                Settings</a
-              ></router-link
-            >
+                </svg> </a
+            ></router-link>
           </nav>
         </div>
       </div>
     </div>
-    <div class="flex flex-1 flex-col md:pl-64">
+    <div class="flex flex-1 flex-col md:pl-18">
       <div
         class="sticky top-0 z-10 bg-gray-100 pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden"
       >

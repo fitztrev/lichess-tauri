@@ -33,6 +33,7 @@ watch(
 .chessboard {
   width: 480px;
   height: 480px;
+  margin: 0 auto;
   opacity: 0.5;
 }
 

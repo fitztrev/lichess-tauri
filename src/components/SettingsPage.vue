@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useSettingsStore } from '../stores/settings'
-import PageTitle from './PageTitle.vue'
 import LichessLogin from './LichessLogin.vue'
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api'
@@ -29,8 +28,6 @@ async function save() {
 </script>
 
 <template>
-  <PageTitle>Settings</PageTitle>
-
   <div class="page-content">
     <!-- <h1 class="text-2xl my-8">Debug Info</h1>
     <SystemInfo /> -->

@@ -14,4 +14,4 @@ onMounted(() => {
 })
 </script>
 
-<template>Sleeping for {{ remaining_secs }} seconds</template>
+<template>for {{ remaining_secs }} seconds</template>

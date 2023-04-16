@@ -8,7 +8,6 @@ import {
   sysinfo,
   getDefaultMaxThreadsValue,
 } from '../utils/sysyinfo'
-import PageTitle from './PageTitle.vue'
 import Engine from './Engine.vue'
 import { refreshEngineList, useEnginesStore } from '../stores/engines'
 
@@ -71,8 +70,6 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
 </script>
 
 <template>
-  <PageTitle>Engines</PageTitle>
-
   <div class="page-content">
     <div class="overflow-hidden bg-white shadow sm:rounded-md">
       <ul role="list" class="divide-y divide-gray-200">
