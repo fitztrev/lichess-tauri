@@ -87,20 +87,18 @@ fn send_event_to_frontend(app_handle: &AppHandle, event: &str, payload: EventPay
 }
 
 pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
-    let api_token = db::get_setting("lichess_token").unwrap();
-    let provider_secret = db::get_setting("provider_secret").unwrap();
-    let engine_host = db::get_setting("engine_host").unwrap();
-
-    let mut default_headers = HeaderMap::new();
-    default_headers.insert(header::AUTHORIZATION, api_token.try_into()?);
-    let client = ClientBuilder::new()
-        .default_headers(default_headers)
-        .build()?;
-
     let mut backoff_duration_secs = 1;
 
     loop {
-        let engine_host = engine_host.clone();
+        let api_token = db::get_setting("lichess_token").unwrap();
+        let provider_secret = db::get_setting("provider_secret").unwrap();
+        let engine_host = db::get_setting("engine_host").unwrap();
+
+        let mut default_headers = HeaderMap::new();
+        default_headers.insert(header::AUTHORIZATION, api_token.try_into()?);
+        let client = ClientBuilder::new()
+            .default_headers(default_headers)
+            .build()?;
 
         // Step 1) Long poll for analysis requests
         // When a move is made on the Analysis board, it will be returned from this endpoint
