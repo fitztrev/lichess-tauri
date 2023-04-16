@@ -130,13 +130,14 @@ function submit() {
               class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5"
             >
               <label
-                for="country"
+                for="max_threads"
                 class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                 >Max Threads</label
               >
               <div class="mt-1 sm:col-span-2 sm:mt-0">
                 <select
                   v-model="maxThreads"
+                  id="max_threads"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                 >
                   <option
@@ -153,13 +154,14 @@ function submit() {
               class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5"
             >
               <label
-                for="country"
+                for="max_hash"
                 class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                 >Max Hash</label
               >
               <div class="mt-1 sm:col-span-2 sm:mt-0">
                 <select
                   v-model="maxHash"
+                  id="max_hash"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                 >
                   <option
@@ -175,19 +177,17 @@ function submit() {
               class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5"
             >
               <label
-                for="country"
+                for="default_depth"
                 class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                 >Default Depth</label
               >
               <div class="mt-1 sm:col-span-2 sm:mt-0">
-                <select
+                <input
                   v-model="defaultDepth"
+                  type="number"
+                  id="default_depth"
                   class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                >
-                  <option v-for="n in 50 - 24" :value="n + 24">
-                    {{ n + 24 }}
-                  </option>
-                </select>
+                />
               </div>
             </div>
 
@@ -195,12 +195,15 @@ function submit() {
               v-if="!editEngineId"
               class="sm:grid sm:grid-cols-3 sm:items-center sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5"
             >
-              <label for="photo" class="block text-sm font-medium text-gray-700"
+              <label
+                for="binary"
+                class="block text-sm font-medium text-gray-700"
                 >Binary</label
               >
               <div class="mt-1 sm:col-span-2 sm:mt-0">
                 <div class="flex items-center">
                   <button
+                    id="binary"
                     type="button"
                     @click="selectEngineFile"
                     class="rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
