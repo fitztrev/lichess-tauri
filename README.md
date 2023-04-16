@@ -1,6 +1,6 @@
 # Lichess Local Engine
 
-![image](https://user-images.githubusercontent.com/271432/232246956-27ac56e2-24c1-4543-8da9-7cdbd71075d6.png)
+![image](https://user-images.githubusercontent.com/271432/232327082-11582b5b-cc6a-4db4-a6a8-1b3630c717d5.png)
 
 Recent versions of [Stockfish](https://stockfishchess.org/) have gotten too big to run in the browser. Lichess has [created an API](https://lichess.org/api#tag/External-engine) that allows you to run an engine on your own computer and send the results back to their Analysis page. This is a desktop app that intends to make it easy to use.
 
