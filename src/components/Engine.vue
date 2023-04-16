@@ -16,10 +16,10 @@ function deleteEngine(): void {
 </script>
 
 <template>
-  <a href="#" class="block hover:bg-gray-50">
+  <router-link :to="{ name: 'editEngine', params: { id: engine.id } }" class="block hover:bg-gray-50">
     <div class="px-4 py-4 sm:px-6">
       <div class="flex items-center justify-between">
-        <p class="truncate text-sm font-medium text-indigo-600">
+        <p class="truncate font-medium text-indigo-600">
           {{ engine.name }}
         </p>
         <div class="ml-2 flex flex-shrink-0">
@@ -40,10 +40,12 @@ function deleteEngine(): void {
           </p>
         </div>
       </div>
+      <div class="mt-2">
+        <a href="#" class="inline-flex px-2 mr-2 rounded bg-red-100 text-red-800 hover:bg-red-500 hover:text-white focus:ring-2 focus:ring-red-500 focus:ring-offset-2" @click.prevent="deleteEngine">Delete</a>
+        <router-link :to="{ name: 'editEngine', params: { id: engine.id } }" class="inline-flex px-2 rounded bg-indigo-100 text-indigo-800 hover:bg-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          Edit
+        </router-link>
+      </div>
     </div>
-  </a>
-  <a href="#" @click.prevent="deleteEngine">Delete</a>
-  <router-link :to="{ name: 'editEngine', params: { id: engine.id } }">
-    Edit
   </router-link>
 </template>
