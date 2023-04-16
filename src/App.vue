@@ -7,34 +7,32 @@ const settings = useSettingsStore()
 
 <template>
   <div>
-    <div class="hidden md:fixed md:inset-y-0 md:flex md:w-18 md:flex-col">
-      <div class="flex min-h-0 flex-1 flex-col bg-gray-800">
-        <div class="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-          <div class="flex flex-shrink-0 items-center px-4">
-            <img
-              class="h-8 w-auto"
-              src="./assets/lichess-white.svg"
-              alt="Lichess logo"
-            />
-          </div>
-          <nav class="mt-5 flex-1 space-y-1 px-2">
+    <div
+      class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-20 lg:overflow-y-auto lg:bg-gray-900 lg:pb-4"
+    >
+      <div class="flex h-16 shrink-0 items-center justify-center">
+        <img
+          class="h-8 w-auto"
+          src="./assets/lichess-white.svg"
+          alt="Lichess logo"
+        />
+      </div>
+      <nav class="mt-8">
+        <ul role="list" class="flex flex-col items-center space-y-1">
+          <li>
+            <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
             <router-link to="/" custom v-slot="{ href, isActive, navigate }"
               ><a
                 :href="href"
                 @click="navigate"
-                class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                class="group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold"
                 :class="{
-                  'bg-gray-900 text-white': isActive,
-                  'text-gray-300 hover:bg-gray-700 hover:text-white': !isActive,
+                  'bg-gray-800 text-white': isActive,
+                  'text-gray-400 hover:text-white hover:bg-gray-800': !isActive,
                 }"
               >
                 <svg
-                  class="flex-shrink-0 h-6 w-6"
-                  :class="{
-                    'text-gray-300': isActive,
-                    'text-gray-400 group-hover:text-gray-300': !isActive,
-                  }"
-                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
@@ -46,9 +44,12 @@ const settings = useSettingsStore()
                     stroke-linejoin="round"
                     d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
                   />
-                </svg> </a
-            ></router-link>
-
+                </svg>
+                <span class="sr-only">Dashboard</span>
+              </a></router-link
+            >
+          </li>
+          <li>
             <router-link
               v-if="settings.isLoggedIn"
               to="/engines"
@@ -57,19 +58,14 @@ const settings = useSettingsStore()
               ><a
                 :href="href"
                 @click="navigate"
-                class="group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                class="group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold"
                 :class="{
-                  'bg-gray-900 text-white': isActive,
-                  'text-gray-300 hover:bg-gray-700 hover:text-white': !isActive,
+                  'bg-gray-800 text-white': isActive,
+                  'text-gray-400 hover:text-white hover:bg-gray-800': !isActive,
                 }"
               >
                 <svg
-                  class="flex-shrink-0 h-6 w-6"
-                  :class="{
-                    'text-gray-300': isActive,
-                    'text-gray-400 group-hover:text-gray-300': !isActive,
-                  }"
-                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
@@ -81,9 +77,13 @@ const settings = useSettingsStore()
                     stroke-linejoin="round"
                     d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
                   />
-                </svg> </a
-            ></router-link>
+                </svg>
+                <span class="sr-only">Dashboard</span>
+              </a></router-link
+            >
+          </li>
 
+          <li>
             <router-link
               to="/settings"
               custom
@@ -98,12 +98,7 @@ const settings = useSettingsStore()
                 }"
               >
                 <svg
-                  class="flex-shrink-0 h-6 w-6"
-                  :class="{
-                    'text-gray-300': isActive,
-                    'text-gray-400 group-hover:text-gray-300': !isActive,
-                  }"
-                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
@@ -120,43 +115,23 @@ const settings = useSettingsStore()
                     stroke-linejoin="round"
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
-                </svg> </a
-            ></router-link>
-          </nav>
-        </div>
-      </div>
+                </svg>
+                <span class="sr-only">Dashboard</span>
+              </a></router-link
+            >
+          </li>
+        </ul>
+      </nav>
     </div>
-    <div class="flex flex-1 flex-col md:pl-18">
-      <div
-        class="sticky top-0 z-10 bg-gray-100 pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden"
-      >
-        <button
-          type="button"
-          class="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-        >
-          <span class="sr-only">Open sidebar</span>
-          <!-- Heroicon name: outline/bars-3 -->
-          <svg
-            class="h-6 w-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
-        </button>
-      </div>
-      <main class="flex-1">
-        <LocalEngine v-if="settings.lichess_token" />
-        <div class="py-6">
-          <router-view />
+
+    <div class="lg:pl-20">
+      <main class="">
+        <div class="">
+          <!-- Main area -->
+          <LocalEngine v-if="settings.lichess_token" />
+          <div class="py-6">
+            <router-view />
+          </div>
         </div>
       </main>
     </div>
