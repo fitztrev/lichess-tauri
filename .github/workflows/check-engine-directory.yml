@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - 'pages/engine-directory.json'
+  pull_request:
+    paths:
+      - 'pages/engine-directory.json'
 
 jobs:
   build:
