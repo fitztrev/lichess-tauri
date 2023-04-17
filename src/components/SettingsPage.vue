@@ -4,11 +4,19 @@ import LichessLogin from './LichessLogin.vue'
 import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api'
 import { loadSettingsFromDatabase, trimTrailingSlash } from '../utils/settings'
+import { getVersion } from '@tauri-apps/api/app'
+import { open } from '@tauri-apps/api/shell'
 
 const settings = useSettingsStore()
 
 const inputLichessHost = ref(settings.lichessHost)
 const inputEngineHost = ref(settings.engineHost)
+
+const appVersion = ref('')
+
+getVersion().then((version) => {
+  appVersion.value = version
+})
 
 async function save() {
   await invoke('update_setting', {
@@ -25,13 +33,14 @@ async function save() {
   inputLichessHost.value = settings.lichessHost
   inputEngineHost.value = settings.engineHost
 }
+
+function openExternalLink(url: string) {
+  open(url)
+}
 </script>
 
 <template>
   <div class="page-content">
-    <!-- <h1 class="text-2xl my-8">Debug Info</h1>
-    <SystemInfo /> -->
-
     <div class="bg-white shadow sm:rounded-lg my-8">
       <div class="px-4 py-5 sm:p-6" v-if="settings.isLoggedIn">
         <h3 class="text-lg font-medium leading-6 text-gray-900">
@@ -125,5 +134,20 @@ async function save() {
         </div>
       </div>
     </form>
+
+    <h3 class="text-lg font-medium leading-6 text-gray-900 mt-8">About</h3>
+    <p class="mt-1 max-w-2xl text-sm text-gray-700">
+      You are using version v<strong>{{ appVersion }}</strong> of the app.
+      <br />
+      See the source and contribute to this
+      <a
+        href="#"
+        @click.prevent="
+          openExternalLink('https://github.com/fitztrev/lichess-tauri')
+        "
+        class="underline"
+        >app on GitHub</a
+      >.
+    </p>
   </div>
 </template>
