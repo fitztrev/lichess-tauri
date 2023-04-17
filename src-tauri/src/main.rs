@@ -48,6 +48,11 @@ fn add_engine(engine_id: &str, binary_location: &str) {
 }
 
 #[tauri::command]
+fn delete_engine(engine_id: &str) {
+    db::delete_engine(engine_id);
+}
+
+#[tauri::command]
 fn get_sysinfo() -> Value {
     let mut sys = System::new_all();
     sys.refresh_all();
@@ -108,6 +113,7 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             add_engine,
+            delete_engine,
             delete_setting,
             download_engine_to_folder,
             get_all_settings,

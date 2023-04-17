@@ -96,6 +96,14 @@ pub fn add_engine(engine_id: &str, binary_location: &str) {
         .expect("Error saving new engine");
 }
 
+pub fn delete_engine(engine_id: &str) {
+    let mut connection = establish_connection();
+
+    diesel::delete(schema::engines::table.filter(schema::engines::engine_id.eq(engine_id)))
+        .execute(&mut connection)
+        .expect("Error deleting engine");
+}
+
 pub fn get_engine_binary_path(engine_id: &str) -> Option<String> {
     let mut connection = establish_connection();
 
@@ -115,4 +123,13 @@ pub fn get_all_engine_binary_paths() -> Vec<SqlEngine> {
     schema::engines::table
         .load::<SqlEngine>(&mut connection)
         .expect("Error loading engines")
+}
+
+pub fn get_engine_count() -> i64 {
+    let mut connection = establish_connection();
+
+    schema::engines::table
+        .count()
+        .get_result(&mut connection)
+        .expect("Error getting engine count")
 }

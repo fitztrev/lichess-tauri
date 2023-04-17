@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { invoke } from '@tauri-apps/api'
 import { LichessEngine, refreshEngineList } from '../stores/engines'
 import { deleteEngineFromLichess } from '../utils/engine-crud'
 
@@ -9,8 +10,12 @@ const props = defineProps<{
 }>()
 
 function deleteEngine(): void {
-  deleteEngineFromLichess(props.engine).then(() => {
+  deleteEngineFromLichess(props.engine).then(async () => {
     refreshEngineList()
+
+    await invoke('delete_engine', {
+      engineId: props.engine.id,
+    })
   })
 }
 </script>
