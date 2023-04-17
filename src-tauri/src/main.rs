@@ -105,6 +105,14 @@ fn download_engine_to_folder(engine: Engine) -> String {
         .unwrap()
 }
 
+#[tauri::command]
+fn get_app_data_dir() -> String {
+    utils::get_app_data_dir()
+        .into_os_string()
+        .into_string()
+        .unwrap()
+}
+
 fn main() {
     pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
     let mut connection = establish_connection();
@@ -117,6 +125,7 @@ fn main() {
             delete_setting,
             download_engine_to_folder,
             get_all_settings,
+            get_app_data_dir,
             get_sysinfo,
             start_oauth_server,
             update_setting,

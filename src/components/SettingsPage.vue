@@ -12,8 +12,12 @@ const settings = useSettingsStore()
 const inputLichessHost = ref(settings.lichessHost)
 const inputEngineHost = ref(settings.engineHost)
 
-const appVersion = ref('')
+const appDataDir = ref('')
+invoke<string>('get_app_data_dir').then((dir) => {
+  appDataDir.value = dir
+})
 
+const appVersion = ref('')
 getVersion().then((version) => {
   appVersion.value = version
 })
@@ -32,6 +36,10 @@ async function save() {
 
   inputLichessHost.value = settings.lichessHost
   inputEngineHost.value = settings.engineHost
+}
+
+function openFileExplorer(path: string) {
+  open(path)
 }
 
 function openExternalLink(url: string) {
@@ -138,6 +146,14 @@ function openExternalLink(url: string) {
     <h3 class="text-lg font-medium leading-6 text-gray-900 mt-8">About</h3>
     <p class="mt-1 max-w-2xl text-sm text-gray-700">
       You are using version v<strong>{{ appVersion }}</strong> of the app.
+      <br />
+      This app stores any local data to
+      <a
+        href="#"
+        @click.prevent="openFileExplorer(appDataDir)"
+        class="underline"
+        >{{ appDataDir }}</a
+      >
       <br />
       See the source and contribute to this
       <a
