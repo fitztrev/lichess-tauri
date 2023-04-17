@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { listen } from '@tauri-apps/api/event'
 import StatusBar from './components/StatusBar.vue'
-import { LichessWorkEvent, useAnalysisStore } from './stores/analysis'
+import {
+  LichessStatusEvent,
+  LichessWorkEvent,
+  useAnalysisStore,
+} from './stores/analysis'
 import { useSettingsStore } from './stores/settings'
 
 const analysis = useAnalysisStore()
 const settings = useSettingsStore()
 
 listen('lichess::work', (data: LichessWorkEvent) => {
+  analysis.statusLevel = 'Info'
   analysis.handle(data)
 })
 
-listen('lichess::clear_frontend_status', () => {
-  analysis.status = ''
+listen('lichess::send_status_to_frontend', (data: LichessStatusEvent) => {
+  analysis.status = data.payload.status
+  analysis.statusLevel = data.payload.level
 })
 </script>
 

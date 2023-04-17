@@ -6,9 +6,16 @@ const analysis = useAnalysisStore()
 </script>
 
 <template>
-  <div class="bg-emerald-700 text-white text-center py-2">
+  <div
+    class="text-white text-center py-2 px-8"
+    :class="{
+      'bg-emerald-700': analysis.statusLevel === 'Info',
+      'bg-yellow-500': analysis.statusLevel === 'Warn',
+      'bg-red-800': analysis.statusLevel === 'Error',
+    }"
+  >
     <svg
-      v-if="!analysis.sleepDuration"
+      v-if="analysis.statusLevel === 'Info' && !analysis.sleepDuration"
       class="animate-spin inline-block -ml-1 mr-3 h-5 w-5 text-white"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"

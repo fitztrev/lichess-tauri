@@ -14,6 +14,18 @@ export interface LichessWorkEvent {
   }
 }
 
+type StatusLevel = 'Info' | 'Warn' | 'Error'
+
+export interface LichessStatusEvent {
+  id: number
+  event: string
+  windowLabel: string
+  payload: {
+    status: string
+    level: StatusLevel
+  }
+}
+
 type ChessColor = 'w' | 'b'
 type UciScoreType = 'cp' | 'mate'
 
@@ -64,6 +76,7 @@ interface LichessAnalysisRequest {
 export const useAnalysisStore = defineStore('analysis', {
   state: () => ({
     status: '',
+    statusLevel: 'Info' as StatusLevel,
     request: {} as LichessAnalysisRequest,
     uci: {} as UciDetails,
     sleepDuration: 0,

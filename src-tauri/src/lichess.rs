@@ -82,13 +82,27 @@ struct EventPayload {
     analysis_request: Option<AnalysisRequest>,
 }
 
+#[derive(Clone, Debug, Serialize)]
+enum StatusLevel {
+    Info,
+    Error,
+}
+
+#[derive(Clone, Debug, Serialize)]
+struct StatusPayload {
+    status: String,
+    level: StatusLevel,
+}
+
 fn send_event_to_frontend(app_handle: &AppHandle, event: &str, payload: EventPayload) {
     println!("event: {} | {:?}", event, payload);
     app_handle.emit_all(event, payload).unwrap();
 }
 
-fn clear_frontend_status(app_handle: &AppHandle) {
-    app_handle.emit_all("lichess::clear_frontend_status", "").unwrap();
+fn send_status_to_frontend(app_handle: &AppHandle, payload: StatusPayload) {
+    app_handle
+        .emit_all("lichess::send_status_to_frontend", payload)
+        .unwrap();
 }
 
 pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
@@ -98,21 +112,70 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
 
     loop {
         let api_token = db::get_setting("lichess_token");
-        let provider_secret = db::get_setting("provider_secret").unwrap();
-        let engine_host = db::get_setting("engine_host").unwrap();
+        match api_token {
+            Some(_) => {}
+            None => {
+                send_status_to_frontend(
+                    app_handle,
+                    StatusPayload {
+                        status: "Waiting for Lichess login".to_string(),
+                        level: StatusLevel::Info,
+                    },
+                );
+                std::thread::sleep(std::time::Duration::from_secs(5));
+                continue;
+            }
+        }
 
-        if let None = api_token {
-            clear_frontend_status(app_handle);
-            std::thread::sleep(std::time::Duration::from_secs(5));
-            continue;
-        } else if db::get_engine_count() == 0 {
-            clear_frontend_status(app_handle);
+        let provider_secret = db::get_setting("provider_secret");
+        match provider_secret {
+            Some(_) => {}
+            None => {
+                send_status_to_frontend(
+                    app_handle,
+                    StatusPayload {
+                        status: "Missing provider secret".to_string(),
+                        level: StatusLevel::Error,
+                    },
+                );
+                std::thread::sleep(std::time::Duration::from_secs(5));
+                continue;
+            }
+        }
+
+        let engine_host = db::get_setting("engine_host");
+        match engine_host {
+            Some(_) => {}
+            None => {
+                send_status_to_frontend(
+                    app_handle,
+                    StatusPayload {
+                        status: "Missing engine host setting".to_string(),
+                        level: StatusLevel::Error,
+                    },
+                );
+                std::thread::sleep(std::time::Duration::from_secs(5));
+                continue;
+            }
+        }
+
+        if db::get_engine_count() == 0 {
+            send_status_to_frontend(
+                app_handle,
+                StatusPayload {
+                    status: "Waiting for engine to be added".to_string(),
+                    level: StatusLevel::Info,
+                },
+            );
             std::thread::sleep(std::time::Duration::from_secs(5));
             continue;
         }
 
         let mut default_headers = HeaderMap::new();
-        default_headers.insert(header::AUTHORIZATION, api_token.expect("None case handled line 98").try_into()?);
+        default_headers.insert(
+            header::AUTHORIZATION,
+            api_token.expect("missing api_token").try_into()?,
+        );
         let client = ClientBuilder::new()
             .default_headers(default_headers)
             .build()?;
@@ -129,9 +192,12 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             },
         );
         let response = client
-            .post(format!("{}/api/external-engine/work", engine_host))
+            .post(format!(
+                "{}/api/external-engine/work",
+                engine_host.clone().expect("missing engine_host")
+            ))
             .json(&WorkRequest {
-                provider_secret: String::from(&provider_secret),
+                provider_secret: provider_secret.expect("missing provider_secret"),
             })
             .send()?;
 
@@ -165,17 +231,44 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             },
         );
 
-        let binary_filepath = db::get_engine_binary_path(&analysis_request.engine.id).unwrap();
+        let binary_filepath = db::get_engine_binary_path(&analysis_request.engine.id);
+        match binary_filepath {
+            Some(_) => {}
+            None => {
+                send_status_to_frontend(
+                    app_handle,
+                    StatusPayload {
+                        status: "Missing binary filepath".to_string(),
+                        level: StatusLevel::Error,
+                    },
+                );
+                std::thread::sleep(std::time::Duration::from_secs(5));
+                continue;
+            }
+        }
 
         // Step 2) Send the FEN to the engine
-        println!("Starting engine: {}", binary_filepath);
-
-        let mut engine = Command::new(binary_filepath)
+        let mut engine = Command::new(binary_filepath.as_ref().expect("missing binary_filepath"))
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .spawn()?;
+            .spawn();
 
-        let engine_stdin = engine.stdin.as_mut().ok_or("Failed to get stdin")?;
+        match engine {
+            Ok(_) => {}
+            Err(e) => {
+                send_status_to_frontend(
+                    app_handle,
+                    StatusPayload {
+                        status: format!("Failed to start engine: {} for {}", e, binary_filepath.as_ref().unwrap()),
+                        level: StatusLevel::Error,
+                    },
+                );
+                std::thread::sleep(std::time::Duration::from_secs(5));
+                continue;
+            }
+        }
+
+        let engine_stdin = engine.as_mut().unwrap().stdin.as_mut().unwrap();
 
         // Set UCI options
         writeln!(engine_stdin, "setoption name UCI_AnalyseMode value true")?;
@@ -214,7 +307,7 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
 
         engine_stdin.flush()?;
 
-        let engine_stdout = engine.stdout.as_mut().ok_or("Failed to get stdout")?;
+        let engine_stdout = engine.as_mut().unwrap().stdout.as_mut().unwrap();
 
         let (tx, rx) = std::sync::mpsc::channel();
         let client = client.clone();
@@ -223,7 +316,8 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             // Step 3) Start a POST request stream to /api/external-engine/work/{id}
             let url = format!(
                 "{}/api/external-engine/work/{}",
-                engine_host, analysis_request.id
+                engine_host.expect("missing engine_host"),
+                analysis_request.id
             );
             client
                 .post(url)
