@@ -1,8 +1,19 @@
 <script setup lang="ts">
-import LocalEngine from './components/LocalEngine.vue'
+import { listen } from '@tauri-apps/api/event'
+import StatusBar from './components/StatusBar.vue'
+import { LichessWorkEvent, useAnalysisStore } from './stores/analysis'
 import { useSettingsStore } from './stores/settings'
 
+const analysis = useAnalysisStore()
 const settings = useSettingsStore()
+
+listen('lichess::work', (data: LichessWorkEvent) => {
+  analysis.handle(data)
+})
+
+listen('lichess::clear_frontend_status', () => {
+  analysis.status = ''
+})
 </script>
 
 <template>
@@ -128,7 +139,7 @@ const settings = useSettingsStore()
       <main class="">
         <div class="">
           <!-- Main area -->
-          <LocalEngine v-if="settings.lichess_token" />
+          <StatusBar v-if="analysis.status" />
           <div class="py-6">
             <router-view />
           </div>

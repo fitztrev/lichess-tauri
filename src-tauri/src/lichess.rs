@@ -87,16 +87,32 @@ fn send_event_to_frontend(app_handle: &AppHandle, event: &str, payload: EventPay
     app_handle.emit_all(event, payload).unwrap();
 }
 
+fn clear_frontend_status(app_handle: &AppHandle) {
+    app_handle.emit_all("lichess::clear_frontend_status", "").unwrap();
+}
+
 pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
     let mut backoff_duration_secs = 1;
 
+    std::thread::sleep(std::time::Duration::from_secs(3));
+
     loop {
-        let api_token = db::get_setting("lichess_token").unwrap();
+        let api_token = db::get_setting("lichess_token");
         let provider_secret = db::get_setting("provider_secret").unwrap();
         let engine_host = db::get_setting("engine_host").unwrap();
 
+        if let None = api_token {
+            clear_frontend_status(app_handle);
+            std::thread::sleep(std::time::Duration::from_secs(5));
+            continue;
+        } else if db::get_engine_count() == 0 {
+            clear_frontend_status(app_handle);
+            std::thread::sleep(std::time::Duration::from_secs(5));
+            continue;
+        }
+
         let mut default_headers = HeaderMap::new();
-        default_headers.insert(header::AUTHORIZATION, api_token.try_into()?);
+        default_headers.insert(header::AUTHORIZATION, api_token.expect("None case handled line 98").try_into()?);
         let client = ClientBuilder::new()
             .default_headers(default_headers)
             .build()?;

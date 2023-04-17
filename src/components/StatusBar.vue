@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { LichessWorkEvent, useAnalysisStore } from '../stores/analysis'
-import { listen } from '@tauri-apps/api/event'
+import { useAnalysisStore } from '../stores/analysis'
 import SleepCountdown from './SleepCountdown.vue'
 
 const analysis = useAnalysisStore()
-
-listen('lichess::work', (data: LichessWorkEvent) => {
-  analysis.handle(data)
-})
 </script>
 
 <template>
