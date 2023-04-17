@@ -112,14 +112,15 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
               </p>
             </div>
           </div>
-          <p>
-            <a
-              href="#"
-              @click.prevent="addEngineFromDirectory(engine)"
-              class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-              >Click here to install</a
+          <div class="text-right mb-4">
+            <button
+              @click="addEngineFromDirectory(engine)"
+              type="button"
+              class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
             >
-          </p>
+              Install {{ engine.name }} {{ engine.version }}
+            </button>
+          </div>
         </li>
       </ul>
       <div class="mt-6 flex">
