@@ -10,6 +10,7 @@ import {
   MaxHashOption,
   sysinfo,
 } from '../utils/sysyinfo'
+import { invoke } from '@tauri-apps/api/tauri'
 
 const route = useRoute()
 const router = useRouter()
@@ -79,7 +80,12 @@ function submit() {
   }
 
   saveEngineToLichess(engine, editEngineId)
-    .then(() => {
+    .then(async (data) => {
+      await invoke('add_engine', {
+        engineId: data.id,
+        binaryLocation: binaryLocation.value,
+      })
+
       router.push('/engines')
     })
     .catch((e) => {
