@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "Lichess Local Engine",
-    "version": "0.0.1"
+    "version": "../package.json"
   },
   "tauri": {
     "allowlist": {
