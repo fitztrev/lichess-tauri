@@ -20,3 +20,13 @@ for engine in data['engines']:
         ), f"\033[91m Binary {binary['binary_filename']} not found in {binary['zip']} \033[0m"
 
         print(f"\033[92m ✓ Found {binary['binary_filename']} \033[0m")
+
+# Make sure each engine offers a "default" architecture binary for each OS
+for engine in data['engines']:
+    os_with_defaults = []
+    for binary in engine['binaries']:
+        if binary['architecture'] == 'default':
+            os_with_defaults.append(binary['os'])
+    os_with_defaults.sort()
+    assert os_with_defaults == ['linux', 'macos', 'windows'], f"\033[91m Engine {engine['name']} does not offer a default binary for each OS \033[0m"
+    print(f"\033[92m ✓ default architecture option provided for each OS for {engine['name']} \033[0m")

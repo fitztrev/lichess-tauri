@@ -34,6 +34,18 @@
           "binary_filename": "stockfish_15.1_linux_x64/stockfish-ubuntu-20.04-x86-64"
         },
         {
+          "os": "macos",
+          "architecture": "apple-silicon",
+          "zip": "https://lichess-tauri.s3.amazonaws.com/stockfish-15.1-macos-apple-silicon.zip",
+          "binary_filename": "stockfish-15.1-macos-apple-silicon/bin/stockfish"
+        },
+        {
+          "os": "macos",
+          "architecture": "default",
+          "zip": "https://lichess-tauri.s3.amazonaws.com/stockfish-15.1-macos-x86-64-modern.zip",
+          "binary_filename": "stockfish-15.1-macos-x86-64-modern/bin/stockfish"
+        },
+        {
           "os": "windows",
           "architecture": "bmi2",
           "zip": "https://stockfishchess.org/files/stockfish_15.1_win_x64_bmi2.zip",

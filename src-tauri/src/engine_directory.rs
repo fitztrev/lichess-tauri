@@ -43,10 +43,18 @@ pub fn download_to_folder(engine: Engine) -> PathBuf {
         engines_path.to_str().unwrap()
     );
 
+    let os = if cfg!(target_os = "macos") {
+        "mac"
+    } else if cfg!(target_os = "windows") {
+        "windows"
+    } else {
+        "linux"
+    };
+
     let binary = engine
         .binaries
         .iter()
-        .find(|binary| binary.os == "linux" && binary.architecture == "default")
+        .find(|binary| binary.os == os && binary.architecture == "default")
         .ok_or("No binary found for this system")
         .unwrap();
 

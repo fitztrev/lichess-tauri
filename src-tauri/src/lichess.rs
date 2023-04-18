@@ -259,7 +259,11 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
                 send_status_to_frontend(
                     app_handle,
                     StatusPayload {
-                        status: format!("Failed to start engine: {} for {}", e, binary_filepath.as_ref().unwrap()),
+                        status: format!(
+                            "Failed to start engine: {} for {}",
+                            e,
+                            binary_filepath.as_ref().unwrap()
+                        ),
                         level: StatusLevel::Error,
                     },
                 );
