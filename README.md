@@ -93,3 +93,10 @@ For testing migrations:
 cd src-tauri
 diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migration redo
 ```
+
+### How to release a new version
+
+    npm version 0.x.x
+    git push origin main --tags
+
+Github workflow will build the app for each OS and add them to a release.
