@@ -44,7 +44,7 @@ pub fn download_to_folder(engine: Engine) -> PathBuf {
     );
 
     let os = if cfg!(target_os = "macos") {
-        "mac"
+        "macos"
     } else if cfg!(target_os = "windows") {
         "windows"
     } else {
