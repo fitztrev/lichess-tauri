@@ -249,10 +249,18 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
         }
 
         // Step 2) Send the FEN to the engine
-        let mut engine = Command::new(binary_filepath.as_ref().expect("missing binary_filepath"))
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .spawn();
+        let mut process = Command::new(binary_filepath.as_ref().expect("missing binary_filepath"));
+        process.stdin(Stdio::piped()).stdout(Stdio::piped());
+
+        // Hide the console window on Windows
+        if cfg!(windows) {
+            use std::os::windows::process::CommandExt;
+
+            const CREATE_NO_WINDOW: u32 = 0x08000000;
+            process.creation_flags(CREATE_NO_WINDOW);
+        }
+
+        let mut engine = process.spawn();
 
         match engine {
             Ok(_) => {}
