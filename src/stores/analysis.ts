@@ -118,7 +118,10 @@ export const useAnalysisStore = defineStore('analysis', {
         this.status = 'Sleeping'
         this.sleepDuration = parseInt(event.payload.message)
       } else if (event.payload.event === 'Uci') {
-        this.uci = { ...this.uci, ...parseUciString(event.payload.message) }
+        let output = parseUciString(event.payload.message)
+        if (output.multipv === '1') {
+          this.uci = { ...this.uci, ...output }
+        }
       }
 
       if (event.payload.analysis_request) {
