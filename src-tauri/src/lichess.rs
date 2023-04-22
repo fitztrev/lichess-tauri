@@ -253,6 +253,7 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
         process.stdin(Stdio::piped()).stdout(Stdio::piped());
 
         // Hide the console window on Windows
+        #[cfg(windows)]
         if cfg!(windows) {
             use std::os::windows::process::CommandExt;
 
