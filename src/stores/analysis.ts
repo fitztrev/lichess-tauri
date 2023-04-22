@@ -207,7 +207,7 @@ function convertScoreToEvaluation(
 }
 
 function convertTimeToUnitString(time: string): string {
-  return parseInt(time) / 1000 + 's'
+  return (parseInt(time) / 1000).toFixed(1) + 's'
 }
 
 function convertHashfullToPercentage(hashfull: string): string {
@@ -227,9 +227,11 @@ if (import.meta.vitest) {
   })
 
   test.each([
-    ['123', '0.123s'],
-    ['1234', '1.234s'],
-    ['12345', '12.345s'],
+    ['123', '0.1s'],
+    ['1000', '1.0s'],
+    ['1234', '1.2s'],
+    ['12345', '12.3s'],
+    ['34567', '34.6s'],
   ])(`converts time to unit string`, (time, unitString) => {
     expect(convertTimeToUnitString(time)).toBe(unitString)
   })
