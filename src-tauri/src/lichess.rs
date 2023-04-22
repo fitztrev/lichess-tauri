@@ -2,6 +2,7 @@ use std::{
     error::Error,
     io::{BufRead, BufReader, Write},
     process::{Command, Stdio},
+    time::Duration,
 };
 
 use reqwest::{
@@ -326,6 +327,7 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             client
                 .post(url)
                 .body(Body::new(iter_read::IterRead::new(rx.into_iter().fuse())))
+                .timeout(Duration::from_secs(600))
                 .send()
         });
 
