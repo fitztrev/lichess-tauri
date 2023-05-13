@@ -119,7 +119,7 @@ export const useAnalysisStore = defineStore('analysis', {
         this.sleepDuration = parseInt(event.payload.message)
       } else if (event.payload.event === 'Uci') {
         let output = parseUciString(event.payload.message)
-        if (output.multipv === '1') {
+        if (!output.multipv || output.multipv === '1') {
           this.uci = { ...this.uci, ...output }
         }
       }
@@ -337,6 +337,37 @@ if (import.meta.vitest) {
         seldepth: '36',
         tbhits: '0',
         time: '6319',
+      },
+    ],
+    [
+      // lc0
+      'info depth 15 seldepth 40 time 76109 nodes 382994 score cp 24 nps 5050 tbhits 0 pv d7d5',
+      {
+        depth: '15',
+        seldepth: '40',
+        time: '76109',
+        nodes: '382994',
+        nps: '5050',
+        pv: ['d7d5'],
+        scoreType: 'cp',
+        scoreValue: '24',
+        tbhits: '0',
+      },
+    ],
+    [
+      // lc0
+      'info depth 12 seldepth 31 time 14080 nodes 57532 score cp 24 nps 4167 tbhits 0 multipv 2 pv e7e5',
+      {
+        depth: '12',
+        seldepth: '31',
+        time: '14080',
+        nodes: '57532',
+        nps: '4167',
+        multipv: '2',
+        pv: ['e7e5'],
+        scoreType: 'cp',
+        scoreValue: '24',
+        tbhits: '0',
       },
     ],
   ])('parses uci strings', (uci, expected) => {
