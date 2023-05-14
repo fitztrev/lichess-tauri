@@ -9,14 +9,15 @@ import { invoke } from '@tauri-apps/api'
 
 const clientId = 'lichess-tauri'
 const tempServerUrl = ref('')
-const challenge = pkceChallenge(128)
+const challenge = ref({ code_challenge: '', code_verifier: '' })
 
 export function registerOauthHandlers(): void {
-  listen('server_started', (data: { payload: number }) => {
-    console.log('server started', data)
+  listen('server_started', async (data: { payload: number }) => {
     tempServerUrl.value = `http://localhost:${data.payload}/`
 
     const settings = useSettingsStore()
+
+    challenge.value = await pkceChallenge(128)
 
     let url =
       `${settings.lichessHost}/oauth?` +
@@ -25,7 +26,7 @@ export function registerOauthHandlers(): void {
         client_id: clientId,
         redirect_uri: tempServerUrl.value,
         code_challenge_method: 'S256',
-        code_challenge: challenge.code_challenge,
+        code_challenge: challenge.value.code_challenge,
         scope: ['engine:read', 'engine:write'].join(' '),
       }).toString()
 
@@ -43,7 +44,7 @@ export function registerOauthHandlers(): void {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: `grant_type=authorization_code&client_id=${clientId}&code=${code}&redirect_uri=${tempServerUrl.value}&code_verifier=${challenge.code_verifier}`,
+      body: `grant_type=authorization_code&client_id=${clientId}&code=${code}&redirect_uri=${tempServerUrl.value}&code_verifier=${challenge.value.code_verifier}`,
     })
       .then((response) => response.json())
       .then(async (data) => {
