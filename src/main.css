@@ -1,6 +1,6 @@
-@import 'chessground/assets/chessground.base.css';
-@import 'chessground/assets/chessground.brown.css';
-@import 'chessground/assets/chessground.cburnett.css';
+@import '../node_modules/chessground/assets/chessground.base.css';
+@import '../node_modules/chessground/assets/chessground.brown.css';
+@import '../node_modules/chessground/assets/chessground.cburnett.css';
 
 @tailwind base;
 @tailwind components;
