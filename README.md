@@ -76,10 +76,6 @@ npm run tauri dev
 
 Uses diesel to manage migrations.
 
-```
-cargo install diesel_cli --no-default-features --features sqlite
-```
-
 To add a new migration:
 
 ```
@@ -91,7 +87,7 @@ For testing migrations:
 
 ```
 cd src-tauri
-diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migration redo
+diesel --database-url ~/.local/share/lichess-tauri/db.sqlite migration redo
 ```
 
 ### How to release a new version

@@ -12,6 +12,7 @@ pub struct SqlSetting {
 pub struct SqlEngine {
     engine_id: String,
     binary_location: String,
+    uci_options: String,
 }
 
 #[derive(Insertable)]
@@ -26,6 +27,7 @@ struct NewSetting<'a> {
 struct NewEngine<'a> {
     engine_id: &'a str,
     binary_location: &'a str,
+    uci_options: &'a str,
 }
 
 pub fn establish_connection() -> SqliteConnection {
@@ -81,12 +83,13 @@ pub fn get_all_settings() -> Vec<SqlSetting> {
         .expect("Error loading settings")
 }
 
-pub fn add_engine(engine_id: &str, binary_location: &str) {
+pub fn add_engine(engine_id: &str, binary_location: &str, uci_options: &str) {
     let mut connection = establish_connection();
 
     let new_engine = NewEngine {
         engine_id,
         binary_location,
+        uci_options,
     };
 
     diesel::insert_into(schema::engines::table)

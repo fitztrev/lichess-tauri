@@ -52,6 +52,7 @@ interface EngineListing {
   license: string
   version: string
   updated_at: string
+  uci_options: { option: string; value: string }[]
   binaries: {
     os: string
     architecture: string

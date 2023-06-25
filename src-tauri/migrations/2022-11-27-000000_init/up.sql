@@ -1,6 +1,7 @@
 create table engines (
   engine_id text primary key not null,
-  binary_location text not null
+  binary_location text not null,
+  uci_options text not null
 );
 
 create table settings (

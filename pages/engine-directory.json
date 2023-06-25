@@ -8,6 +8,16 @@
       "license": "GPLv3",
       "version": "15.1",
       "updated_at": "2022-12-07 00:00:00",
+      "uci_options": [
+        {
+          "option": "UCI_AnalyseMode",
+          "value": "true"
+        },
+        {
+          "option": "Hash",
+          "value": "%CALCULATED_MAX_HASH%"
+        }
+      ],
       "binaries": [
         {
           "os": "linux",
