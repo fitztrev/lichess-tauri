@@ -2,7 +2,7 @@
   "engines": [
     {
       "name": "Stockfish",
-      "description": "Free and open-source chess engine",
+      "description": "Strong open source chess engine",
       "website": "https://stockfishchess.org/",
       "icon": "https://fitztrev.github.io/lichess-tauri/logos/stockfish.png",
       "license": "GPLv3",
