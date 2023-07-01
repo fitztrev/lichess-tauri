@@ -114,7 +114,7 @@ pub fn install(engine: Engine) -> PathBuf {
         }
     }
 
-    let path_to_binary = engines_path.join(&binary.binary_filename);
+     let path_to_binary = engines_path.join(&binary.binary_filename);
 
     println!("path_to_binary: {}", path_to_binary.to_str().unwrap());
 
