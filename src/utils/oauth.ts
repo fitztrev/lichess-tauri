@@ -7,7 +7,7 @@ import { open } from '@tauri-apps/api/shell'
 import { useSettingsStore } from '../stores/settings'
 import { invoke } from '@tauri-apps/api'
 
-const clientId = 'lichess-tauri'
+const clientId = 'github.com/fitztrev/lichess-tauri'
 const tempServerUrl = ref('')
 const challenge = ref({ code_challenge: '', code_verifier: '' })
 
