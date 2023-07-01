@@ -2,72 +2,60 @@
   "engines": [
     {
       "name": "Stockfish",
-      "description": "Free and open-source chess engine",
+      "description": "Strong open source chess engine",
       "website": "https://stockfishchess.org/",
       "icon": "https://fitztrev.github.io/lichess-tauri/logos/stockfish.png",
       "license": "GPLv3",
-      "version": "15.1",
-      "updated_at": "2022-12-07 00:00:00",
+      "version": "16",
+      "updated_at": "2023-06-30 00:00:00",
       "binaries": [
         {
           "os": "linux",
-          "architecture": "bmi2",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_linux_x64_bmi2.zip",
-          "binary_filename": "stockfish_15.1_linux_x64_bmi2/stockfish_15.1_x64_bmi2"
-        },
-        {
-          "os": "linux",
           "architecture": "avx2",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_linux_x64_avx2.zip",
-          "binary_filename": "stockfish_15.1_linux_x64_avx2/stockfish-ubuntu-20.04-x86-64-avx2"
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-ubuntu-x86-64-avx2.tar",
+          "binary_filename": "stockfish/stockfish-ubuntu-x86-64-avx2"
         },
         {
           "os": "linux",
-          "architecture": "popcnt",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_linux_x64_popcnt.zip",
-          "binary_filename": "stockfish_15.1_linux_x64_popcnt/stockfish-ubuntu-20.04-x86-64-modern"
+          "architecture": "modern",
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-ubuntu-x86-64-modern.tar",
+          "binary_filename": "stockfish/stockfish-ubuntu-x86-64-modern"
         },
         {
           "os": "linux",
           "architecture": "default",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_linux_x64.zip",
-          "binary_filename": "stockfish_15.1_linux_x64/stockfish-ubuntu-20.04-x86-64"
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-ubuntu-x86-64.tar",
+          "binary_filename": "stockfish/stockfish-ubuntu-x86-64"
         },
         {
           "os": "macos",
-          "architecture": "apple-silicon",
-          "zip": "https://lichess-tauri.s3.amazonaws.com/stockfish-15.1-macos-apple-silicon.zip",
-          "binary_filename": "stockfish-15.1-macos-apple-silicon/bin/stockfish"
+          "architecture": "modern",
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-macos-x86-64-modern.tar",
+          "binary_filename": "stockfish/stockfish-macos-x86-64-modern"
         },
         {
           "os": "macos",
           "architecture": "default",
-          "zip": "https://lichess-tauri.s3.amazonaws.com/stockfish-15.1-macos-x86-64-modern.zip",
-          "binary_filename": "stockfish-15.1-macos-x86-64-modern/bin/stockfish"
-        },
-        {
-          "os": "windows",
-          "architecture": "bmi2",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_win_x64_bmi2.zip",
-          "binary_filename": "stockfish_15.1_win_x64_bmi2/stockfish_15.1_x64_bmi2.exe"
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-macos-x86-64.tar",
+          "binary_filename": "stockfish/stockfish-macos-x86-64"
         },
         {
           "os": "windows",
           "architecture": "avx2",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_win_x64_avx2.zip",
-          "binary_filename": "stockfish_15.1_win_x64_avx2/stockfish-windows-2022-x86-64-avx2.exe"
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-windows-x86-64-avx2.zip",
+          "binary_filename": "stockfish/stockfish-windows-x86-64-avx2.exe"
         },
         {
           "os": "windows",
-          "architecture": "popcnt",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_win_x64_popcnt.zip",
-          "binary_filename": "stockfish_15.1_win_x64_popcnt/stockfish-windows-2022-x86-64-modern.exe"
+          "architecture": "modern",
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-windows-x86-64-modern.zip",
+          "binary_filename": "stockfish/stockfish-windows-x86-64-modern.exe"
         },
         {
           "os": "windows",
           "architecture": "default",
-          "zip": "https://files.stockfishchess.org/files/stockfish_15.1_win_x64.zip",
-          "binary_filename": "stockfish_15.1_win_x64/stockfish-windows-2022-x86-64.exe"
+          "zip": "https://github.com/official-stockfish/Stockfish/releases/download/sf_16/stockfish-windows-x86-64.zip",
+          "binary_filename": "stockfish/stockfish-windows-x86-64.exe"
         }
       ]
     }
