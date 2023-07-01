@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { useSettingsStore } from './settings'
-import { router } from '../router'
 
 type Variant =
   | 'chess'
@@ -63,11 +62,7 @@ async function getUserEnginesFromLichess(): Promise<LichessEngine[]> {
 }
 
 export function refreshEngineList(): void {
-  getUserEnginesFromLichess()
-    .then((data) => {
-      useEnginesStore().engines = data
-    })
-    .catch(() => {
-      router.push('/')
-    })
+  getUserEnginesFromLichess().then((data) => {
+    useEnginesStore().engines = data
+  })
 }
