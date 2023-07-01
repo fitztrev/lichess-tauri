@@ -80,13 +80,6 @@ pub fn install(engine: Engine) -> PathBuf {
             let mut file = archive.by_index(i).unwrap();
             let outpath = engines_path.join(file.name());
 
-            {
-                let comment = file.comment();
-                if !comment.is_empty() {
-                    println!("File {} comment: {}", i, comment);
-                }
-            }
-
             if (*file.name()).ends_with('/') {
                 fs::create_dir_all(&outpath).unwrap();
             } else {
@@ -107,14 +100,17 @@ pub fn install(engine: Engine) -> PathBuf {
             let mut file = file.unwrap();
             let outpath = engines_path.join(file.path().unwrap());
 
-            if let Some(p) = Path::new(&outpath).parent() {
-                if !p.exists() {
-                    fs::create_dir_all(p).unwrap();
+            if (*outpath.to_str().unwrap()).ends_with('/') {
+                fs::create_dir_all(&outpath).unwrap();
+            } else {
+                if let Some(p) = Path::new(&outpath).parent() {
+                    if !p.exists() {
+                        fs::create_dir_all(p).unwrap();
+                    }
                 }
+                let mut outfile = File::create(&outpath).unwrap();
+                io::copy(&mut file, &mut outfile).unwrap();
             }
-
-            let mut outfile = File::create(&outpath).unwrap();
-            io::copy(&mut file, &mut outfile).unwrap();
         }
     }
 
