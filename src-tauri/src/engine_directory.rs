@@ -6,6 +6,7 @@ use std::path::PathBuf;
 
 use serde::Deserialize;
 use serde::Serialize;
+use tar::Archive;
 
 use crate::utils::get_app_data_dir;
 
@@ -28,7 +29,7 @@ pub struct Binary {
     binary_filename: String,
 }
 
-pub fn download_to_folder(engine: Engine) -> PathBuf {
+pub fn install(engine: Engine) -> PathBuf {
     let engines_path = get_app_data_dir().join("engines");
 
     assert!(
@@ -51,10 +52,12 @@ pub fn download_to_folder(engine: Engine) -> PathBuf {
         "linux"
     };
 
+    let architecture = "default";
+
     let binary = engine
         .binaries
         .iter()
-        .find(|binary| binary.os == os && binary.architecture == "default")
+        .find(|binary| binary.os == os && binary.architecture == architecture)
         .ok_or("No binary found for this system")
         .unwrap();
 
@@ -70,27 +73,46 @@ pub fn download_to_folder(engine: Engine) -> PathBuf {
     let mut file = File::create(&zip_path).unwrap();
     io::copy(&mut resp, &mut file).unwrap();
 
-    let mut archive =
-        zip::ZipArchive::new(File::open(&zip_path).unwrap()).expect("Error opening zip file");
-    for i in 0..archive.len() {
-        let mut file = archive.by_index(i).unwrap();
-        let outpath = engines_path.join(file.name());
+    if binary.zip.ends_with(".zip") {
+        let mut archive =
+            zip::ZipArchive::new(File::open(&zip_path).unwrap()).expect("Error opening zip file");
+        for i in 0..archive.len() {
+            let mut file = archive.by_index(i).unwrap();
+            let outpath = engines_path.join(file.name());
 
-        {
-            let comment = file.comment();
-            if !comment.is_empty() {
-                println!("File {} comment: {}", i, comment);
+            {
+                let comment = file.comment();
+                if !comment.is_empty() {
+                    println!("File {} comment: {}", i, comment);
+                }
+            }
+
+            if (*file.name()).ends_with('/') {
+                fs::create_dir_all(&outpath).unwrap();
+            } else {
+                if let Some(p) = Path::new(&outpath).parent() {
+                    if !p.exists() {
+                        fs::create_dir_all(p).unwrap();
+                    }
+                }
+                let mut outfile = File::create(&outpath).unwrap();
+                io::copy(&mut file, &mut outfile).unwrap();
             }
         }
+    } else if binary.zip.ends_with(".tar") {
+        let file = File::open(&zip_path).unwrap();
+        let mut archive = Archive::new(file);
 
-        if (*file.name()).ends_with('/') {
-            fs::create_dir_all(&outpath).unwrap();
-        } else {
+        for file in archive.entries().unwrap() {
+            let mut file = file.unwrap();
+            let outpath = engines_path.join(file.path().unwrap());
+
             if let Some(p) = Path::new(&outpath).parent() {
                 if !p.exists() {
                     fs::create_dir_all(p).unwrap();
                 }
             }
+
             let mut outfile = File::create(&outpath).unwrap();
             io::copy(&mut file, &mut outfile).unwrap();
         }
