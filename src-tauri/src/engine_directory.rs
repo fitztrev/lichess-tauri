@@ -125,9 +125,9 @@ pub fn install(engine: Engine) -> PathBuf {
 
 #[cfg(target_family = "unix")]
 fn make_engine_executable(path_to_binary: &PathBuf) {
-    let mut perms = fs::metadata(&path_to_binary).unwrap().permissions();
+    let mut perms = fs::metadata(path_to_binary).unwrap().permissions();
     std::os::unix::prelude::PermissionsExt::set_mode(&mut perms, 0o755);
-    fs::set_permissions(&path_to_binary, perms).unwrap();
+    fs::set_permissions(path_to_binary, perms).unwrap();
 }
 
 #[cfg(target_family = "windows")]
