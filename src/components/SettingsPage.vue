@@ -145,9 +145,9 @@ function openExternalLink(url: string) {
 
     <h3 class="text-lg font-medium leading-6 text-gray-900 mt-8">About</h3>
     <p class="mt-1 max-w-2xl text-sm text-gray-700">
-      You are using version v<strong>{{ appVersion }}</strong> of the app.
+      You are using version v<strong>{{ appVersion }}</strong>
       <br />
-      This app stores any local data to
+      Local database and engines are stored at
       <a
         href="#"
         @click.prevent="openFileExplorer(appDataDir)"
@@ -163,7 +163,7 @@ function openExternalLink(url: string) {
         "
         class="underline"
         >app on GitHub</a
-      >.
+      >
     </p>
   </div>
 </template>

@@ -99,7 +99,7 @@ async fn start_oauth_server(window: Window) {
 
 #[tauri::command]
 fn download_engine_to_folder(engine: Engine) -> String {
-    engine_directory::download_to_folder(engine)
+    engine_directory::install(engine)
         .into_os_string()
         .into_string()
         .unwrap()

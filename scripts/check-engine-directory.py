@@ -1,6 +1,7 @@
 from io import BytesIO
 import json
 import os
+import tarfile
 from urllib.request import Request, urlopen
 from zipfile import ZipFile
 
@@ -13,11 +14,14 @@ for engine in data['engines']:
         print(f"Checking {binary['zip']}")
 
         resp = urlopen(Request(binary['zip'], headers={
-                       'User-Agent': 'lichess-tauri ci'}))
-        zip = ZipFile(BytesIO(resp.read()))
+                       'User-Agent': 'https://github.com/fitztrev/lichess-tauri/actions'}))
 
-        assert binary['binary_filename'] in zip.namelist(
-        ), f"\033[91m Binary {binary['binary_filename']} not found in {binary['zip']} \033[0m"
+        if binary['zip'].endswith('.zip'):
+            zip = ZipFile(BytesIO(resp.read()))
+            assert binary['binary_filename'] in zip.namelist(), f"\033[91m Binary {binary['binary_filename']} not found in {binary['zip']} \033[0m"
+        else:
+            files = tarfile.open(fileobj=BytesIO(resp.read()))
+            assert binary['binary_filename'] in files.getnames(), f"\033[91m Binary {binary['binary_filename']} not found in {binary['zip']} \033[0m"
 
         print(f"\033[92m ✓ Found {binary['binary_filename']} \033[0m")
 
