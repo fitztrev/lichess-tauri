@@ -14,9 +14,14 @@ import { refreshEngineList, useEnginesStore } from '../stores/engines'
 const engines = useEnginesStore()
 const engineDirectory = ref<EngineListing[]>([])
 
+const isInstalling = ref(false)
+
 refreshEngineList()
 
 async function addEngineFromDirectory(engine: EngineListing) {
+  isInstalling.value = true
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
   let path_to_binary = await invoke<string>('download_engine_to_folder', {
     engine: engine,
   })
@@ -40,6 +45,8 @@ async function addEngineFromDirectory(engine: EngineListing) {
         binaryLocation: path_to_binary,
       })
       refreshEngineList()
+
+      isInstalling.value = false
     })
   })
 }
@@ -113,7 +120,11 @@ fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
             </div>
           </div>
           <div class="text-right mb-4">
+            <div v-if="isInstalling" class="text-sm text-gray-600">
+              Installing...
+            </div>
             <button
+              v-else
               @click="addEngineFromDirectory(engine)"
               type="button"
               class="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
