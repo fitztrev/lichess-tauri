@@ -89,10 +89,10 @@ For testing migrations:
 cd src-tauri
 
 ## for linux
-diesel --database-url ~/.local/share/lichess-tauri/db.sqlite migration redo
+diesel --database-url ~/.local/share/lichess-tauri/database.sqlite migration redo
 
 ## for mac
-diesel --database-url ~/Library/Application\ Support/lichess-tauri/db.sqlite migration redo
+diesel --database-url ~/Library/Application\ Support/lichess-tauri/database.sqlite migration redo
 ```
 
 ### How to release a new version

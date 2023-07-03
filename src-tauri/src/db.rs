@@ -31,7 +31,7 @@ struct NewEngine<'a> {
 }
 
 pub fn establish_connection() -> SqliteConnection {
-    let path_to_db_file = get_app_data_dir().join("db.sqlite");
+    let path_to_db_file = get_app_data_dir().join("database.sqlite");
 
     let database_url = path_to_db_file
         .to_str()

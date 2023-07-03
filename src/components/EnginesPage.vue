@@ -10,6 +10,8 @@ import {
 } from '../utils/sysyinfo'
 import Engine from './Engine.vue'
 import { refreshEngineList, useEnginesStore } from '../stores/engines'
+import { EngineListing } from '../utils/types'
+import { substituteComputedValues } from '../utils/settings'
 
 const engines = useEnginesStore()
 const engineDirectory = ref<EngineListing[]>([])
@@ -33,16 +35,24 @@ async function addEngineFromDirectory(engine: EngineListing) {
       systemInfo.total_memory / 1024 / 1024
     )
 
+    let maxHash = maxHashOptions.at(-1)?.megabytes || 16
+
+    const substitutions = new Map()
+    substitutions.set('%CALCULATED_MAX_HASH%', maxHash)
+
     saveEngineToLichess({
       name: engine.name + ' ' + engine.version,
       maxThreads: maxThreads,
-      maxHash: maxHashOptions.at(-1)?.megabytes || 16,
+      maxHash: maxHash,
       defaultDepth: 30,
       variants: ['chess'],
     }).then(async (data) => {
       await invoke('add_engine', {
         engineId: data.id,
         binaryLocation: path_to_binary,
+        uciOptions: JSON.stringify(
+          substituteComputedValues(engine.uci_options, substitutions)
+        ),
       })
       refreshEngineList()
 
@@ -51,24 +61,9 @@ async function addEngineFromDirectory(engine: EngineListing) {
   })
 }
 
-interface EngineListing {
-  name: string
-  description: string
-  website: string
-  icon: string
-  license: string
-  version: string
-  updated_at: string
-  uci_options: { option: string; value: string }[]
-  binaries: {
-    os: string
-    architecture: string
-    zip: string
-    binary_filename: string
-  }
-}
-
-fetch('https://fitztrev.github.io/lichess-tauri/engine-directory.json')
+fetch(
+  'https://raw.githubusercontent.com/fitztrev/lichess-tauri/engine-settings/pages/engine-directory.json'
+)
   .then<{
     engines: EngineListing[]
   }>((res) => res.json())

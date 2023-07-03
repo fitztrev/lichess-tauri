@@ -84,6 +84,7 @@ function submit() {
       await invoke('add_engine', {
         engineId: data.id,
         binaryLocation: binaryLocation.value,
+        uciOptions: JSON.stringify({}),
       })
 
       router.push('/engines')
