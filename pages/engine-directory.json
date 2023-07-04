@@ -10,12 +10,20 @@
       "updated_at": "2023-06-30 00:00:00",
       "uci_options": [
         {
-          "option": "UCI_AnalyseMode",
+          "name": "UCI_AnalyseMode",
           "value": "true"
         },
         {
-          "option": "Hash",
-          "value": "%CALCULATED_MAX_HASH%"
+          "name": "UCI_Chess960",
+          "value": "true"
+        },
+        {
+          "name": "Threads",
+          "value": "%THREADS%"
+        },
+        {
+          "name": "Hash",
+          "value": "%HASH%"
         }
       ],
       "binaries": [

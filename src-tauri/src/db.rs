@@ -1,5 +1,6 @@
 use crate::{schema, utils::get_app_data_dir};
 use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Queryable)]
 pub struct SqlSetting {
@@ -8,11 +9,17 @@ pub struct SqlSetting {
 }
 
 #[allow(dead_code)]
-#[derive(Queryable)]
+#[derive(Queryable, Serialize, Deserialize)]
 pub struct SqlEngine {
     engine_id: String,
-    binary_location: String,
-    uci_options: String,
+    pub binary_location: String,
+    pub uci_options: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UciOption {
+    pub name: String,
+    pub value: String,
 }
 
 #[derive(Insertable)]
@@ -107,7 +114,7 @@ pub fn delete_engine(engine_id: &str) {
         .expect("Error deleting engine");
 }
 
-pub fn get_engine_binary_path(engine_id: &str) -> Option<String> {
+pub fn get_engine(engine_id: &str) -> Option<SqlEngine> {
     let mut connection = establish_connection();
 
     let result = schema::engines::table
@@ -115,17 +122,9 @@ pub fn get_engine_binary_path(engine_id: &str) -> Option<String> {
         .first::<SqlEngine>(&mut connection);
 
     match result {
-        Ok(engine) => Some(engine.binary_location),
+        Ok(engine) => Some(engine),
         Err(_) => None,
     }
-}
-
-pub fn get_all_engine_binary_paths() -> Vec<SqlEngine> {
-    let mut connection = establish_connection();
-
-    schema::engines::table
-        .load::<SqlEngine>(&mut connection)
-        .expect("Error loading engines")
 }
 
 pub fn get_engine_count() -> i64 {

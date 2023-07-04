@@ -12,7 +12,7 @@ use reqwest::{
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 
-use crate::db;
+use crate::db::{self, UciOption};
 
 #[allow(dead_code)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -232,21 +232,22 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             },
         );
 
-        let binary_filepath = db::get_engine_binary_path(&analysis_request.engine.id);
-        match binary_filepath {
-            Some(_) => {}
+        let engine = db::get_engine(&analysis_request.engine.id);
+
+        let (binary_filepath, uci_options) = match engine {
+            Some(engine) => (Some(engine.binary_location), engine.uci_options),
             None => {
                 send_status_to_frontend(
                     app_handle,
                     StatusPayload {
-                        status: "Missing binary filepath".to_string(),
+                        status: "Missing engine in local database".to_string(),
                         level: StatusLevel::Error,
                     },
                 );
                 std::thread::sleep(std::time::Duration::from_secs(5));
                 continue;
             }
-        }
+        };
 
         // Step 2) Send the FEN to the engine
         let mut process = Command::new(binary_filepath.as_ref().expect("missing binary_filepath"));
@@ -284,24 +285,24 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
 
         let engine_stdin = engine.as_mut().unwrap().stdin.as_mut().unwrap();
 
-        // Set UCI options
-        writeln!(engine_stdin, "setoption name UCI_AnalyseMode value true")?;
-        writeln!(engine_stdin, "setoption name UCI_Chess960 value true")?;
-        writeln!(
-            engine_stdin,
-            "setoption name Threads value {}",
-            analysis_request.work.threads
-        )?;
-        writeln!(
-            engine_stdin,
-            "setoption name Hash value {}",
-            analysis_request.work.hash
-        )?;
+        let uci_options = serde_json::from_str::<Vec<UciOption>>(&uci_options).unwrap();
+
+        // Set UCI options from the database
+        for uci_option in uci_options {
+            writeln!(
+                engine_stdin,
+                "setoption name {} value {}",
+                uci_option.name, uci_option.value
+            )?;
+        }
+
+        // Set UCI options to apply to all engines
         writeln!(
             engine_stdin,
             "setoption name MultiPV value {}",
             analysis_request.work.multi_pv
         )?;
+
         writeln!(
             engine_stdin,
             "position fen {} moves {}",
