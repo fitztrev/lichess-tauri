@@ -38,7 +38,8 @@ async function addEngineFromDirectory(engine: EngineListing) {
     let maxHash = maxHashOptions.at(-1)?.megabytes || 16
 
     const substitutions = new Map()
-    substitutions.set('%CALCULATED_MAX_HASH%', maxHash)
+    substitutions.set('%HASH%', maxHash)
+    substitutions.set('%THREADS%', maxThreads)
 
     saveEngineToLichess({
       name: engine.name + ' ' + engine.version,

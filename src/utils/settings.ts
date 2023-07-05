@@ -45,14 +45,21 @@ if (import.meta.vitest) {
 
   it('substitutes computed values', () => {
     let substitutions = new Map()
-    substitutions.set('%MAX_HASH%', '1024')
+    substitutions.set('%HASH%', '1024')
+    substitutions.set('%THREADS%', '8')
 
     expect(
       substituteComputedValues(
-        [{ name: 'Hash', value: '%MAX_HASH%' }],
+        [
+          { name: 'Hash', value: '%HASH%' },
+          { name: 'Threads', value: '%THREADS%' },
+        ],
         substitutions
       )
-    ).toStrictEqual([{ name: 'Hash', value: '1024' }])
+    ).toStrictEqual([
+      { name: 'Hash', value: '1024' },
+      { name: 'Threads', value: '8' },
+    ])
   })
 
   it('trims trailing slashes', () => {

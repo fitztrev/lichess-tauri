@@ -289,6 +289,10 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
 
         // Set UCI options from the database
         for uci_option in uci_options {
+            println!(
+                "setoption name {} value {}",
+                uci_option.name, uci_option.value
+            );
             writeln!(
                 engine_stdin,
                 "setoption name {} value {}",
