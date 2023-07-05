@@ -35,7 +35,7 @@ export function substituteComputedValues(
         substitution_value
       )
     })
-    return { option: option.option, value: substituted_value }
+    return { name: option.name, value: substituted_value }
   })
   return substituted_options
 }
@@ -49,10 +49,10 @@ if (import.meta.vitest) {
 
     expect(
       substituteComputedValues(
-        [{ option: 'Hash', value: '%MAX_HASH%' }],
+        [{ name: 'Hash', value: '%MAX_HASH%' }],
         substitutions
       )
-    ).toStrictEqual([{ option: 'Hash', value: '1024' }])
+    ).toStrictEqual([{ name: 'Hash', value: '1024' }])
   })
 
   it('trims trailing slashes', () => {

@@ -1,4 +1,4 @@
-export type UciOption = { option: string; value: string }
+export type UciOption = { name: string; value: string }
 
 export interface EngineListing {
   name: string
