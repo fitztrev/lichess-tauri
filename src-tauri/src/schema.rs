@@ -4,6 +4,7 @@ diesel::table! {
     engines (engine_id) {
         engine_id -> Text,
         binary_location -> Text,
+        uci_options -> Text,
     }
 }
 

@@ -8,6 +8,24 @@
       "license": "GPLv3",
       "version": "16",
       "updated_at": "2023-06-30 00:00:00",
+      "uci_options": [
+        {
+          "name": "UCI_AnalyseMode",
+          "value": "true"
+        },
+        {
+          "name": "UCI_Chess960",
+          "value": "true"
+        },
+        {
+          "name": "Threads",
+          "value": "%THREADS%"
+        },
+        {
+          "name": "Hash",
+          "value": "%HASH%"
+        }
+      ],
       "binaries": [
         {
           "os": "linux",

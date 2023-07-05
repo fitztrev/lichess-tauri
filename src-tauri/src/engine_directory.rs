@@ -18,6 +18,7 @@ pub struct Engine {
     license: String,
     version: String,
     updated_at: String,
+    uci_options: Vec<UciOption>,
     binaries: Vec<Binary>,
 }
 
@@ -27,6 +28,12 @@ pub struct Binary {
     architecture: String,
     zip: String,
     binary_filename: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UciOption {
+    name: String,
+    value: String,
 }
 
 pub fn install(engine: Engine) -> PathBuf {

@@ -43,8 +43,8 @@ fn delete_setting(key: &str) {
 }
 
 #[tauri::command]
-fn add_engine(engine_id: &str, binary_location: &str) {
-    db::add_engine(engine_id, binary_location);
+fn add_engine(engine_id: &str, binary_location: &str, uci_options: &str) {
+    db::add_engine(engine_id, binary_location, uci_options);
 }
 
 #[tauri::command]
