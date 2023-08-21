@@ -17,13 +17,12 @@
       },
       "fs": {
         "all": true,
-        "scope": ["$APPDATA/*", "$DATA/*", "$LOCAL/*", "$APP/*"]
+        "scope": ["$LOCALDATA/*"]
       },
       "shell": {
         "all": true,
         "execute": true,
         "open": "^",
-        "sidecar": true,
         "scope": []
       }
     },
