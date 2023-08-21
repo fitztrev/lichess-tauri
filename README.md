@@ -33,6 +33,12 @@ Tauri uses the OS's native webview. It can be compiled to a native binary for Wi
 
 Commands and documentation related to development of this app.
 
+### Build locally
+
+```
+npm run tauri build
+```
+
 ### Testing
 
 ```
@@ -65,7 +71,7 @@ npx svgexport src/assets/lichess-pad4-white.svg icon.png 64x
 npm run tauri icon icon.png
 ```
 
-Clear the cached build for it to take effect:
+Clear the cached build for it to take effect locally:
 
 ```
 rm -rf src-tauri/target
@@ -96,7 +102,13 @@ diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migratio
 
 ### How to release a new version
 
+1. Tag the new version:
+
+   ```
     npm version 0.x.x
     git push origin main --tags
+   ```
 
-Github workflow will build the app for each OS and add them to a release.
+   Github workflow will build the app for each OS and add them to a release.
+
+1. Manually edit the release and add the changelog to the description
