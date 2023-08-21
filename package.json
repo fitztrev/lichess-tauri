@@ -19,7 +19,7 @@
     "@types/node": "^20.1.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",
-    "chessground": "^8.3.7",
+    "chessground": "^9.0.2",
     "chessops": "^0.12.7",
     "jsdom": "^22.0.0",
     "pinia": "^2.0.23",
