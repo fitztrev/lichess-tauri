@@ -18,7 +18,7 @@ https://github.com/fitztrev/lichess-tauri/releases
 
 2. Run project
 
-   ```
+   ```bash
    npm install
    npm run tauri dev
    ```
@@ -33,15 +33,9 @@ Tauri uses the OS's native webview. It can be compiled to a native binary for Wi
 
 Commands and documentation related to development of this app.
 
-### Build locally
-
-```
-npm run tauri build
-```
-
 ### Testing
 
-```
+```bash
 # test the utility functions for the frontend
 npm run test
 
@@ -53,7 +47,7 @@ npm run watch
 
 Run linter
 
-```
+```bash
 # for frontend
 npm run format
 
@@ -66,14 +60,14 @@ cargo fmt
 
 All the app icons get generated from a single source SVG. To update the icons, run:
 
-```
+```bash
 npx svgexport src/assets/lichess-pad4-white.svg icon.png 64x
 npm run tauri icon icon.png
 ```
 
 Clear the cached build for it to take effect locally:
 
-```
+```bash
 rm -rf src-tauri/target
 npm run tauri dev
 ```
@@ -82,33 +76,41 @@ npm run tauri dev
 
 Uses diesel to manage migrations.
 
-```
+```bash
 cargo install diesel_cli --no-default-features --features sqlite
 ```
 
 To add a new migration:
 
-```
+```bash
 cd src-tauri
 diesel migration generate <migration_name>
 ```
 
 For testing migrations:
 
-```
+```bash
 cd src-tauri
 diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migration redo
 ```
 
 ### How to release a new version
 
+1. Test build locally
+
+   ```bash
+   npm run tauri build
+   ```
+
 1. Tag the new version:
 
-   ```
-    npm version 0.x.x
-    git push origin main --tags
+   ```bash
+   npm version 0.x.x
+   git push origin main --tags
    ```
 
    Github workflow will build the app for each OS and add them to a release.
 
-1. Manually edit the release and add the changelog to the description
+   * [Pre-release tag format](https://github.com/tauri-apps/tauri/issues/5286#issuecomment-1396970694): `0.0.6-2`
+
+2. Manually edit the release and add the changelog to the description
