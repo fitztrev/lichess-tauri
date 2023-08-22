@@ -111,6 +111,6 @@ diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migratio
 
    Github workflow will build the app for each OS and add them to a release.
 
-   * [Pre-release tag format](https://github.com/tauri-apps/tauri/issues/5286#issuecomment-1396970694): `0.0.6-2`
+   - [Pre-release tag format](https://github.com/tauri-apps/tauri/issues/5286#issuecomment-1396970694): `0.0.6-2`
 
-2. Manually edit the release and add the changelog to the description
+1. Manually edit the release and add the changelog to the description
