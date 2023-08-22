@@ -56,6 +56,14 @@ cd src-tauri
 cargo fmt
 ```
 
+### Auto-check format on commit
+
+```bash
+npm run prepare
+```
+
+Will apply the `.husky` commit hooks to your local git repo.
+
 ### Icon generation
 
 All the app icons get generated from a single source SVG. To update the icons, run:

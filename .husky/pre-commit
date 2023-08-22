@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npm test
+npx prettier --check .
+cargo fmt --check --manifest-path=src-tauri/Cargo.toml

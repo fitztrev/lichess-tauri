@@ -10,7 +10,8 @@
     "tauri": "tauri",
     "test": "vitest run",
     "tsc": "vue-tsc --noEmit",
-    "watch": "vitest"
+    "watch": "vitest",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.3",
@@ -21,6 +22,7 @@
     "autoprefixer": "^10.4.13",
     "chessground": "^9.0.2",
     "chessops": "^0.12.7",
+    "husky": "^8.0.3",
     "jsdom": "^22.0.0",
     "pinia": "^2.0.23",
     "pkce-challenge": "^4.0.0",
