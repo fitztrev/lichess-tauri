@@ -25,7 +25,6 @@
     "husky": "^8.0.3",
     "jsdom": "^22.0.0",
     "pinia": "^2.0.23",
-    "pkce-challenge": "^4.0.0",
     "postcss": "^8.4.18",
     "prettier": "^3.0.0",
     "svgexport": "^0.4.2",
