@@ -7,7 +7,7 @@ use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
 use reqwest::Url;
 use serde_json::{json, Value};
-use std::{borrow::Cow, fmt::format, thread};
+use std::{borrow::Cow, thread};
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri_plugin_oauth::OauthConfig;
 
