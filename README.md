@@ -52,8 +52,8 @@ Run linter
 npm run format
 
 # for backend
-cd src-tauri
-cargo fmt
+cargo fmt --check --manifest-path=src-tauri/Cargo.toml
+cargo clippy --all-targets --all-features --manifest-path=src-tauri/Cargo.toml
 ```
 
 ### Auto-check format on commit
