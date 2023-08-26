@@ -5,16 +5,17 @@
 
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
-use reqwest::Url;
+use login::start_oauth_flow;
 use serde_json::{json, Value};
-use std::{borrow::Cow, thread};
+use std::thread;
 use sysinfo::{CpuExt, System, SystemExt};
-use tauri_plugin_oauth::OauthConfig;
+use tauri::Window;
 
 use crate::db::establish_connection;
 
 mod engine_directory;
 mod lichess;
+mod login;
 
 pub mod db;
 pub mod schema;
@@ -82,92 +83,6 @@ fn get_sysinfo() -> Value {
     })
 }
 
-#[allow(dead_code)]
-#[derive(serde::Deserialize, Debug)]
-struct AccessTokenResponse {
-    token_type: String,
-    access_token: String,
-    expires_in: i32,
-}
-
-#[derive(serde::Deserialize, Debug)]
-struct LichessAccount {
-    username: String,
-}
-
-#[tauri::command]
-async fn start_oauth_server() {
-    let (code_challenge, code_verify) = oauth2::PkceCodeChallenge::new_random_sha256();
-
-    let port = tauri_plugin_oauth::start_with_config(
-        OauthConfig {
-            ports: None,
-            response: Some(Cow::Borrowed(include_str!("../public/oauth_response.html"))),
-        },
-        move |url| {
-            println!("returning_from_lichess: {}", url);
-
-            let url = Url::parse(&url).unwrap();
-            println!("url: {:?}", url);
-
-            let code = url.query_pairs().find(|(key, _)| key == "code").unwrap().1;
-
-            println!("code_verify: {}", code_verify.secret());
-
-            let lichess_host = db::get_setting("lichess_host").unwrap();
-
-            let body = reqwest::blocking::Client::new()
-                .post(format!("{}/api/token", lichess_host))
-                .form(&[
-                    ("grant_type", "authorization_code"),
-                    ("client_id", "github.com/fitztrev/lichess-tauri"),
-                    ("code", code.to_string().as_str()),
-                    (
-                        "redirect_uri",
-                        format!("http://localhost:{}/", url.port().unwrap()).as_str(),
-                    ),
-                    ("code_verifier", code_verify.secret()),
-                ])
-                .send()
-                .unwrap()
-                .json::<AccessTokenResponse>()
-                .unwrap();
-
-            println!("body: {:?}", body);
-
-            // update db with access token
-            db::update_setting("lichess_token", &body.access_token);
-
-            let me = reqwest::blocking::Client::new()
-                .get(format!("{}/api/account", lichess_host))
-                .bearer_auth(&body.access_token)
-                .send()
-                .unwrap()
-                .json::<LichessAccount>()
-                .unwrap();
-
-            println!("me: {:?}", me);
-
-            db::update_setting("lichess_username", &me.username);
-        },
-    )
-    .unwrap();
-
-    println!("Local server started on port: {}", port);
-    let redirect_url = format!("http://localhost:{}/", port);
-
-    let lichess_host = db::get_setting("lichess_host").unwrap();
-    let url = format!(
-        "{}/oauth?response_type=code&client_id={}&redirect_uri={}&code_challenge_method=S256&code_challenge={}&scope=engine:read%20engine:write",
-        lichess_host,
-        "github.com/fitztrev/lichess-tauri",
-        redirect_url,
-        code_challenge.as_str()
-    );
-
-    open_path(url);
-}
-
 #[tauri::command]
 fn download_engine_to_folder(engine: Engine) -> String {
     engine_directory::install(engine)
@@ -184,6 +99,11 @@ fn get_app_data_dir() -> String {
         .unwrap()
 }
 
+#[tauri::command]
+fn login_with_lichess(window: Window) {
+    start_oauth_flow(window);
+}
+
 fn main() {
     pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
     let mut connection = establish_connection();
@@ -198,7 +118,7 @@ fn main() {
             get_all_settings,
             get_app_data_dir,
             get_sysinfo,
-            start_oauth_server,
+            login_with_lichess,
             update_setting,
             open_path
         ])

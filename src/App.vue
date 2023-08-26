@@ -7,6 +7,7 @@ import {
   useAnalysisStore,
 } from './stores/analysis'
 import { useSettingsStore } from './stores/settings'
+import { loadSettingsFromDatabase } from './utils/settings'
 
 const analysis = useAnalysisStore()
 const settings = useSettingsStore()
@@ -19,6 +20,10 @@ listen('lichess::work', (data: LichessWorkEvent) => {
 listen('lichess::send_status_to_frontend', (data: LichessStatusEvent) => {
   analysis.status = data.payload.status
   analysis.statusLevel = data.payload.level
+})
+
+listen('refresh_settings_from_database', () => {
+  loadSettingsFromDatabase()
 })
 </script>
 
