@@ -1,24 +1,24 @@
 <script setup lang="ts">
 import Chessboard from './Chessboard.vue'
 import GettingStarted from './GettingStarted.vue'
-import { open } from '@tauri-apps/api/shell'
 
 import { useAnalysisStore } from '../stores/analysis'
 import { useEnginesStore } from '../stores/engines'
 import { useSettingsStore } from '../stores/settings'
+import { invoke } from '@tauri-apps/api'
 
 const engines = useEnginesStore()
 const settings = useSettingsStore()
 const analysis = useAnalysisStore()
 
-function openAnalysisPageOnLichess() {
+async function openAnalysisPageOnLichess() {
   let url = settings.lichessHost + '/analysis'
 
   if (engines.engines.length > 0) {
     url += '?engine=' + engines.engines[0].id
   }
 
-  open(url)
+  await invoke('open_path', { path: url })
 }
 </script>
 

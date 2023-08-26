@@ -89,7 +89,7 @@ pub fn logout(window: Window) {
 
     reqwest::blocking::Client::new()
         .delete(format!("{}/api/token", lichess_host))
-        .bearer_auth(&token)
+        .bearer_auth(token)
         .send()
         .unwrap();
 

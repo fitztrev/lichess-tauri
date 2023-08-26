@@ -5,7 +5,6 @@ import { ref } from 'vue'
 import { invoke } from '@tauri-apps/api'
 import { loadSettingsFromDatabase, trimTrailingSlash } from '../utils/settings'
 import { getVersion } from '@tauri-apps/api/app'
-import { open } from '@tauri-apps/api/shell'
 
 const settings = useSettingsStore()
 
@@ -38,12 +37,8 @@ async function save() {
   inputEngineHost.value = settings.engineHost
 }
 
-function openFileExplorer(path: string) {
-  open(path)
-}
-
-function openExternalLink(url: string) {
-  open(url)
+async function openPath(path: string) {
+  await invoke('open_path', { path })
 }
 </script>
 
@@ -148,19 +143,14 @@ function openExternalLink(url: string) {
       You are using version v<strong>{{ appVersion }}</strong>
       <br />
       Local database and engines are stored at
-      <a
-        href="#"
-        @click.prevent="openFileExplorer(appDataDir)"
-        class="underline"
-        >{{ appDataDir }}</a
-      >
+      <a href="#" @click.prevent="openPath(appDataDir)" class="underline">{{
+        appDataDir
+      }}</a>
       <br />
       See the source and contribute to this
       <a
         href="#"
-        @click.prevent="
-          openExternalLink('https://github.com/fitztrev/lichess-tauri')
-        "
+        @click.prevent="openPath('https://github.com/fitztrev/lichess-tauri')"
         class="underline"
         >app on GitHub</a
       >
