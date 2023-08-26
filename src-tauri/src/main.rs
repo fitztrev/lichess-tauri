@@ -111,7 +111,7 @@ async fn start_oauth_server() {
             let lichess_host = db::get_setting("lichess_host").unwrap();
 
             let body = reqwest::blocking::Client::new()
-                .post(format!("{}/api/oauth", lichess_host))
+                .post(format!("{}/api/token", lichess_host))
                 .form(&[
                     ("grant_type", "authorization_code"),
                     ("client_id", "github.com/fitztrev/lichess-tauri"),
@@ -128,6 +128,9 @@ async fn start_oauth_server() {
                 .unwrap();
 
             println!("body: {:?}", body);
+
+            // update db with access token
+            // make a request to /api/account to get the username
         },
     )
     .unwrap();
