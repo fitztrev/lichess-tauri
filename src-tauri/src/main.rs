@@ -82,12 +82,18 @@ fn get_sysinfo() -> Value {
     })
 }
 
-// #[derive(serde::Deserialize, Debug)]
-// struct AccessTokenResponse {
-//     token_type: String,
-//     access_token: String,
-//     expires_in: i32,
-// }
+#[allow(dead_code)]
+#[derive(serde::Deserialize, Debug)]
+struct AccessTokenResponse {
+    token_type: String,
+    access_token: String,
+    expires_in: i32,
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct LichessAccount {
+    username: String,
+}
 
 #[tauri::command]
 async fn start_oauth_server() {
@@ -124,13 +130,25 @@ async fn start_oauth_server() {
                 ])
                 .send()
                 .unwrap()
-                .json::<serde_json::Value>()
+                .json::<AccessTokenResponse>()
                 .unwrap();
 
             println!("body: {:?}", body);
 
             // update db with access token
-            // make a request to /api/account to get the username
+            db::update_setting("lichess_token", &body.access_token);
+
+            let me = reqwest::blocking::Client::new()
+                .get(format!("{}/api/account", lichess_host))
+                .bearer_auth(&body.access_token)
+                .send()
+                .unwrap()
+                .json::<LichessAccount>()
+                .unwrap();
+
+            println!("me: {:?}", me);
+
+            db::update_setting("lichess_username", &me.username);
         },
     )
     .unwrap();
