@@ -21,22 +21,6 @@ struct LichessAccount {
     username: String,
 }
 
-pub fn logout(window: Window) {
-    let lichess_host = db::get_setting("lichess_host").unwrap();
-    let token = db::get_setting("lichess_token").unwrap();
-
-    reqwest::blocking::Client::new()
-        .delete(format!("{}/api/token", lichess_host))
-        .bearer_auth(&token)
-        .send()
-        .unwrap();
-
-    db::delete_setting("lichess_token");
-    db::delete_setting("lichess_username");
-
-    window.emit("refresh_settings_from_database", ()).unwrap();
-}
-
 pub fn start_oauth_flow(window: Window) {
     let (code_challenge, code_verify) = oauth2::PkceCodeChallenge::new_random_sha256();
 
@@ -46,14 +30,8 @@ pub fn start_oauth_flow(window: Window) {
             response: Some(Cow::Borrowed(include_str!("../public/oauth_response.html"))),
         },
         move |url| {
-            println!("returning_from_lichess: {}", url);
-
             let url = Url::parse(&url).unwrap();
-            println!("url: {:?}", url);
-
             let code = url.query_pairs().find(|(key, _)| key == "code").unwrap().1;
-
-            println!("code_verify: {}", code_verify.secret());
 
             let lichess_host = db::get_setting("lichess_host").unwrap();
 
@@ -74,9 +52,6 @@ pub fn start_oauth_flow(window: Window) {
                 .json::<AccessTokenResponse>()
                 .unwrap();
 
-            println!("body: {:?}", body);
-
-            // update db with access token
             db::update_setting("lichess_token", &body.access_token);
 
             let me = reqwest::blocking::Client::new()
@@ -87,17 +62,14 @@ pub fn start_oauth_flow(window: Window) {
                 .json::<LichessAccount>()
                 .unwrap();
 
-            println!("me: {:?}", me);
-
             db::update_setting("lichess_username", &me.username);
-
             window.emit("refresh_settings_from_database", ()).unwrap();
         },
     )
     .unwrap();
 
-    println!("Local server started on port: {}", port);
     let redirect_url = format!("http://localhost:{}/", port);
+    println!("Local server started: {}", redirect_url);
 
     let lichess_host = db::get_setting("lichess_host").unwrap();
     let url = format!(
@@ -109,4 +81,20 @@ pub fn start_oauth_flow(window: Window) {
     );
 
     open_path(url);
+}
+
+pub fn logout(window: Window) {
+    let lichess_host = db::get_setting("lichess_host").unwrap();
+    let token = db::get_setting("lichess_token").unwrap();
+
+    reqwest::blocking::Client::new()
+        .delete(format!("{}/api/token", lichess_host))
+        .bearer_auth(&token)
+        .send()
+        .unwrap();
+
+    db::delete_setting("lichess_token");
+    db::delete_setting("lichess_username");
+
+    window.emit("refresh_settings_from_database", ()).unwrap();
 }
