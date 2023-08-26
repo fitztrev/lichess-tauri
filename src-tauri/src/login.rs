@@ -21,6 +21,22 @@ struct LichessAccount {
     username: String,
 }
 
+pub fn logout(window: Window) {
+    let lichess_host = db::get_setting("lichess_host").unwrap();
+    let token = db::get_setting("lichess_token").unwrap();
+
+    reqwest::blocking::Client::new()
+        .delete(format!("{}/api/token", lichess_host))
+        .bearer_auth(&token)
+        .send()
+        .unwrap();
+
+    db::delete_setting("lichess_token");
+    db::delete_setting("lichess_username");
+
+    window.emit("refresh_settings_from_database", ()).unwrap();
+}
+
 pub fn start_oauth_flow(window: Window) {
     let (code_challenge, code_verify) = oauth2::PkceCodeChallenge::new_random_sha256();
 

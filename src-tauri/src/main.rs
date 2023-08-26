@@ -39,11 +39,6 @@ fn update_setting(key: &str, value: &str) {
 }
 
 #[tauri::command]
-fn delete_setting(key: &str) {
-    db::delete_setting(key);
-}
-
-#[tauri::command]
 fn add_engine(engine_id: &str, binary_location: &str) {
     db::add_engine(engine_id, binary_location);
 }
@@ -104,6 +99,11 @@ fn login_with_lichess(window: Window) {
     start_oauth_flow(window);
 }
 
+#[tauri::command]
+fn logout(window: Window) {
+    login::logout(window);
+}
+
 fn main() {
     pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
     let mut connection = establish_connection();
@@ -113,12 +113,12 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             add_engine,
             delete_engine,
-            delete_setting,
             download_engine_to_folder,
             get_all_settings,
             get_app_data_dir,
             get_sysinfo,
             login_with_lichess,
+            logout,
             update_setting,
             open_path
         ])
