@@ -19,11 +19,7 @@ export const useSettingsStore = defineStore('settings', {
   },
   actions: {
     async logout() {
-      await invoke('delete_setting', { key: 'lichess_username' })
-      await invoke('delete_setting', { key: 'lichess_token' })
-
-      this.lichess_username = ''
-      this.lichess_token = ''
+      await invoke('logout')
     },
   },
 })

@@ -5,16 +5,17 @@
 
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use engine_directory::Engine;
+use login::start_oauth_flow;
 use serde_json::{json, Value};
-use std::{borrow::Cow, sync::Arc, thread};
+use std::thread;
 use sysinfo::{CpuExt, System, SystemExt};
 use tauri::Window;
-use tauri_plugin_oauth::OauthConfig;
 
 use crate::db::establish_connection;
 
 mod engine_directory;
 mod lichess;
+mod login;
 
 pub mod db;
 pub mod schema;
@@ -38,11 +39,6 @@ fn update_setting(key: &str, value: &str) {
 }
 
 #[tauri::command]
-fn delete_setting(key: &str) {
-    db::delete_setting(key);
-}
-
-#[tauri::command]
 fn add_engine(engine_id: &str, binary_location: &str) {
     db::add_engine(engine_id, binary_location);
 }
@@ -50,6 +46,11 @@ fn add_engine(engine_id: &str, binary_location: &str) {
 #[tauri::command]
 fn delete_engine(engine_id: &str) {
     db::delete_engine(engine_id);
+}
+
+#[tauri::command]
+fn open_path(path: String) {
+    utils::open_path(path);
 }
 
 #[tauri::command]
@@ -78,26 +79,6 @@ fn get_sysinfo() -> Value {
 }
 
 #[tauri::command]
-async fn start_oauth_server(window: Window) {
-    let window_arc = Arc::new(window);
-    let window_arc2 = window_arc.clone();
-
-    let port = tauri_plugin_oauth::start_with_config(
-        OauthConfig {
-            ports: None,
-            response: Some(Cow::Borrowed(include_str!("../public/oauth_response.html"))),
-        },
-        move |url| {
-            window_arc2.emit("returning_from_lichess", url).unwrap();
-        },
-    )
-    .unwrap();
-
-    println!("Local server started on port: {}", port);
-    window_arc.emit("server_started", port).unwrap();
-}
-
-#[tauri::command]
 fn download_engine_to_folder(engine: Engine) -> String {
     engine_directory::install(engine)
         .into_os_string()
@@ -113,6 +94,16 @@ fn get_app_data_dir() -> String {
         .unwrap()
 }
 
+#[tauri::command]
+fn login_with_lichess(window: Window) {
+    start_oauth_flow(window);
+}
+
+#[tauri::command]
+fn logout(window: Window) {
+    login::logout(window);
+}
+
 fn main() {
     pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
     let mut connection = establish_connection();
@@ -122,13 +113,14 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             add_engine,
             delete_engine,
-            delete_setting,
             download_engine_to_folder,
             get_all_settings,
             get_app_data_dir,
             get_sysinfo,
-            start_oauth_server,
+            login_with_lichess,
+            logout,
             update_setting,
+            open_path
         ])
         .setup(|app| {
             let app_handle = app.handle();
