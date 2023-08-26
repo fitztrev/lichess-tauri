@@ -113,6 +113,7 @@ diesel --database-url ~/.local/share/lichess-tauri/lichess-tauri.sqlite migratio
 1. Tag the new version:
 
    ```bash
+   git checkout main
    npm version 0.x.x
    git push origin main --tags
    ```
