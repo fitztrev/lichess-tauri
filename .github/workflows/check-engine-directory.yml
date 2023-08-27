@@ -1,12 +1,6 @@
 name: engine-directory
 
-on:
-  push:
-    paths:
-      - 'pages/engine-directory.json'
-  pull_request:
-    paths:
-      - 'pages/engine-directory.json'
+on: [push, pull_request]
 
 jobs:
   build:

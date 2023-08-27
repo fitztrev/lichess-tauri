@@ -29,6 +29,22 @@ pub struct Binary {
     binary_filename: String,
 }
 
+#[cfg(target_os = "macos")]
+fn cpu_architecture() -> &'static str {
+    "default"
+}
+
+#[cfg(not(target_os = "macos"))]
+fn cpu_architecture() -> &'static str {
+    if is_x86_feature_detected!("avx2") {
+        "avx2"
+    } else if is_x86_feature_detected!("popcnt") {
+        "modern"
+    } else {
+        "default"
+    }
+}
+
 pub fn install(engine: Engine) -> PathBuf {
     let engines_path = get_app_data_dir().join("engines");
 
@@ -44,21 +60,23 @@ pub fn install(engine: Engine) -> PathBuf {
         engines_path.to_str().unwrap()
     );
 
-    let os = if cfg!(target_os = "macos") {
-        "macos"
-    } else if cfg!(target_os = "windows") {
-        "windows"
-    } else {
-        "linux"
-    };
+    let architecture = cpu_architecture();
 
-    let architecture = "default";
+    println!(
+        "os: {}, architecture: {}",
+        std::env::consts::OS,
+        architecture
+    );
 
     let binary = engine
         .binaries
         .iter()
-        .find(|binary| binary.os == os && binary.architecture == architecture)
-        .ok_or("No binary found for this system")
+        .find(|binary| binary.os == std::env::consts::OS && binary.architecture == architecture)
+        .ok_or(format!(
+            "No binary found for {} on {}",
+            engine.name,
+            std::env::consts::OS
+        ))
         .unwrap();
 
     let filename = Path::new(&binary.zip)
