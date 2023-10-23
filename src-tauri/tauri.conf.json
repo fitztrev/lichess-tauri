@@ -62,7 +62,7 @@
       "csp": null
     },
     "updater": {
-      "active": true,
+      "active": false,
       "endpoints": ["https://fitztrev.github.io/lichess-tauri/version.json"],
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ0MkZERDE3RkY5ODhCQTUKUldTbGk1ai9GOTB2UkJlbUtCTGdYWXJ4VkRoQ2szSnhMc1dkZ01aSWhOekE5L0hocUxFb0NzM3gK"
