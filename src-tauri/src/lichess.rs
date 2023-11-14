@@ -30,7 +30,7 @@ struct Work {
     session_id: String,
     threads: u32,
     hash: u32,
-    infinite: bool,
+    movetime: u32,
     multi_pv: u32,
     variant: String,
     initial_fen: String,
@@ -309,15 +309,11 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             analysis_request.work.moves.join(" ")
         )?;
 
-        if analysis_request.work.infinite {
-            writeln!(engine_stdin, "go infinite")?;
-        } else {
-            writeln!(
-                engine_stdin,
-                "go depth {}\n",
-                analysis_request.engine.default_depth
-            )?;
-        }
+        writeln!(
+            engine_stdin,
+            "go movetime {}",
+            analysis_request.work.movetime
+        )?;
 
         engine_stdin.flush()?;
 
