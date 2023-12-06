@@ -64,6 +64,7 @@ interface LichessAnalysisRequest {
   work: {
     hash: number
     infinite: boolean
+    movetime: number
     initialFen: string
     moves: string[]
     multiPv: number
