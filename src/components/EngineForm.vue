@@ -21,7 +21,6 @@ const name = ref('')
 const maxThreads = ref(1)
 const defaultHash = 16
 const maxHash = ref(defaultHash)
-const defaultDepth = ref(30)
 const binaryLocation: Ref<any> = ref('')
 
 const maxHashOptions = ref<MaxHashOption[]>([])
@@ -52,7 +51,6 @@ if (editEngineId) {
   name.value = engine.name
   maxThreads.value = engine.maxThreads
   maxHash.value = engine.maxHash
-  defaultDepth.value = engine.defaultDepth
 }
 
 function selectEngineFile() {
@@ -68,7 +66,6 @@ function submit() {
     name: name.value,
     maxThreads: maxThreads.value,
     maxHash: maxHash.value,
-    defaultDepth: defaultDepth.value,
     variants: ['chess'],
   }
 
@@ -177,24 +174,6 @@ function submit() {
                     {{ option.label }}
                   </option>
                 </select>
-              </div>
-            </div>
-            <div
-              class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5"
-            >
-              <label
-                for="default_depth"
-                class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-                >Default Depth</label
-              >
-              <div class="mt-1 sm:col-span-2 sm:mt-0">
-                <input
-                  v-model="defaultDepth"
-                  type="number"
-                  min="1"
-                  id="default_depth"
-                  class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
-                />
               </div>
             </div>
 

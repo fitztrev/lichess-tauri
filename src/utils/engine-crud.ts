@@ -25,7 +25,6 @@ export async function saveEngineToLichess(
       name: engine.name,
       maxThreads: engine.maxThreads,
       maxHash: engine.maxHash,
-      defaultDepth: engine.defaultDepth,
       variants: engine.variants,
       providerSecret: settings.providerSecret,
     }),

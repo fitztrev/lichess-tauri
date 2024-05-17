@@ -37,7 +37,6 @@ async function addEngineFromDirectory(engine: EngineListing) {
       name: engine.name + ' ' + engine.version,
       maxThreads: maxThreads,
       maxHash: maxHashOptions.at(-1)?.megabytes || 16,
-      defaultDepth: 30,
       variants: ['chess'],
     }).then(async (data) => {
       await invoke('add_engine', {

@@ -40,7 +40,6 @@ function deleteEngine(): void {
         <p class="flex items-center text-sm text-gray-500">
           {{ engine.maxThreads }} threads &bullet;
           {{ memoryToHumanReadable(engine.maxHash) }} &bullet;
-          {{ engine.defaultDepth }} depth
         </p>
       </div>
     </div>

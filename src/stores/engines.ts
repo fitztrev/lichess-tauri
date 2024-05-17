@@ -15,7 +15,6 @@ export type NewEngine = {
   name: string
   maxThreads: number
   maxHash: number
-  defaultDepth: number
   variants: Variant[]
 }
 
@@ -25,7 +24,7 @@ export type LichessEngine = {
   userId: string
   maxThreads: number
   maxHash: number
-  defaultDepth: number
+  //defaultDepth?: number;
   variants: string[]
   providerData: string
   clientSecret: string
