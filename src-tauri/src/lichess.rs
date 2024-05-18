@@ -28,7 +28,7 @@ struct AnalysisRequest {
 pub enum Search {
     Movetime(u32),
     Depth(u32),
-    Nodes(u64)
+    Nodes(u64),
 }
 
 #[allow(dead_code)]
@@ -38,7 +38,7 @@ struct Work {
     session_id: String,
     threads: u32,
     hash: u32,
-#[serde(flatten)]
+    #[serde(flatten)]
     search: Search,
     multi_pv: u32,
     variant: String,
