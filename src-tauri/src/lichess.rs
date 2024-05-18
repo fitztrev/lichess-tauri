@@ -23,6 +23,14 @@ struct AnalysisRequest {
     engine: Engine,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub enum Search {
+    Movetime(u32),
+    Depth(u32),
+    Nodes(u64),
+}
+
 #[allow(dead_code)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -30,8 +38,8 @@ struct Work {
     session_id: String,
     threads: u32,
     hash: u32,
-    infinite: bool,
-    movetime: u32,
+    #[serde(flatten)]
+    search: Search,
     multi_pv: u32,
     variant: String,
     initial_fen: String,
@@ -48,7 +56,6 @@ struct Engine {
     user_id: String,
     max_threads: u32,
     max_hash: u32,
-    default_depth: u32,
     variants: Vec<String>,
     provider_data: Option<String>,
 }
@@ -59,7 +66,6 @@ struct Registration {
     name: String,
     max_threads: u32,
     max_hash: u32,
-    default_depth: u32,
     variants: Vec<String>,
     provider_secret: String,
 }
@@ -309,12 +315,11 @@ pub fn work(app_handle: &AppHandle) -> Result<(), Box<dyn Error>> {
             analysis_request.work.initial_fen,
             analysis_request.work.moves.join(" ")
         )?;
-
-        writeln!(
-            engine_stdin,
-            "go movetime {}\n",
-            analysis_request.work.movetime
-        )?;
+        match analysis_request.work.search {
+            Search::Movetime(movetime) => writeln!(engine_stdin, "go movetime {}\n", movetime)?,
+            Search::Depth(depth) => writeln!(engine_stdin, "go depth {}\n", depth)?,
+            Search::Nodes(nodes) => writeln!(engine_stdin, "go nodes {}\n", nodes)?,
+        }
 
         engine_stdin.flush()?;
 

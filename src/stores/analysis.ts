@@ -52,7 +52,6 @@ interface LichessAnalysisRequest {
   id: string
   engine: {
     clientSecret: string
-    defaultDepth: number
     id: string
     maxHash: number
     maxThreads: number
@@ -63,7 +62,6 @@ interface LichessAnalysisRequest {
   }
   work: {
     hash: number
-    infinite: boolean
     movetime: number
     initialFen: string
     moves: string[]
